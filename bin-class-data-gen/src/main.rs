@@ -1,8 +1,12 @@
+#![allow(unused)]
+
 use clap::Parser;
+use tqdm::tqdm;
+use rand::Rng;
 
 /// Program to generate data for the bianry classifier
 #[derive(Parser, Debug)]
-#[command(author, version, about, long_about = None)]
+#[command(about, long_about = None)]
 struct Args {
     /// Maximum length of a sequence
     #[arg(short, long, default_value_t = 10)]
@@ -43,11 +47,14 @@ fn is_identity(seq: &[i64], args: &Args) -> bool {
     return perm == (0..args.group_size).collect::<Vec<i64>>();
 }
 
+fn generate_random_sequnce(args: &Args) -> Vec<i64> {
+    let mut rng = rand::thread_rng();
+    return (0..10).map(|_| rng.gen_range(0..args.group_size)).collect();
+}
+
 fn main() {
     let args = Args::parse();
 
-    println!("[1, 2, 3]: {} should be false\n", is_identity(&[1, 2, 3], &args));
-    println!("[0, 0, 0, 0]: {} should be true\n", is_identity(&[0, 0, 0, 0], &args));
-    println!("[1, 0, 1, 0]: {} should be true\n", is_identity(&[1, 0, 1, 0], &args));
-    println!("[1, 2, 1, 2]: {} should be false\n", is_identity(&[1, 2, 1 ,2], &args));
+    // print a random sequence
+    println!("Random sequence: {:?}", generate_random_sequnce(&args));
 }
