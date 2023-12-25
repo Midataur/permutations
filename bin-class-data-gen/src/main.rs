@@ -7,6 +7,8 @@ use kdam::BarExt;
 use std::env::args;
 use std::thread;
 use std::sync::mpsc;
+use csv::WriterBuilder;
+use std::error::Error;
 
 /// Program to generate data for the bianry classifier
 #[derive(Parser, Debug, Clone)]
@@ -62,7 +64,7 @@ fn generate_random_sequence(args: &Args) -> Vec<i64> {
     ).collect();
 }
 
-fn main() {
+fn main() -> Result<(), Box<dyn Error>> {
     let args = Args::parse();
 
     // throw error if inputs are bad
@@ -75,15 +77,12 @@ fn main() {
     let mut general_data: Vec<Vec<i64>> = Vec::new();
 
     // generate the general data
-    println!("Generating general data");
+    println!("Generating general data...");
     for _ in tqdm!(
         0..((args.dataset_size as f64)*(1.0-args.identity_proportion)) as i64
     ) {
         general_data.push(generate_random_sequence(&args));
     }
-
-    // print length of general data
-    println!("General data length: {}", general_data.len());
 
     // generate the identity data
     // create a progress bar
@@ -91,6 +90,8 @@ fn main() {
     let mut identity_data: Vec<Vec<i64>> = Vec::new();
 
     let (sender, receiver) = mpsc::channel();
+
+    println!("Generating identity data...");
 
     for _ in 0..args.threads {
         let sender_clone = sender.clone();
@@ -115,4 +116,20 @@ fn main() {
         // get a sequence and add it to the data
         identity_data.push(receiver.recv().unwrap());
     }
+
+    // Write the data to the file
+    println!("Writing data to file...");
+    let mut writer = WriterBuilder::new().from_path(args.filename)?;
+
+    for row in tqdm!(general_data.iter().chain(identity_data.iter())) {
+        let string_row: Vec<String> = row.into_iter().map(|value| value.to_string()).collect();
+        writer.write_record(string_row);
+    }
+
+    // Flush the writer to ensure all data is written to the file
+    writer.flush()?;
+
+    println!("Done!");
+
+    Ok(())
 }
