@@ -1,11 +1,15 @@
 #![allow(unused)]
 
 use clap::Parser;
-use tqdm::tqdm;
 use rand::Rng;
+use kdam::tqdm;
+use kdam::BarExt;
+use std::env::args;
+use std::thread;
+use std::sync::mpsc;
 
 /// Program to generate data for the bianry classifier
-#[derive(Parser, Debug)]
+#[derive(Parser, Debug, Clone)]
 #[command(about, long_about = None)]
 struct Args {
     /// Maximum length of a sequence
@@ -27,6 +31,11 @@ struct Args {
     /// Filename to write to
     #[arg(short, long, default_value_t = String::from("data.csv"))]
     filename: String,
+
+    /// Number of threads to use
+    /// Ensure threads number divides dataset size
+    #[arg(short, long, default_value_t = 1)]
+    threads: i64,
 }
 
 fn is_identity(seq: &[i64], args: &Args) -> bool {
@@ -43,18 +52,67 @@ fn is_identity(seq: &[i64], args: &Args) -> bool {
     }
 
     // check if the permutation is the identity
-    println!("perm {:?}", perm);
     return perm == (0..args.group_size).collect::<Vec<i64>>();
 }
 
-fn generate_random_sequnce(args: &Args) -> Vec<i64> {
+fn generate_random_sequence(args: &Args) -> Vec<i64> {
     let mut rng = rand::thread_rng();
-    return (0..10).map(|_| rng.gen_range(0..args.group_size)).collect();
+    return (
+        0..args.max_length).map(|_| rng.gen_range(0..args.group_size-1)
+    ).collect();
 }
 
 fn main() {
     let args = Args::parse();
 
-    // print a random sequence
-    println!("Random sequence: {:?}", generate_random_sequnce(&args));
+    // throw error if inputs are bad
+    assert!(
+        args.dataset_size % args.threads == 0, 
+        "\nThreads must divide dataset size\n"
+    );
+
+    // do the general data
+    let mut general_data: Vec<Vec<i64>> = Vec::new();
+
+    // generate the general data
+    println!("Generating general data");
+    for _ in tqdm!(
+        0..((args.dataset_size as f64)*(1.0-args.identity_proportion)) as i64
+    ) {
+        general_data.push(generate_random_sequence(&args));
+    }
+
+    // print length of general data
+    println!("General data length: {}", general_data.len());
+
+    // generate the identity data
+    // create a progress bar
+    let identities_needed = ((args.dataset_size as f64)*args.identity_proportion) as i64;
+    let mut identity_data: Vec<Vec<i64>> = Vec::new();
+
+    let (sender, receiver) = mpsc::channel();
+
+    for _ in 0..args.threads {
+        let sender_clone = sender.clone();
+        let args_clone: Args = args.clone();
+
+        // Spawn a thread
+        thread::spawn(move|| {
+            let mut count = 0;
+            while count < identities_needed / args_clone.threads {
+                let seq = generate_random_sequence(&args_clone);
+
+                if is_identity(&seq, &args_clone) {
+                    sender_clone.send(seq).unwrap();
+                    count += 1;
+                }
+            }
+        });
+    }
+
+    // Main thread receives results from worker threads
+    for _ in tqdm!(0..identities_needed) {
+        // get a sequence and add it to the data
+        identity_data.push(receiver.recv().unwrap());
+    }
 }
