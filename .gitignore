@@ -1,0 +1,4 @@
+
+*.csv
+traindata.csv
+bin-class-data-gen/target/
