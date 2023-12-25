@@ -40,6 +40,7 @@ struct Args {
     threads: i64,
 }
 
+/// tells you if a sequence is the identity
 fn is_identity(seq: &[i64], args: &Args) -> bool {
     // initialize the permutations
     let mut perm: Vec<i64> = (0..args.group_size).collect();
@@ -57,6 +58,7 @@ fn is_identity(seq: &[i64], args: &Args) -> bool {
     return perm == (0..args.group_size).collect::<Vec<i64>>();
 }
 
+/// generate a random sequence
 fn generate_random_sequence(args: &Args) -> Vec<i64> {
     let mut rng = rand::thread_rng();
     return (
