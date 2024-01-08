@@ -1,9 +1,13 @@
 print("Loading libraries...")
+
+import torch.optim as optim
+import torch.nn.functional as F
+from torch.optim.lr_scheduler import ReduceLROnPlateau
+import wandb
 from utilities import *
 from config import *
 from tqdm import tqdm
 from transformer import *
-import wandb
 
 print("Logging in...")
 wandb.login()
@@ -63,9 +67,6 @@ true_test_dataloader = DataLoader(true_test_dataset, batch_size=64, shuffle=Fals
 
 # set hyperparameters
 # some of these are in the transformer.py file
-import torch.optim as optim
-import torch.nn.functional as F
-from torch.optim.lr_scheduler import ReduceLROnPlateau
 
 learning_rate = 0.00003
 num_epochs = 10000

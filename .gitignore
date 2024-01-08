@@ -1,3 +1,4 @@
 binary-classifier/fast-data-gen/target/
 binary-classifier/wandb/
+binary-classifier/venv/
 *.pyc
