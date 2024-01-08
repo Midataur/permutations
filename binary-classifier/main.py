@@ -206,7 +206,7 @@ for epoch in range(num_epochs):
     if val_loss < best_loss:
         best_loss = val_loss
         cur_patience = 0
-        torch.save(model.state_dict(), PATH + "best_model.pth")
+        torch.save(model.state_dict(), PATH + "/model/best_model.pth")
     else:
         cur_patience += 1
 
