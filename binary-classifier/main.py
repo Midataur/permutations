@@ -23,9 +23,9 @@ for filename in filenames:
 
 train_data = train_data[1:]
 
-val_data = np.loadtxt(PATH + "val_data.csv", delimiter=",").astype(int)
-art_test_data = np.loadtxt(PATH + "art_test_data.csv", delimiter=",").astype(int)
-true_test_data = np.loadtxt(PATH + "true_test_data.csv", delimiter=",").astype(int)
+val_data = np.loadtxt(PATH + "./data/val_data.csv", delimiter=",").astype(int)
+art_test_data = np.loadtxt(PATH + "./data/art_test_data.csv", delimiter=",").astype(int)
+true_test_data = np.loadtxt(PATH + "./data/true_test_data.csv", delimiter=",").astype(int)
 
 # only use first million of the true_test_data for ram concerns
 true_test_data = true_test_data[:1000000]
@@ -45,6 +45,19 @@ y_art_test = np.apply_along_axis(is_identity, 1, X_art_test)
 y_true_test = np.apply_along_axis(is_identity, 1, X_true_test)
 
 final_dimension = MAX_LENGTH
+
+# create the dataloaders
+train_dataset = SimpleDataset(X_train, y_train)
+train_dataloader = DataLoader(train_dataset, batch_size=64, shuffle=True, num_workers=0)
+
+val_dataset = SimpleDataset(X_val, y_val)
+val_dataloader = DataLoader(val_dataset, batch_size=64, shuffle=False, num_workers=0)
+
+art_test_dataset = SimpleDataset(X_art_test, y_art_test)
+art_test_dataloader = DataLoader(art_test_dataset, batch_size=64, shuffle=False, num_workers=0)
+
+true_test_dataset = SimpleDataset(X_true_test, y_true_test)
+true_test_dataloader = DataLoader(true_test_dataset, batch_size=64, shuffle=False, num_workers=0)
 
 # set hyperparameters
 # some of these are in the transformer.py file
