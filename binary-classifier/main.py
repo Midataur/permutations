@@ -1,19 +1,21 @@
-from sklearn.pipeline import Pipeline
-from sklearn.preprocessing import OneHotEncoder
+print("Loading libraries...")
 from utilities import *
 from config import *
 from tqdm import tqdm
 from transformer import *
 import wandb
 
+print("Logging in...")
 wandb.login()
 
 # this is the training script, assumes you're using the transformer
 # if you're using the MLP, you'll need to change the data pipeline and the final dimension
 # also you can modify the transformer config in the transformer.py file
 
+print("Loading data...")
+
 # load the data
-filenames = [f"./data/train_data{x}" for x in range(1,6)]
+filenames = [f"/data/train_data{x}" for x in range(1,6)]
 
 train_data = np.array([[0 for x in range(MAX_LENGTH)]])
 
@@ -23,9 +25,9 @@ for filename in filenames:
 
 train_data = train_data[1:]
 
-val_data = np.loadtxt(PATH + "./data/val_data.csv", delimiter=",").astype(int)
-art_test_data = np.loadtxt(PATH + "./data/art_test_data.csv", delimiter=",").astype(int)
-true_test_data = np.loadtxt(PATH + "./data/true_test_data.csv", delimiter=",").astype(int)
+val_data = np.loadtxt(PATH + "/data/val_data.csv", delimiter=",").astype(int)
+art_test_data = np.loadtxt(PATH + "/data/art_test_data.csv", delimiter=",").astype(int)
+true_test_data = np.loadtxt(PATH + "/data/true_test_data.csv", delimiter=",").astype(int)
 
 # only use first million of the true_test_data for ram concerns
 true_test_data = true_test_data[:1000000]
@@ -75,17 +77,18 @@ threshold = 0.01  # Threshold for measuring the new optimum
 # setup the model
 model = BigramLanguageModel()
 
-# optionally: load the model
-modelname = "best_model.pth"
-if modelname != "":
-    model.load_state_dict(torch.load(PATH + "/model/" + modelname))
-
-# send to gpu (maybe)
+# cuda? (gpu)
 if torch.cuda.is_available():
   device = "cuda:0"
 else:
   device = "cpu"
 
+# optionally: load the model
+modelname = "best_model.pth"
+if modelname != "":
+    model.load_state_dict(torch.load(PATH + "/model/" + modelname, map_location=torch.device(device)))
+
+# send to gpu (maybe)
 model = model.to(device)
 
 # Define the loss function
@@ -100,6 +103,8 @@ scheduler = ReduceLROnPlateau(
     patience=lr_patience,
     threshold=threshold
 )
+
+print("Training...")
 
 # train the model
 # start a new wandb run to track this script
