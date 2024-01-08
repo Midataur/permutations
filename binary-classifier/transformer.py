@@ -15,7 +15,7 @@ n_head = 6
 n_blocks = 6
 dropout = 0.2
 
-assert(n_embed % n_head == 0, "n_head should divide n_embed")
+assert n_embed % n_head == 0 
 
 class Head(nn.Module):
     def __init__(self, head_size):
