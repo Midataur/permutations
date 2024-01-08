@@ -54,8 +54,7 @@ fn is_identity(seq: &[i64], args: &Args) -> bool {
         }
     }
 
-    // check if the permutation is the identity
-    // return perm == (0..args.group_size).collect::<Vec<i64>>();
+    // check if the permutation is the identity 
     for i in perm.iter() {
         if perm[*i as usize] != *i {
             return false;
