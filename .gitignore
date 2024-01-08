@@ -1,2 +1,3 @@
-bin-class-data-gen/target/
+binary-classifier/fast-data-gen/target/
+binary-classifier/wandb/
 *.pyc
