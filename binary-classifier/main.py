@@ -13,7 +13,7 @@ wandb.login()
 # also you can modify the transformer config in the transformer.py file
 
 # load the data
-filenames = [f"train_data{x}" for x in range(1,6)]
+filenames = [f"./data/train_data{x}" for x in range(1,6)]
 
 train_data = np.array([[0 for x in range(MAX_LENGTH)]])
 
