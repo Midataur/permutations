@@ -96,7 +96,8 @@ model = model.to(device)
 criterion = nn.BCELoss()
 
 # Define the optimizer and scheduler
-optimizer = optim.Adam(model.parameters(), lr=learning_rate)
+optimizer = optim.AdamW(model.parameters(), lr=learning_rate)
+
 scheduler = ReduceLROnPlateau(
     optimizer,
     mode='min',
