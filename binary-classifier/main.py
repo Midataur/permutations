@@ -219,4 +219,4 @@ for epoch in range(num_epochs):
         print("Reducing learning rate")
 
     # learning rate scheduling
-    scheduler.step(val_loss)
+    scheduler.step(train_loss)
