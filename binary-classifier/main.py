@@ -85,7 +85,7 @@ else:
   device = "cpu"
 
 # optionally: load the model
-modelname = "best_model.pth"
+modelname = ""
 if modelname != "":
     model.load_state_dict(torch.load(PATH + "/model/" + modelname, map_location=torch.device(device)))
 
@@ -135,7 +135,7 @@ wandb.init(
     },
     settings=wandb.Settings(start_method="fork"),
     resume="allow",
-    id="finally" #CHECK IF THIS IS CORRECT
+    id="finally2.0" #CHECK IF THIS IS CORRECT
 )
 
 patience = 45
