@@ -123,7 +123,7 @@ wandb.init(
       "threshold": threshold,
       "architecture": "Transformer",
       "epochs": num_epochs,
-      "optimizer": "Adam",
+      "optimizer": "AdamW",
       "identity_proportion": IDENTITY_PROPORTION,
       "group_size": GROUP_SIZE,
       "dataset_size": DATASET_SIZE,
