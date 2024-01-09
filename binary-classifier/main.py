@@ -210,9 +210,9 @@ for epoch in range(num_epochs):
     else:
         cur_patience += 1
 
-    if cur_patience == patience:
-        print("Early stopping activated")
-        break
+    # if cur_patience == patience:
+    #     print("Early stopping activated")
+    #     break
 
     if cur_patience % lr_patience == 0 and cur_patience != 0:
         print("Reducing learning rate")
