@@ -204,8 +204,8 @@ for epoch in range(num_epochs):
         })
 
     # early stopping
-    if val_loss < best_loss:
-        best_loss = val_loss
+    if train_loss < best_loss:
+        best_loss = train_loss
         cur_patience = 0
         torch.save(model.state_dict(), PATH + "/model/best_model.pth")
     else:
