@@ -135,7 +135,7 @@ wandb.init(
     },
     settings=wandb.Settings(start_method="fork"),
     resume="allow",
-    id="finally2.0" #CHECK IF THIS IS CORRECT
+    id="finally3.0" #CHECK IF THIS IS CORRECT
 )
 
 patience = 45
