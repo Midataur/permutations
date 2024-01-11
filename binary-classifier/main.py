@@ -8,6 +8,7 @@ from utilities import *
 from config import *
 from tqdm import tqdm
 from transformer import *
+import os
 
 print("Logging in...")
 wandb.login()
@@ -85,9 +86,10 @@ else:
   device = "cpu"
 
 # optionally: load the model
-modelname = ""
-if modelname != "":
-    model.load_state_dict(torch.load(PATH + "/model/" + modelname, map_location=torch.device(device)))
+modelname = "finally4.0"
+filename = PATH + "/model/" + modelname + ".pth"
+if os.path.isfile(filename):
+    model.load_state_dict(torch.load(filename, map_location=torch.device(device)))
 
 # send to gpu (maybe)
 model = model.to(device)
@@ -135,7 +137,7 @@ wandb.init(
     },
     settings=wandb.Settings(start_method="fork"),
     resume="allow",
-    id="finally3.0" #CHECK IF THIS IS CORRECT
+    id=modelname #CHECK IF THIS IS CORRECT
 )
 
 patience = 45
@@ -207,7 +209,7 @@ for epoch in range(num_epochs):
     if train_loss < best_loss:
         best_loss = train_loss
         cur_patience = 0
-        torch.save(model.state_dict(), PATH + "/model/best_model.pth")
+        torch.save(model.state_dict(), filename)
     else:
         cur_patience += 1
 
