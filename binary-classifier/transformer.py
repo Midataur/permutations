@@ -12,7 +12,7 @@ n_embed = 384
 vocab_size = GROUP_SIZE
 block_size = MAX_LENGTH
 n_head = 6
-n_blocks = 7
+n_blocks = 8
 dropout = 0
 
 assert n_embed % n_head == 0 
