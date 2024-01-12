@@ -30,9 +30,9 @@ for filename in filenames:
 
 train_data = train_data[1:]
 
-val_data = np.loadtxt(PATH + "/data/val_data.csv", delimiter=",").astype(int)
-art_test_data = np.loadtxt(PATH + "/data/art_test_data.csv", delimiter=",").astype(int)
-true_test_data = np.loadtxt(PATH + "/data/true_test_data.csv", delimiter=",").astype(int)
+val_data = np.loadtxt(PATH + DATA + "val_data.csv", delimiter=",").astype(int)
+art_test_data = np.loadtxt(PATH + DATA + "art_test_data.csv", delimiter=",").astype(int)
+true_test_data = np.loadtxt(PATH + DATA + "true_test_data.csv", delimiter=",").astype(int)
 
 # only use first million of the true_test_data for ram concerns
 true_test_data = true_test_data[:1000000]
@@ -86,7 +86,7 @@ else:
   device = "cpu"
 
 # optionally: load the model
-modelname = "finally4.0"
+modelname = "forcegrok1.0"
 filename = PATH + "/model/" + modelname + ".pth"
 if os.path.isfile(filename):
     model.load_state_dict(torch.load(filename, map_location=torch.device(device)))
