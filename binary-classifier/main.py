@@ -20,12 +20,12 @@ wandb.login()
 print("Loading data...")
 
 # load the data
-filenames = [f"/data/train_data{x}" for x in range(1,6)]
+filenames = [f"train_data{x}" for x in range(1,2)]
 
 train_data = np.array([[0 for x in range(MAX_LENGTH)]])
 
 for filename in filenames:
-  data = np.loadtxt(PATH + filename + ".csv", delimiter=",").astype(int)
+  data = np.loadtxt(PATH + DATA + filename + ".csv", delimiter=",").astype(int)
   train_data = np.concatenate((train_data, data))
 
 train_data = train_data[1:]
