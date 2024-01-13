@@ -86,7 +86,7 @@ else:
   device = "cpu"
 
 # optionally: load the model
-modelname = "forcegrok1.0"
+modelname = "forcegrok2.0"
 filename = PATH + "/model/" + modelname + ".pth"
 if os.path.isfile(filename):
     model.load_state_dict(torch.load(filename, map_location=torch.device(device)))
