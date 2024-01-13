@@ -20,7 +20,7 @@ wandb.login()
 print("Loading data...")
 
 # load the data
-filenames = [f"train_data{x}" for x in range(1,7)]
+filenames = [f"train_data{x}" for x in range(1, TRAIN_FILES + 1)]
 
 train_data = np.array([[0 for x in range(MAX_LENGTH)]])
 
