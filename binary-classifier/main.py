@@ -86,8 +86,7 @@ else:
   device = "cpu"
 
 # optionally: load the model
-modelname = "forcegrok2.0"
-filename = PATH + "/model/" + modelname + ".pth"
+filename = PATH + "/model/" + MODELNAME + ".pth"
 if os.path.isfile(filename):
     model.load_state_dict(torch.load(filename, map_location=torch.device(device)))
 
@@ -137,7 +136,7 @@ wandb.init(
     },
     settings=wandb.Settings(start_method="fork"),
     resume="allow",
-    id=modelname #CHECK IF THIS IS CORRECT
+    id=MODELNAME #CHECK IF THIS IS CORRECT
 )
 
 patience = 45
