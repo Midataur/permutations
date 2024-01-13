@@ -205,12 +205,15 @@ for epoch in range(num_epochs):
         })
 
     # early stopping
-    if train_loss < best_loss:
-        best_loss = train_loss
-        cur_patience = 0
-        torch.save(model.state_dict(), filename)
-    else:
-        cur_patience += 1
+    # if train_loss < best_loss:
+    #     best_loss = train_loss
+    #     cur_patience = 0
+    #     torch.save(model.state_dict(), filename)
+    # else:
+    #     cur_patience += 1
+        
+    # always save the model
+    torch.save(model.state_dict(), filename)
 
     # if cur_patience == patience:
     #     print("Early stopping activated")
