@@ -9,7 +9,7 @@
 #SBATCH --nodes=1
 
 # The name of the job:
-#SBATCH --job-name="permutations-transformer-training"
+#SBATCH --job-name="permutations-transformer-testing"
 
 # The project ID which this job should run under:
 #SBATCH --account="punim2163"

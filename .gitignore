@@ -4,3 +4,4 @@ binary-classifier/model/
 *.pyc
 .out
 .env
+*.txt
