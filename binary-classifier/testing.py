@@ -34,7 +34,7 @@ def generate_predictions(model, dataloader):
       predictions.append(outputs)
 
     predictions = torch.cat(predictions)
-    predictions = np.array(predictions).reshape(-1)
+    predictions = np.array(predictions.cpu()).reshape(-1)
 
     return predictions
 
