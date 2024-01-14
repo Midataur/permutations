@@ -8,6 +8,7 @@ from sklearn.metrics import precision_recall_curve
 from sklearn.metrics import average_precision_score, accuracy_score, roc_curve, auc
 
 TEST_TYPE = "exhaustive" # normal or exhaustive
+SHOW_PLOTS = False
 
 # get the model
 model = BigramLanguageModel()
@@ -36,19 +37,20 @@ def generate_predictions(model, dataloader):
 
     return predictions
 
-def create_roc_curve(labels, predictions):
+def create_roc_curve(labels, predictions):    
     fpr, tpr, _ = roc_curve(labels, predictions)
 
     area_under_curve = auc(fpr, tpr)
 
-    plt.plot(fpr, tpr)
-    plt.xlabel("False positive rate")
-    plt.ylabel("True positive rate")
-    plt.title(f"ROC curve (AUC = {area_under_curve:.2f})")
+    if SHOW_PLOTS:
+        plt.plot(fpr, tpr)
+        plt.xlabel("False positive rate")
+        plt.ylabel("True positive rate")
+        plt.title(f"ROC curve (AUC = {area_under_curve:.2f})")
 
-    # plot the x = y line
-    plt.plot([0, 1], [0, 1], color='grey', linestyle='--')
-    plt.show()
+        # plot the x = y line
+        plt.plot([0, 1], [0, 1], color='grey', linestyle='--')
+        plt.show()
 
     return area_under_curve
 
@@ -59,11 +61,12 @@ def create_pr_curve(labels, predictions):
 
     area_under_curve = average_precision_score(labels, predictions)
 
-    plt.plot(recall, precision)
-    plt.xlabel('Recall')
-    plt.ylabel('Precision')
-    plt.title(f'Precision-Recall curve (AUC = {area_under_curve:.2f})')
-    plt.show()
+    if SHOW_PLOTS:
+        plt.plot(recall, precision)
+        plt.xlabel('Recall')
+        plt.ylabel('Precision')
+        plt.title(f'Precision-Recall curve (AUC = {area_under_curve:.2f})')
+        plt.show()
 
     return area_under_curve
 
