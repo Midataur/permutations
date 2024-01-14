@@ -93,20 +93,24 @@ def test_suite(dataloader, labels):
         if label != prediction.round():
             print(f"Label: {label}, Prediction: {prediction}, index: {pos}")
 
+#actual testing
+
 if TEST_TYPE == "normal":
     print("\nTesting artifical data...")
     test_suite(art_test_dataloader, y_art_test)
 
     print("\nTesting true data...")
     test_suite(true_test_dataloader, y_true_test)
+
 elif TEST_TYPE == "exhaustive":
     # generate all possible sequences
     print("Generating labels...")
     labels = [is_identity(int_to_seq(x)) for x in tqdm(range(GROUP_SIZE**MAX_LENGTH))]
 
     print("Testing all possible sequences...")
-    full_dataset = ExhaustiveDataset()
+    full_dataset = ExhaustiveDataset(calc_identity=False)
     full_dataloader = DataLoader(full_dataset, batch_size=64, shuffle=False, num_workers=0)
     test_suite(full_dataloader, labels)
+
 else:
     raise Exception("Invalid test type")

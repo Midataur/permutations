@@ -129,7 +129,7 @@ class SimpleDataset(Dataset):
         return sample
     
 class ExhaustiveDataset(Dataset):
-    def __init__(self):
+    def __init__(self, calc_identity=True):
         # use gpu for processing
         if cuda.is_available():
           dev = "cuda:0"
@@ -137,13 +137,14 @@ class ExhaustiveDataset(Dataset):
           dev = "cpu"
 
         self.dev = device(dev)
+        self.calc_identity = calc_identity
 
     def __len__(self):
         return GROUP_SIZE ** MAX_LENGTH
 
     def __getitem__(self, index):
         seq = int_to_seq(index)
-        target = is_identity(seq)
+        target = is_identity(seq) if self.calc_identity else 0
 
         sample = (
             tensor(seq, dtype=int).to(self.dev),
