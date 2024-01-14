@@ -22,6 +22,7 @@ else:
 # reload the model
 filename = PATH + "/model/" + MODELNAME + ".pth"
 model.load_state_dict(torch.load(filename, map_location=torch.device(device)))
+model = model.to(device)
 
 def generate_predictions(model, dataloader):
    with torch.no_grad():

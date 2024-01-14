@@ -1,5 +1,58 @@
 from utilities import *
 from config import *
+from torch.utils.data import DataLoader, Dataset
+from torch import tensor, float32, cuda, device
+from scipy import sparse
+
+class SimpleDataset(Dataset):
+    def __init__(self, data, targets):
+        # use gpu for processing
+        if cuda.is_available():
+          dev = "cuda:0"
+        else:
+          dev = "cpu"
+
+        dev = device(dev)
+
+        if type(data) == sparse._csr.csr_matrix:
+          data = data.todense()
+
+        self.data = tensor(data, dtype=int).to(dev)
+        self.targets = tensor(targets.reshape(-1, 1), dtype=float32).to(dev)
+
+    def __len__(self):
+        return len(self.data)
+
+    def __getitem__(self, index):
+        sample = (
+            self.data[index],
+            self.targets[index]
+        )
+        return sample
+    
+class ExhaustiveDataset(Dataset):
+    def __init__(self, calc_identity=True):
+        # use gpu for processing
+        if cuda.is_available():
+          dev = "cuda:0"
+        else:
+          dev = "cpu"
+
+        self.dev = device(dev)
+        self.calc_identity = calc_identity
+
+    def __len__(self):
+        return GROUP_SIZE ** MAX_LENGTH
+
+    def __getitem__(self, index):
+        seq = int_to_seq(index)
+        target = is_identity(seq) if self.calc_identity else 0
+
+        sample = (
+            tensor(seq, dtype=int).to(self.dev),
+            tensor(target, dtype=float32).to(self.dev)
+        )
+        return sample
 
 # load the data
 print("Loading data...")
