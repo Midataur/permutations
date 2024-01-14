@@ -3,8 +3,8 @@ from config import *
 from dataloading import *
 from transformer import *
 from tqdm import tqdm
-from sklearn.metrics import precision_recall_curve
 import matplotlib.pyplot as plt
+from sklearn.metrics import precision_recall_curve
 from sklearn.metrics import average_precision_score, accuracy_score, roc_curve, auc
 
 # get the model
