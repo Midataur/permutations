@@ -85,6 +85,16 @@ def get_permutation(sequence):
 
   return permutation
 
+# used to exhaustively generate all possible sequences
+def int_to_seq(num):
+  sequence = []
+
+  for i in range(MAX_LENGTH):
+    sequence.append(num % GROUP_SIZE)
+    num //= GROUP_SIZE
+
+  return sequence
+
 # tells you if a sequence corresponds to the identity
 # we need this because there is a non_zero chance that we generate one randomly
 # probably wouldn't be the end of the world (low chance this happens)
@@ -115,6 +125,29 @@ class SimpleDataset(Dataset):
         sample = (
             self.data[index],
             self.targets[index]
+        )
+        return sample
+    
+class ExhaustiveDataset(Dataset):
+    def __init__(self):
+        # use gpu for processing
+        if cuda.is_available():
+          dev = "cuda:0"
+        else:
+          dev = "cpu"
+
+        self.dev = device(dev)
+
+    def __len__(self):
+        return GROUP_SIZE ** MAX_LENGTH
+
+    def __getitem__(self, index):
+        seq = int_to_seq(index)
+        target = is_identity(seq)
+
+        sample = (
+            tensor(seq, dtype=int).to(self.dev),
+            tensor(target, dtype=float32).to(self.dev)
         )
         return sample
 
