@@ -5,4 +5,4 @@ IDENTITY_PROPORTION = 0.5 #controls what proportion of the training data is arti
 PATH = "."
 DATA = "/data/"
 MODELNAME = "finally5.0"
-TRAIN_FILES = 7
+TRAIN_FILES = 6
