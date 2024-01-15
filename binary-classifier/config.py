@@ -4,4 +4,4 @@ IDENTITY_PROPORTION = 0.5 #controls what proportion of the training data is arti
 PATH = "."
 DATA = "/data/forcegrok/"
 MODELNAME = "forcegrok4.0"
-TRAIN_FILES = 6
+TRAIN_FILES = 2
