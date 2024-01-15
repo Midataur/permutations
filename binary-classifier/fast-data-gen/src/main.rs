@@ -50,7 +50,7 @@ fn is_identity(seq: &[i64], args: &Args) -> bool {
         // 0 is the identity
         // so we ignore it if we see it
         if *i != 0 {
-            perm.swap(*i as usize, *i as usize + 1);
+            perm.swap(*i as usize - 1, *i as usize);
         }
     }
 
@@ -68,7 +68,9 @@ fn is_identity(seq: &[i64], args: &Args) -> bool {
 fn generate_random_sequence(args: &Args) -> Vec<i64> {
     let mut rng = rand::thread_rng();
     return (
-        0..args.max_length).map(|_| rng.gen_range(0..args.group_size)
+        0..args.max_length
+    ).map(
+        |_| rng.gen_range(0..args.group_size)
     ).collect();
 }
 
