@@ -3,5 +3,5 @@ GROUP_SIZE = 5
 IDENTITY_PROPORTION = 0.5 #controls what proportion of the training data is artifically added identities
 PATH = "."
 DATA = "/data/forcegrok/"
-MODELNAME = "forcegrok4.0"
+MODELNAME = "forcegrok5.0"
 TRAIN_FILES = 2
