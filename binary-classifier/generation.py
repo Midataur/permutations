@@ -5,6 +5,8 @@ from multiprocessing import Pool
 import numpy as np
 import time
 
+dataset_size = 1000000
+
 # generates a matrix filled with random integers in [0, GROUP_SIZE-1]
 # we say that 0 denotes the identity element
 # words are uniformly distributed
@@ -58,7 +60,7 @@ if __name__ == "__main__":
     # generate the training data
     train_data = generate_random_sequences(
         int(
-            DATASET_SIZE*(1-IDENTITY_PROPORTION)
+            dataset_size*(1-IDENTITY_PROPORTION)
         ),
         MAX_LENGTH
     )
@@ -69,7 +71,7 @@ if __name__ == "__main__":
             train_data,
             generate_identities(
                 int(
-                DATASET_SIZE*IDENTITY_PROPORTION
+                dataset_size*IDENTITY_PROPORTION
                 ),
                 MAX_LENGTH, workers=1
             )
@@ -84,7 +86,7 @@ if __name__ == "__main__":
 
     val_data = generate_random_sequences(
         int(
-            DATASET_SIZE*0.2*(1-IDENTITY_PROPORTION)
+            dataset_size*0.2*(1-IDENTITY_PROPORTION)
         ),
         MAX_LENGTH
     )
@@ -94,7 +96,7 @@ if __name__ == "__main__":
             val_data,
             generate_identities(
                 int(
-                DATASET_SIZE*0.2*IDENTITY_PROPORTION
+                dataset_size*0.2*IDENTITY_PROPORTION
                 ),
                 MAX_LENGTH
             )
@@ -108,7 +110,7 @@ if __name__ == "__main__":
 
     art_test_data = generate_random_sequences(
         int(
-            DATASET_SIZE*0.2*(1-IDENTITY_PROPORTION)
+            dataset_size*0.2*(1-IDENTITY_PROPORTION)
         ),
         MAX_LENGTH
     )
@@ -118,7 +120,7 @@ if __name__ == "__main__":
             val_data,
             generate_identities(
                 int(
-                DATASET_SIZE*0.2*IDENTITY_PROPORTION
+                dataset_size*0.2*IDENTITY_PROPORTION
                 ),
                 MAX_LENGTH
             )
@@ -132,7 +134,7 @@ if __name__ == "__main__":
 
     true_test_data = generate_random_sequences(
         int(
-            DATASET_SIZE
+            dataset_size
         ),
         MAX_LENGTH
     )

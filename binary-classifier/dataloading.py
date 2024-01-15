@@ -65,6 +65,7 @@ for filename in filenames:
   train_data = np.concatenate((train_data, data))
 
 train_data = train_data[1:]
+DATASET_SIZE = len(train_data)
 
 val_data = np.loadtxt(PATH + DATA + "val_data.csv", delimiter=",").astype(int)
 art_test_data = np.loadtxt(PATH + DATA + "art_test_data.csv", delimiter=",").astype(int)

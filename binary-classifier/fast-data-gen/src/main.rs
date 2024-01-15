@@ -68,7 +68,7 @@ fn is_identity(seq: &[i64], args: &Args) -> bool {
 fn generate_random_sequence(args: &Args) -> Vec<i64> {
     let mut rng = rand::thread_rng();
     return (
-        0..args.max_length).map(|_| rng.gen_range(0..args.group_size-1)
+        0..args.max_length).map(|_| rng.gen_range(0..args.group_size)
     ).collect();
 }
 
