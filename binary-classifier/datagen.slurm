@@ -44,7 +44,7 @@ fi
 # Run the job from the directory where it was launched (default)
 
 # The job command(s):
-./fast-data-gen/target/release/bin-class-data-gen -m 45 -g 10 -d 1000000 -f ./data/train_data7 -t 10 
+./fast-data-gen/target/release/bin-class-data-gen -g 10 -m 45 -d 2000000 -t 10 -f ./data/forcegrok/train_data1.csv
 
 ##DO NOT ADD/EDIT BEYOND THIS LINE##
 ##Job monitor command to list the resource usage
