@@ -16,4 +16,4 @@ with open("converted.txt", "w") as file:
         if 4 not in sequence:
             non_fours += 1
 
-print(non_fours)
+print("non fours:", non_fours)
