@@ -42,6 +42,7 @@ if [ "x$SLURM_JOB_ID" == "x" ]; then
 fi
 
 # Run the job from the directory where it was launched (default)
+module load Rust/1.65.0
 
 # The job command(s):
 cargo run --release -- -g 10 -m 45 -d 2000000 -t 10 -f ./data/forcegrok/train_data1.csv
