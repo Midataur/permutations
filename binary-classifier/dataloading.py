@@ -3,6 +3,7 @@ from config import *
 from torch.utils.data import DataLoader, Dataset
 from torch import tensor, float32, cuda, device
 from scipy import sparse
+import os
 
 class SimpleDataset(Dataset):
     def __init__(self, data, targets):
@@ -56,13 +57,20 @@ class ExhaustiveDataset(Dataset):
 
 # load the data
 print("Loading data...")
-filenames = [f"train_data{x}" for x in range(1, TRAIN_FILES + 1)]
 
 train_data = np.array([[0 for x in range(MAX_LENGTH)]])
 
-for filename in filenames:
-  data = np.loadtxt(PATH + DATA + filename + ".csv", delimiter=",").astype(int)
+curfile = 1
+while True:
+  filename = PATH + DATA + f"train_data{curfile}.csv"
+
+  if not os.path.isfile(filename):
+     break
+
+  data = np.loadtxt(filename, delimiter=",").astype(int)
   train_data = np.concatenate((train_data, data))
+
+  curfile += 1
 
 train_data = train_data[1:]
 DATASET_SIZE = len(train_data)
