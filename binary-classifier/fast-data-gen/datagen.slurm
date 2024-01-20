@@ -42,6 +42,7 @@ if [ "x$SLURM_JOB_ID" == "x" ]; then
 fi
 
 # Run the job from the directory where it was launched (default)
+module load GCC/11.3.0
 module load Rust/1.65.0
 
 # The job command(s):
