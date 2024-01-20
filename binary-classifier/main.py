@@ -21,7 +21,8 @@ wandb.login()
 # set hyperparameters
 # some of these are in the transformer.py file
 
-learning_rate = 0.00003
+# good starting value: 3*10^-5
+learning_rate = 3*(10**-6)
 num_epochs = 10000
 
 lr_factor = 0.1  # Factor by which the learning rate will be reduced
