@@ -38,8 +38,6 @@ if torch.cuda.is_available():
 else:
   device = "cpu"
 
-# testing
-
 # optionally: load the model
 filename = PATH + "/model/" + MODELNAME + ".pth"
 if os.path.isfile(filename):
