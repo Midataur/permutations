@@ -1,6 +1,8 @@
 from utilities import *
 from config import *
 
+#testing
+
 # batch converts indices into sequences
 
 with open("mistakes.txt", "r") as file:
