@@ -19,9 +19,9 @@
 #SBATCH --cpus-per-task=1
 
 # Number of GPUs requested per node:
-#SBATCH --gres=gpu:1
+#SBATCH --gres=gpu:4
 # The amount of memory in megabytes per node:
-#SBATCH --mem=20480
+#SBATCH --mem=16000
 
 # Use this email address:
 #SBATCH --mail-user=mpetschack@student.unimelb.edu.au
