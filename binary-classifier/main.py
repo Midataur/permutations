@@ -18,20 +18,6 @@ wandb.login()
 # if you're using the MLP, you'll need to change the data pipeline and the final dimension
 # also you can modify the transformer config in the transformer.py file
 
-# set hyperparameters
-# some of these are in the transformer.py file
-
-# good starting value: 3*10^-5
-learning_rate = 3*(10**-5)
-num_epochs = 10000
-
-# good starting value: 0.01
-weight_decay = 0.1
-
-lr_factor = 0.1  # Factor by which the learning rate will be reduced
-lr_patience = 10  # Number of epochs with no improvement after which learning rate will be reduced
-threshold = 0.01  # Threshold for measuring the new optimum
-
 # setup the model
 model = BigramLanguageModel()
 

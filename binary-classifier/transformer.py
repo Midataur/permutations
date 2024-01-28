@@ -8,13 +8,6 @@ from config import *
 # basically i removed the masking from the self attention step
 # and changed the output to be logisitic and one node instead of softmax
 
-n_embed = 50
-vocab_size = GROUP_SIZE
-block_size = MAX_LENGTH
-n_head = 5
-n_blocks = 1
-dropout = 0
-
 assert n_embed % n_head == 0 
 
 class Head(nn.Module):
