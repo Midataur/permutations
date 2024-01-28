@@ -4,3 +4,7 @@ IDENTITY_PROPORTION = 0.5 # controls what proportion of the training data is art
 PATH = "."
 DATA = "/data/verysmall/"
 MODELNAME = "verysmall1.0"
+
+# can be full or an integer
+# i recommend 64
+BATCHSIZE = "full"

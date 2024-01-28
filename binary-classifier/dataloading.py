@@ -98,9 +98,12 @@ y_true_test = np.apply_along_axis(is_identity, 1, X_true_test)
 
 final_dimension = MAX_LENGTH
 
+train_batch_size = BATCHSIZE if BATCHSIZE != "full" else len(X_train)
+to_shuffle = BATCHSIZE != "full"
+
 # create the dataloaders
 train_dataset = SimpleDataset(X_train, y_train)
-train_dataloader = DataLoader(train_dataset, batch_size=64, shuffle=True, num_workers=0)
+train_dataloader = DataLoader(train_dataset, batch_size=train_batch_size, shuffle=to_shuffle, num_workers=0)
 
 val_dataset = SimpleDataset(X_val, y_val)
 val_dataloader = DataLoader(val_dataset, batch_size=64, shuffle=False, num_workers=0)
