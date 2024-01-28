@@ -4,16 +4,16 @@ GROUP_SIZE = 4
 IDENTITY_PROPORTION = 0.5 # controls what proportion of the training data is artifically added identities
 PATH = "."
 DATA = "/data/verysmall/"
-MODELNAME = "smallgrok1.0"
+MODELNAME = "smallgrok2.0"
 # can be full or an integer
 # i recommend 64
 BATCHSIZE = "full"
 
 # TRANSFORMER HYPERPARAMETERS
-n_embed = 50
+n_embed = 384
 vocab_size = GROUP_SIZE
 block_size = MAX_LENGTH
-n_head = 5
+n_head = 6
 n_blocks = 1
 dropout = 0
 
