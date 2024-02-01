@@ -27,14 +27,14 @@ if torch.cuda.is_available():
 else:
   device = "cpu"
 
+# send to gpu (maybe)
+model = nn.DataParallel(model)
+model = model.to(device)
+
 # optionally: load the model
 filename = PATH + "/model/" + MODELNAME + ".pth"
 if os.path.isfile(filename):
     model.load_state_dict(torch.load(filename, map_location=torch.device(device)))
-
-# send to gpu (maybe)
-model = nn.DataParallel(model)
-model = model.to(device)
 
 # Define the loss function
 criterion = nn.BCELoss()
