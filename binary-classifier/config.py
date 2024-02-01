@@ -4,7 +4,7 @@ GROUP_SIZE = 4
 IDENTITY_PROPORTION = 0.5 # controls what proportion of the training data is artifically added identities
 PATH = "."
 DATA = "/data/smallgrok/"
-MODELNAME = "smallgrok7.0"
+MODELNAME = "smallgrok8.0"
 # can be full or an integer
 # i recommend 64
 BATCHSIZE = "full"
@@ -20,7 +20,7 @@ dropout = 0
 # TRAINING HYPERPARAMETERS
 # good starting value: 3*10^-5
 learning_rate = 3*(10**-5)
-num_epochs = 10^6
+num_epochs = 10**6
 
 # good starting value: 0.01
 weight_decay = 1

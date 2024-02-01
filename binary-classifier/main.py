@@ -172,3 +172,5 @@ for epoch in range(num_epochs):
 
     # learning rate scheduling
     scheduler.step(train_loss)
+
+print("done!", num_epochs)
