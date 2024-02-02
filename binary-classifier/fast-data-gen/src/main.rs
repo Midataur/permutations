@@ -40,6 +40,16 @@ struct Args {
     threads: i64,
 }
 
+/// generate a random sequence
+fn generate_random_sequence(args: &Args) -> Vec<i64> {
+    let mut rng = rand::thread_rng();
+    return (
+        0..args.max_length
+    ).map(
+        |_| rng.gen_range(0..(args.group_size.pow(2)-1))
+    ).collect();
+}
+
 /// tells you if a sequence is the identity
 fn is_identity(seq: &[i64], args: &Args) -> bool {
     // initialize the permutations
@@ -49,8 +59,12 @@ fn is_identity(seq: &[i64], args: &Args) -> bool {
     for i in seq.iter() {
         // 0 is the identity
         // so we ignore it if we see it
+
+        let x = *i/args.group_size;
+        let y = *i%args.group_size;
+
         if *i != 0 {
-            perm.swap(*i as usize - 1, *i as usize);
+            perm.swap(x as usize, y as usize);
         }
     }
 
@@ -62,16 +76,6 @@ fn is_identity(seq: &[i64], args: &Args) -> bool {
     }
 
     return true
-}
-
-/// generate a random sequence
-fn generate_random_sequence(args: &Args) -> Vec<i64> {
-    let mut rng = rand::thread_rng();
-    return (
-        0..args.max_length
-    ).map(
-        |_| rng.gen_range(0..args.group_size)
-    ).collect();
 }
 
 fn main() -> Result<(), Box<dyn Error>> {
@@ -138,8 +142,6 @@ fn main() -> Result<(), Box<dyn Error>> {
 
     // Flush the writer to ensure all data is written to the file
     writer.flush()?;
-
-    println!("Done!");
 
     Ok(())
 }
