@@ -11,7 +11,7 @@ BATCHSIZE = "full"
 
 # TRANSFORMER HYPERPARAMETERS
 n_embed = 384
-vocab_size = GROUP_SIZE
+vocab_size = GROUP_SIZE**2
 block_size = MAX_LENGTH
 n_head = 6
 n_blocks = 1
