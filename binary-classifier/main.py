@@ -81,6 +81,8 @@ wandb.init(
       "n_blocks": n_blocks,
       "dropout": dropout,
       "weight_decay": weight_decay,
+      "transposition_type": TRANSPOSITION_TYPE,
+      "batch_size": BATCHSIZE
     },
     settings=wandb.Settings(start_method="fork"),
     resume="allow",

@@ -9,9 +9,12 @@ MODELNAME = "medtrans-7.0"
 # i recommend 64
 BATCHSIZE = 64
 
+# general or elementary
+TRANSPOSITION_TYPE = "general"
+
 # TRANSFORMER HYPERPARAMETERS
 n_embed = 384
-vocab_size = GROUP_SIZE**2
+vocab_size = GROUP_SIZE**2 if TRANSPOSITION_TYPE == "general" else GROUP_SIZE
 block_size = MAX_LENGTH
 n_head = 6
 n_blocks = 1

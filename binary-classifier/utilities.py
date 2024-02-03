@@ -72,10 +72,13 @@ class DimReducer(BaseEstimator, TransformerMixin):
 def apply_word(perm, i):
   # 0 is the identity
   if i:
-    x = i // GROUP_SIZE
-    y = i % GROUP_SIZE
+    if TRANSPOSITION_TYPE == "general":
+      x = i // GROUP_SIZE
+      y = i % GROUP_SIZE
 
-    perm[x], perm[y] = perm[x], perm[y]
+      perm[x], perm[y] = perm[x], perm[y]
+    elif TRANSPOSITION_TYPE == "elementary":
+      perm[i-1], perm[i] = perm[i], perm[i-1]
 
 def get_permutation(sequence):
   permutation = list(range(GROUP_SIZE))
