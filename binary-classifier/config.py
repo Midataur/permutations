@@ -7,7 +7,7 @@ DATA = "/data/alltrans/"
 MODELNAME = "alltrans1.0"
 # can be full or an integer
 # i recommend 64
-BATCHSIZE = "full"
+BATCHSIZE = 64
 
 # TRANSFORMER HYPERPARAMETERS
 n_embed = 384
@@ -20,7 +20,7 @@ dropout = 0
 # TRAINING HYPERPARAMETERS
 # good starting value: 3*10^-5
 learning_rate = 3*(10**-5)
-num_epochs = 10**6
+num_epochs = 10**8
 
 # good starting value: 0.01
 weight_decay = 1
