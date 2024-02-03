@@ -4,7 +4,7 @@ GROUP_SIZE = 5
 IDENTITY_PROPORTION = 0.5 # controls what proportion of the training data is artifically added identities
 PATH = "."
 DATA = "/data/medtrans/"
-MODELNAME = "medtrans-4.0"
+MODELNAME = "medtrans-5.0"
 # can be full or an integer
 # i recommend 64
 BATCHSIZE = 64
@@ -15,7 +15,7 @@ vocab_size = GROUP_SIZE**2
 block_size = MAX_LENGTH
 n_head = 6
 n_blocks = 2
-dropout = 0
+dropout = 0.1
 
 # TRAINING HYPERPARAMETERS
 # good starting value: 3*10^-5
