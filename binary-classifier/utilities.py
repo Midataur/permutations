@@ -76,7 +76,7 @@ def apply_word(perm, i):
       x = i // GROUP_SIZE
       y = i % GROUP_SIZE
 
-      perm[x], perm[y] = perm[x], perm[y]
+      perm[x], perm[y] = perm[y], perm[x]
     elif TRANSPOSITION_TYPE == "elementary":
       perm[i-1], perm[i] = perm[i], perm[i-1]
 
