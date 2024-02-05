@@ -4,7 +4,7 @@ GROUP_SIZE = 4
 IDENTITY_PROPORTION = 0.5 # controls what proportion of the training data is artifically added identities
 PATH = "."
 DATA = "/data/smallgrok/"
-MODELNAME = "smallgrok9.0"
+MODELNAME = "smallgrok8.0"
 # can be "full" or an integer
 # i recommend 64
 BATCHSIZE = "full"
