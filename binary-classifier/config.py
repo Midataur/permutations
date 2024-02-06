@@ -7,10 +7,10 @@ DATA = "/data/medtrans/"
 MODELNAME = "medtrans-1"
 # can be "full" or an integer
 # i recommend 64
-BATCHSIZE = "full"
+BATCHSIZE = 64
 
 # general or elementary
-TRANSPOSITION_TYPE = "elementary"
+TRANSPOSITION_TYPE = "general"
 
 # TRANSFORMER HYPERPARAMETERS
 n_embed = 384
