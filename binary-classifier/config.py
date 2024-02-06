@@ -3,14 +3,14 @@ MAX_LENGTH = 6
 GROUP_SIZE = 4
 IDENTITY_PROPORTION = 0.5 # controls what proportion of the training data is artifically added identities
 PATH = "."
-DATA = "/data/alltrans/"
-MODELNAME = "alltrans3.0"
+DATA = "/data/smallgrok/"
+MODELNAME = "smallgrok10.0"
 # can be "full" or an integer
 # i recommend 64
 BATCHSIZE = 64
 
 # general or elementary
-TRANSPOSITION_TYPE = "general"
+TRANSPOSITION_TYPE = "elementary"
 
 # TRANSFORMER HYPERPARAMETERS
 n_embed = 384
