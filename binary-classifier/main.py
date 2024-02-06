@@ -93,6 +93,9 @@ patience = 45
 cur_patience = 0
 best_loss = float("inf")
 
+last_train_loss = None
+last_val_loss = None
+
 # training loop
 for epoch in range(num_epochs):
     model.train()  # Set the model to training mode
@@ -144,15 +147,25 @@ for epoch in range(num_epochs):
         average_accuracy = total_accuracy / num_batches
         val_loss = total_loss / num_batches
 
-        print(f"Epoch {epoch + 1}, Train loss {train_loss} Train Accuracy {average_train_accuracy} Validation Accuracy: {average_accuracy}, Val loss: {val_loss}")
-
-        # log metrics to wandb
-        wandb.log({
+        metrics = {
             "validation_accuracy": average_accuracy,
             "loss": val_loss,
             "training_accuracy": average_train_accuracy,
             "training_loss": train_loss,
-        })
+        }
+
+        # to show how fast we're plateauing
+        if epoch > 0:
+            metrics["delta_train_loss"] = train_loss - last_train_loss
+            metrics["delta_val_loss"] = val_loss - last_val_loss
+        
+        last_train_loss = train_loss
+        last_val_loss = val_loss
+
+        print(f"Epoch {epoch + 1}, Train loss {train_loss} Train Accuracy {average_train_accuracy} Validation Accuracy: {average_accuracy}, Val loss: {val_loss}")
+
+        # log metrics to wandb
+        wandb.log(metrics)
 
     # early stopping
     # if train_loss < best_loss:

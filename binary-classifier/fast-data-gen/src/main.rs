@@ -38,15 +38,22 @@ struct Args {
     /// Ensure threads number divides dataset size
     #[arg(short, long, default_value_t = 1)]
     threads: i64,
+
+    /// Type of transposition to use
+    /// Can be either "general" or "elementary"
+    #[arg(short='T', long, default_value_t = String::from("elementary"))]
+    transposition_type: String,
 }
 
 /// generate a random sequence
 fn generate_random_sequence(args: &Args) -> Vec<i64> {
     let mut rng = rand::thread_rng();
+    let upper_bound = if (args.transposition_type == "elementary") {args.group_size} else {args.group_size.pow(2)-1};
+
     return (
         0..args.max_length
     ).map(
-        |_| rng.gen_range(0..(args.group_size.pow(2)-1))
+        |_| rng.gen_range(0..upper_bound)
     ).collect();
 }
 
@@ -59,9 +66,16 @@ fn is_identity(seq: &[i64], args: &Args) -> bool {
     for i in seq.iter() {
         // 0 is the identity
         // so we ignore it if we see it
+        let mut x: i64;
+        let mut y: i64;
 
-        let x = *i/args.group_size;
-        let y = *i%args.group_size;
+        if (args.transposition_type == "elementary") {
+            x = *i;
+            y = *i-1;
+        } else {
+            x = *i/args.group_size;
+            y = *i%args.group_size;
+        }
 
         if *i != 0 {
             perm.swap(x as usize, y as usize);
