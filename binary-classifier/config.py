@@ -1,10 +1,10 @@
 # GLOBAL
-MAX_LENGTH = 10
+MAX_LENGTH = 30
 GROUP_SIZE = 5
 IDENTITY_PROPORTION = 0.5 # controls what proportion of the training data is artifically added identities
 PATH = "."
-DATA = "/data/medtrans/"
-MODELNAME = "medtrans-1"
+DATA = "/data/longmedtrans/"
+MODELNAME = "longmedtrans-1"
 # can be "full" or an integer
 # i recommend 64
 BATCHSIZE = 64
