@@ -1,10 +1,10 @@
 # GLOBAL
-MAX_LENGTH = 10
-GROUP_SIZE = 5
+MAX_LENGTH = 6
+GROUP_SIZE = 4
 IDENTITY_PROPORTION = 0.5 # controls what proportion of the training data is artifically added identities
 PATH = "."
-DATA = "/data/medtrans/"
-MODELNAME = "medtrans-2"
+DATA = "/data/alltrans/"
+MODELNAME = "alltrans3.0"
 # can be "full" or an integer
 # i recommend 64
 BATCHSIZE = 64
@@ -17,7 +17,7 @@ n_embed = 384
 vocab_size = GROUP_SIZE**2 if TRANSPOSITION_TYPE == "general" else GROUP_SIZE
 block_size = MAX_LENGTH
 n_head = 6
-n_blocks = 2
+n_blocks = 1
 dropout = 0
 
 # TRAINING HYPERPARAMETERS
