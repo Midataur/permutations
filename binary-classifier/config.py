@@ -17,7 +17,7 @@ n_embed = 384
 vocab_size = GROUP_SIZE**2 if TRANSPOSITION_TYPE == "general" else GROUP_SIZE
 block_size = MAX_LENGTH
 n_head = 6
-n_blocks = 1
+n_blocks = 2
 dropout = 0
 
 # TRAINING HYPERPARAMETERS
