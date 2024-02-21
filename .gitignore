@@ -1,6 +1,9 @@
 binary-classifier/wandb/
 binary-classifier/venv/
 binary-classifier/model/
+permutation-generator/wandb/
+permutation-generator/venv/
+permutation-generator/model/
 *.pyc
 .out
 .env

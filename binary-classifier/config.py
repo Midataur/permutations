@@ -1,23 +1,23 @@
 # GLOBAL
-MAX_LENGTH = 10
-GROUP_SIZE = 5
+MAX_LENGTH = 6
+GROUP_SIZE = 4
 IDENTITY_PROPORTION = 0.5 # controls what proportion of the training data is artifically added identities
 PATH = "."
-DATA = "/data/forcegrok/"
-MODELNAME = "forcegrok15.0"
+DATA = "/data/alltrans/"
+MODELNAME = "alltrans3.0"
 # can be "full" or an integer
 # i recommend 64
 BATCHSIZE = 64
 
 # general or elementary
-TRANSPOSITION_TYPE = "elementary"
+TRANSPOSITION_TYPE = "general"
 
 # TRANSFORMER HYPERPARAMETERS
 n_embed = 384
 vocab_size = GROUP_SIZE**2 if TRANSPOSITION_TYPE == "general" else GROUP_SIZE
 block_size = MAX_LENGTH
 n_head = 6
-n_blocks = 2
+n_blocks = 1
 dropout = 0
 
 # TRAINING HYPERPARAMETERS
@@ -26,7 +26,7 @@ learning_rate = 3*(10**-5)
 num_epochs = 10**8
 
 # good starting value: 0.01
-weight_decay = 0.1
+weight_decay = 1
 
 lr_factor = 0.1  # Factor by which the learning rate will be reduced
 lr_patience = 10  # Number of epochs with no improvement after which learning rate will be reduced
