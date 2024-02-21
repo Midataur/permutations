@@ -7,4 +7,3 @@ permutation-generator/model/
 *.pyc
 .out
 .env
-*.txt
