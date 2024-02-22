@@ -3,7 +3,7 @@ MAX_LENGTH = 6
 GROUP_SIZE = 4
 PATH = "."
 DATA = "/data/smallgeneral/"
-MODELNAME = "smallgeneral4"
+MODELNAME = "smallgeneral5"
 # can be "full" or an integer
 # i recommend 64
 BATCHSIZE = 64
@@ -17,12 +17,12 @@ normal_tokens = GROUP_SIZE**2 if TRANSPOSITION_TYPE == "general" else GROUP_SIZE
 vocab_size = normal_tokens + 2
 block_size = MAX_LENGTH + 1 + GROUP_SIZE
 n_head = 6
-n_blocks = 4
+n_blocks = 5
 dropout = 0
 
 # TRAINING HYPERPARAMETERS
 # good starting value: 3*10^-5
-learning_rate = 3*(10**-7)
+learning_rate = 3*(10**-5)
 num_epochs = 10**8
 
 # good starting value: 0.01
