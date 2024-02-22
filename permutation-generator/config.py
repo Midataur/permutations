@@ -1,9 +1,9 @@
 # GLOBAL
-MAX_LENGTH = 6
-GROUP_SIZE = 4
+MAX_LENGTH = 10
+GROUP_SIZE = 5
 PATH = "."
-DATA = "/data/smallgeneral/"
-MODELNAME = "smallgenera7"
+DATA = "/data/mediumgeneral/"
+MODELNAME = "mediumgeneral1"
 # can be "full" or an integer
 # i recommend 64
 BATCHSIZE = 64
