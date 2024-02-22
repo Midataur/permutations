@@ -99,7 +99,11 @@ class BigramLanguageModel(nn.Module):
 
         # the output layer
         self.lm_head = nn.Linear(n_embed, vocab_size, bias=False)
-        self.output = nn.Softmax(dim=1)
+       
+        # we shouldn't use this during training, only generation
+        # this is because cross entropy loss already applies a softmax
+        # and we don't want to apply that twice
+        # self.output = nn.Softmax(dim=1)
 
     def forward(self, idx):
         # idx and targets are both (B, T) tensor of integers
