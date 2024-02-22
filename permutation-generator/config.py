@@ -3,7 +3,7 @@ MAX_LENGTH = 6
 GROUP_SIZE = 4
 PATH = "."
 DATA = "/data/smallgeneral/"
-MODELNAME = "smallgeneral6"
+MODELNAME = "test2"
 # can be "full" or an integer
 # i recommend 64
 BATCHSIZE = 64

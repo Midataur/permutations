@@ -31,13 +31,11 @@ class SimpleDataset(Dataset):
 
             new_seq[MAX_LENGTH + 1 + pos] = char
 
-            target = [0 for x in range(vocab_size)]
-            target[char] = 1
-
-            targets.append(target)
+            # cross entropy loss prefers accepting an index
+            targets.append(char)
 
         self.data = tensor(data, dtype=int).to(dev)
-        self.targets = tensor(targets, dtype=float32).to(dev)
+        self.targets = tensor(targets, dtype=int).to(dev)
 
     def __len__(self):
         return len(self.data)

@@ -1,5 +1,6 @@
 from sklearn.base import BaseEstimator, TransformerMixin
 from sklearn.decomposition import TruncatedSVD
+from torch import argmax
 import numpy as np
 from config import *
 
@@ -98,6 +99,7 @@ def int_to_seq(num):
 
   return sequence
 
-# Example of accuracy calculation (you may need to adjust it based on your specific requirements)
 def calculate_accuracy(output, target):
-    return (output.round() == target).float().mean()
+  # targets is a (B) tensor of integers that have the index of the correct class
+  # we need to see if the max logit is at the right index
+  return (argmax(output, dim=1) == target).float().mean()

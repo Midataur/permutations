@@ -62,24 +62,24 @@ class FeedForward(nn.Module):
       return self.net(x)
 
 class Block(nn.Module):
-  """Commmunication followed by computation"""
+    """Commmunication followed by computation"""
 
-  def __init__(self, n_embed, n_head):
-    super().__init__()
-    head_size = n_embed // n_head
+    def __init__(self, n_embed, n_head):
+      super().__init__()
+      head_size = n_embed // n_head
 
-    self.sa = MultiHeadAttention(n_head, head_size)
-    self.ffwd = FeedForward(n_embed)
+      self.sa = MultiHeadAttention(n_head, head_size)
+      self.ffwd = FeedForward(n_embed)
 
-    self.ln1 = nn.LayerNorm(n_embed)
-    self.ln2 = nn.LayerNorm(n_embed)
+      self.ln1 = nn.LayerNorm(n_embed)
+      self.ln2 = nn.LayerNorm(n_embed)
 
-  def forward(self, x):
-    # residuals
-    # don't use += as this breaks things
-    x = x + self.sa(self.ln1(x))
-    x = x + self.ffwd(self.ln2(x))
-    return x
+    def forward(self, x):
+      # residuals
+      # don't use += as this breaks things
+      x = x + self.sa(self.ln1(x))
+      x = x + self.ffwd(self.ln2(x))
+      return x
 
 class BigramLanguageModel(nn.Module):
     def __init__(self):
@@ -104,7 +104,7 @@ class BigramLanguageModel(nn.Module):
         # we shouldn't use this during training, only generation
         # this is because cross entropy loss already applies a softmax
         # and we don't want to apply that twice
-        # self.output = nn.Softmax(dim=1)
+        self.softmax = nn.Softmax(dim=1)
 
     def forward(self, idx):
         # idx and targets are both (B, T) tensor of integers
