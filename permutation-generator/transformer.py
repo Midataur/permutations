@@ -98,6 +98,7 @@ class BigramLanguageModel(nn.Module):
         )
 
         # the output layer
+        # projects the final vector down to the output dimension
         self.lm_head = nn.Linear(n_embed, vocab_size, bias=False)
        
         # we shouldn't use this during training, only generation
@@ -114,9 +115,9 @@ class BigramLanguageModel(nn.Module):
         x = self.sa_heads(x) # apply one head of self attention
         x = self.blocks(x) # apply feedforward
 
-        probs = self.output(self.lm_head(x)) #(B, T, vocab_size)
+        logits = self.lm_head(x) #(B, T, vocab_size)
 
         # focus only on the last time step
-        probs = probs[:, -1, :] # becomes (B, C)
+        logits = logits[:, -1, :] # becomes (B, C)
 
-        return probs
+        return logits
