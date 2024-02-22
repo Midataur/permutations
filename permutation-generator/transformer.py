@@ -1,4 +1,5 @@
 import torch
+from torch import cuda
 import torch.nn as nn
 from torch.nn import functional as F
 from config import *
@@ -36,50 +37,50 @@ class Head(nn.Module):
     
 class MultiHeadAttention(nn.Module):
     def __init__(self, num_heads, head_size):
-      super().__init__()
-      self.heads = nn.ModuleList([Head(head_size) for _ in range(num_heads)])
-      self.proj = nn.Linear(n_embed, n_embed)
-      self.dropout = nn.Dropout(dropout)
+        super().__init__()
+        self.heads = nn.ModuleList([Head(head_size) for _ in range(num_heads)])
+        self.proj = nn.Linear(n_embed, n_embed)
+        self.dropout = nn.Dropout(dropout)
 
     def forward(self, x):
-      return self.dropout(
-          self.proj(
-              torch.cat([h(x) for h in self.heads], dim=-1)
-          )
-      )
+        return self.dropout(
+            self.proj(
+                torch.cat([h(x) for h in self.heads], dim=-1)
+            )
+        )
 
 class FeedForward(nn.Module):
     def __init__(self, n_embed):
-      super().__init__()
-      self.net = nn.Sequential(
-          nn.Linear(n_embed, n_embed * 4),
-          nn.ReLU(),
-          nn.Linear(n_embed * 4, n_embed), # projection layer
-          nn.Dropout(dropout)
-      )
+        super().__init__()
+        self.net = nn.Sequential(
+            nn.Linear(n_embed, n_embed * 4),
+            nn.ReLU(),
+            nn.Linear(n_embed * 4, n_embed), # projection layer
+            nn.Dropout(dropout)
+        )
 
     def forward(self, x):
-      return self.net(x)
+        return self.net(x)
 
 class Block(nn.Module):
     """Commmunication followed by computation"""
 
     def __init__(self, n_embed, n_head):
-      super().__init__()
-      head_size = n_embed // n_head
+        super().__init__()
+        head_size = n_embed // n_head
 
-      self.sa = MultiHeadAttention(n_head, head_size)
-      self.ffwd = FeedForward(n_embed)
+        self.sa = MultiHeadAttention(n_head, head_size)
+        self.ffwd = FeedForward(n_embed)
 
-      self.ln1 = nn.LayerNorm(n_embed)
-      self.ln2 = nn.LayerNorm(n_embed)
+        self.ln1 = nn.LayerNorm(n_embed)
+        self.ln2 = nn.LayerNorm(n_embed)
 
     def forward(self, x):
-      # residuals
-      # don't use += as this breaks things
-      x = x + self.sa(self.ln1(x))
-      x = x + self.ffwd(self.ln2(x))
-      return x
+        # residuals
+        # don't use += as this breaks things
+        x = x + self.sa(self.ln1(x))
+        x = x + self.ffwd(self.ln2(x))
+        return x
 
 class BigramLanguageModel(nn.Module):
     def __init__(self):
@@ -121,3 +122,36 @@ class BigramLanguageModel(nn.Module):
         logits = logits[:, -1, :] # becomes (B, C)
 
         return logits
+    
+    def generate(self, sequence):
+        self.eval()
+
+        # use gpu for processing
+        if cuda.is_available():
+          dev = "cuda:0"
+        else:
+          dev = "cpu"
+        
+        # create an initial input
+        input_tensor = torch.ones(block_size, dtype=int).to(dev)
+        input_tensor *= TO_PREDICT_TOKEN
+        input_tensor[:len(sequence)] = torch.tensor(sequence, dtype=int).to(dev)
+        input_tensor[len(sequence)] = START_PREDICTION_TOKEN
+        
+        # actually generate the permutation
+        permutation = []
+
+        for x in range(GROUP_SIZE):
+            # get the logits
+            logits = self(input_tensor.unsqueeze(0))
+            
+            # get the most likely token
+            token = torch.argmax(logits, dim=1).item()
+            
+            # append it to the permutation
+            permutation.append(token)
+            
+            # add it to the input tensor
+            input_tensor[MAX_LENGTH + 1 + x] = token
+        
+        return permutation

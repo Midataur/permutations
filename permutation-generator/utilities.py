@@ -103,3 +103,12 @@ def calculate_accuracy(output, target):
   # targets is a (B) tensor of integers that have the index of the correct class
   # we need to see if the max logit is at the right index
   return (argmax(output, dim=1) == target).float().mean()
+
+# these two only apply to general transpositions
+def convert_to_transposition(hashed):
+    x = hashed // GROUP_SIZE
+    y = hashed % GROUP_SIZE
+    return x, y
+
+def convert_from_transposition(x, y):
+    return x * GROUP_SIZE + y

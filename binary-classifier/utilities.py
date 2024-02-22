@@ -108,3 +108,12 @@ def is_identity(sequence):
 # Example of accuracy calculation (you may need to adjust it based on your specific requirements)
 def calculate_accuracy(output, target):
     return (output.round() == target).float().mean()
+
+# these two only apply to general transpositions
+def convert_to_transposition(hashed):
+    x = hashed // GROUP_SIZE
+    y = hashed % GROUP_SIZE
+    return x, y
+
+def convert_from_transposition(x, y):
+    return x * GROUP_SIZE + y
