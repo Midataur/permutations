@@ -22,7 +22,7 @@ dropout = 0
 
 # TRAINING HYPERPARAMETERS
 # good starting value: 3*10^-5
-learning_rate = 3*(10**-4)
+learning_rate = 3*(10**-7)
 num_epochs = 10**8
 
 # good starting value: 0.01
