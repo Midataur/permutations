@@ -3,7 +3,7 @@ MAX_LENGTH = 6
 GROUP_SIZE = 4
 PATH = "."
 DATA = "/data/smallgeneral/"
-MODELNAME = "smallgeneral2"
+MODELNAME = "smallgeneral3"
 # can be "full" or an integer
 # i recommend 64
 BATCHSIZE = 64
@@ -22,7 +22,7 @@ dropout = 0
 
 # TRAINING HYPERPARAMETERS
 # good starting value: 3*10^-5
-learning_rate = 3*(10**-6)
+learning_rate = 3*(10**-4)
 num_epochs = 10**8
 
 # good starting value: 0.01
