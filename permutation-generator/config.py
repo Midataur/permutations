@@ -3,7 +3,7 @@ MAX_LENGTH = 10
 GROUP_SIZE = 5
 PATH = "."
 DATA = "/data/mediumgeneral/"
-MODELNAME = "mediumgeneral2"
+MODELNAME = "mediumgeneral3"
 # can be "full" or an integer
 # i recommend 64
 BATCHSIZE = 64
