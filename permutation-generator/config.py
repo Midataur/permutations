@@ -1,3 +1,7 @@
+import torch
+
+torch.manual_seed(42)
+
 # GLOBAL
 MAX_LENGTH = 10
 GROUP_SIZE = 5
