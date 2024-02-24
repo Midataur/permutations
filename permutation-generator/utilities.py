@@ -105,10 +105,10 @@ def calculate_accuracy(output, target):
   return (argmax(output, dim=1) == target).float().mean()
 
 # these two only apply to general transpositions
-def convert_to_transposition(hashed):
+def int_to_transposition(hashed):
     x = hashed // GROUP_SIZE
     y = hashed % GROUP_SIZE
     return x, y
 
-def convert_from_transposition(x, y):
+def transposition_to_int(x, y):
     return x * GROUP_SIZE + y

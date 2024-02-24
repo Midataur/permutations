@@ -3,11 +3,11 @@ import torch
 torch.manual_seed(42)
 
 # GLOBAL
-MAX_LENGTH = 10
-GROUP_SIZE = 5
+MAX_LENGTH = 45
+GROUP_SIZE = 10
 PATH = "."
-DATA = "/data/mediumgeneral/"
-MODELNAME = "mediumgeneral3"
+DATA = "/data/largegeneral/"
+MODELNAME = "largegeneral1"
 # can be "full" or an integer
 # i recommend 64
 BATCHSIZE = 64
