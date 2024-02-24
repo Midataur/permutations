@@ -7,7 +7,7 @@ MAX_LENGTH = 45
 GROUP_SIZE = 10
 PATH = "."
 DATA = "/data/largegeneral/"
-MODELNAME = "largegeneral1"
+MODELNAME = "largegeneral2"
 # can be "full" or an integer
 # i recommend 64
 BATCHSIZE = 64
@@ -30,7 +30,7 @@ learning_rate = 3*(10**-5)
 num_epochs = 10**8
 
 # good starting value: 0.01
-weight_decay = 0.02
+weight_decay = 0.01
 
 lr_factor = 0.1  # Factor by which the learning rate will be reduced
 lr_patience = 10  # Number of epochs with no improvement after which learning rate will be reduced
