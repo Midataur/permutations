@@ -3,8 +3,8 @@ import torch
 torch.manual_seed(42)
 
 # GLOBAL
-MAX_LENGTH = 9
 GROUP_SIZE = 10
+MAX_LENGTH = GROUP_SIZE - 1
 PATH = "."
 DATA = "/data/shortlargegen/"
 MODELNAME = "shortlargegen1"
