@@ -3,11 +3,11 @@ import torch
 torch.manual_seed(42)
 
 # GLOBAL
-MAX_LENGTH = 45
+MAX_LENGTH = 9
 GROUP_SIZE = 10
 PATH = "."
-DATA = "/data/largegeneral/"
-MODELNAME = "largegeneral6"
+DATA = "/data/shortlargegen/"
+MODELNAME = "shortlargegen1"
 # can be "full" or an integer
 # i recommend 64
 BATCHSIZE = 64
@@ -16,12 +16,12 @@ BATCHSIZE = 64
 TRANSPOSITION_TYPE = "general"
 
 # TRANSFORMER HYPERPARAMETERS
-n_embed = 612
+n_embed = 102
 normal_tokens = GROUP_SIZE**2 if TRANSPOSITION_TYPE == "general" else GROUP_SIZE
 vocab_size = normal_tokens + 2
 block_size = MAX_LENGTH + 1 + GROUP_SIZE
 n_head = 6
-n_blocks = 8
+n_blocks = 4
 dropout = 0
 
 # TRAINING HYPERPARAMETERS
