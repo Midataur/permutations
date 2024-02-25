@@ -7,7 +7,7 @@ MAX_LENGTH = 45
 GROUP_SIZE = 10
 PATH = "."
 DATA = "/data/largegeneral/"
-MODELNAME = "largegeneral5"
+MODELNAME = "largegeneral6"
 # can be "full" or an integer
 # i recommend 64
 BATCHSIZE = 64
@@ -21,7 +21,7 @@ normal_tokens = GROUP_SIZE**2 if TRANSPOSITION_TYPE == "general" else GROUP_SIZE
 vocab_size = normal_tokens + 2
 block_size = MAX_LENGTH + 1 + GROUP_SIZE
 n_head = 6
-n_blocks = 5
+n_blocks = 8
 dropout = 0
 
 # TRAINING HYPERPARAMETERS
