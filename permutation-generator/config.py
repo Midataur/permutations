@@ -7,7 +7,7 @@ GROUP_SIZE = 10
 MAX_LENGTH = GROUP_SIZE - 1
 PATH = "."
 DATA = "/data/shortlargegen/"
-MODELNAME = "shortlargegen2"
+MODELNAME = "shortlargegen3"
 # can be "full" or an integer
 # i recommend 64
 BATCHSIZE = 64
