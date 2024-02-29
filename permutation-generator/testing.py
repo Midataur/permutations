@@ -24,11 +24,20 @@ model.load_state_dict(torch.load(filename, map_location=torch.device(device)))
 
 # test for all sequences
 
-succeeded = 0
+results = []
 
 for seq in tqdm(test_data, desc="Testing"):
   real_perm = tuple(get_permutation(seq))
   gen_perm = tuple(model.module.generate(seq))
-  succeeded += real_perm == gen_perm
+  results.append(int(real_perm == gen_perm))
 
-print(f"Accuracy: {succeeded / len(test_data)}")
+print(f"Accuracy: {sum(results) / len(results)}")
+
+
+# write results to a file that r can read
+print("Writing results to file")
+with open(PATH + "/results/" + MODELNAME + ".csv", "w") as f:
+  f.write("results\n")
+  for r in results:
+    f.write(f"{r}\n")
+  f.write("\n")
