@@ -6,7 +6,7 @@ torch.manual_seed(42)
 GROUP_SIZE = 20
 MAX_LENGTH = GROUP_SIZE - 1
 PATH = "."
-DATA = "/data/shorthugegen3/"
+DATA = "/data/shorthugegen/"
 MODELNAME = "shorthugegen3"
 # can be "full" or an integer
 # i recommend 64
