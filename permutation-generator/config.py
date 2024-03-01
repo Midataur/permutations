@@ -6,8 +6,8 @@ torch.manual_seed(42)
 GROUP_SIZE = 20
 MAX_LENGTH = GROUP_SIZE - 1
 PATH = "."
-DATA = "/data/shorthugegen/"
-MODELNAME = "shorthugegen2"
+DATA = "/data/shorthugegen3/"
+MODELNAME = "shorthugegen3"
 # can be "full" or an integer
 # i recommend 64
 BATCHSIZE = 64
@@ -16,7 +16,7 @@ BATCHSIZE = 64
 TRANSPOSITION_TYPE = "general"
 
 # TRANSFORMER HYPERPARAMETERS
-n_embed = 402
+n_embed = 102
 normal_tokens = GROUP_SIZE**2 if TRANSPOSITION_TYPE == "general" else GROUP_SIZE
 vocab_size = normal_tokens + 2
 block_size = MAX_LENGTH + 1 + GROUP_SIZE
