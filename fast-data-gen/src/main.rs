@@ -31,7 +31,8 @@ struct Args {
     identity_proportion: f64,
 
     /// Filename to write to
-    #[arg(short, long, default_value_t = String::from("data.csv"))]
+    /// Don't include file extensions
+    #[arg(short, long, default_value_t = String::from("data"))]
     filename: String,
 
     /// Number of threads to use
@@ -43,6 +44,12 @@ struct Args {
     /// Can be either "general" or "elementary"
     #[arg(short='T', long, default_value_t = String::from("elementary"))]
     transposition_type: String,
+
+    /// Include permutations?
+    /// Determines whether to include the actual permutations as well
+    /// Used for the scaling generator
+    #[arg(short='P', long, default_value_t = false)]
+    include_perms: bool,
 }
 
 /// generate a random sequence
@@ -57,8 +64,7 @@ fn generate_random_sequence(args: &Args) -> Vec<i64> {
     ).collect();
 }
 
-/// tells you if a sequence is the identity
-fn is_identity(seq: &[i64], args: &Args) -> bool {
+fn get_permutation(seq: &[i64], args: &Args) -> Vec<i64> {
     // initialize the permutations
     let mut perm: Vec<i64> = (0..args.group_size).collect();
     
@@ -82,6 +88,11 @@ fn is_identity(seq: &[i64], args: &Args) -> bool {
         }
     }
 
+    return perm;
+}
+
+/// tells you if a sequence is the identity
+fn is_identity(perm: &[i64], args: &Args) -> bool {
     // check if the permutation is the identity 
     for i in perm.iter() {
         if perm[*i as usize] != *i {
@@ -103,13 +114,19 @@ fn main() -> Result<(), Box<dyn Error>> {
 
     // do the general data
     let mut general_data: Vec<Vec<i64>> = Vec::new();
+    let mut perms: Vec<Vec<i64>> = Vec::new();
 
     // generate the general data
     println!("Generating general data...");
     for _ in tqdm!(
         0..((args.dataset_size as f64)*(1.0-args.identity_proportion)) as i64
     ) {
-        general_data.push(generate_random_sequence(&args));
+        let seq = generate_random_sequence(&args);
+        general_data.push(seq.clone());
+
+        if (args.include_perms) {
+            perms.push(get_permutation(&seq, &args))
+        }
     }
 
     // generate the identity data
@@ -126,13 +143,14 @@ fn main() -> Result<(), Box<dyn Error>> {
         let args_clone: Args = args.clone();
 
         // Spawn a thread
-        thread::spawn(move|| {
+        thread::spawn(move || {
             let mut count = 0;
             while count < identities_needed / args_clone.threads {
                 let seq = generate_random_sequence(&args_clone);
+                let perm = get_permutation(&seq, &args_clone);
 
-                if is_identity(&seq, &args_clone) {
-                    sender_clone.send(seq).unwrap();
+                if is_identity(&perm, &args_clone) {
+                    sender_clone.send((seq, perm)).unwrap();
                     count += 1;
                 }
             }
@@ -142,20 +160,37 @@ fn main() -> Result<(), Box<dyn Error>> {
     // Main thread receives results from worker threads
     for _ in tqdm!(0..identities_needed) {
         // get a sequence and add it to the data
-        identity_data.push(receiver.recv().unwrap());
+        let (seq, perm) = receiver.recv().unwrap();
+        identity_data.push(seq);
+        perms.push(perm);
     }
 
     // Write the data to the file
     println!("Writing data to file...");
-    let mut writer = WriterBuilder::new().from_path(args.filename)?;
+    let mut seq_writer = WriterBuilder::new().from_path(
+        (args.filename.to_string() + ".csv")
+    )?;
 
     for row in tqdm!(general_data.iter().chain(identity_data.iter())) {
         let string_row: Vec<String> = row.into_iter().map(|value| value.to_string()).collect();
-        writer.write_record(string_row);
+        seq_writer.write_record(string_row);
     }
 
     // Flush the writer to ensure all data is written to the file
-    writer.flush()?;
+    seq_writer.flush()?;
+
+    // write perm data if required
+    let mut perm_writer = WriterBuilder::new().from_path(
+        (args.filename.to_string() + "_perms.csv")
+    )?;
+
+    for row in tqdm!(perms.iter()) {
+        let string_row: Vec<String> = row.into_iter().map(|value| value.to_string()).collect();
+        perm_writer.write_record(string_row);
+    }
+
+    // Flush the writer to ensure all data is written to the file
+    perm_writer.flush()?;
 
     Ok(())
 }
