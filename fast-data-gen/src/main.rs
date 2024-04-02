@@ -41,7 +41,7 @@ struct Args {
     threads: i64,
 
     /// Type of transposition to use
-    /// Can be either "general" or "elementary"
+    /// Can be "general", "elementary", or "scalable"
     #[arg(short='T', long, default_value_t = String::from("elementary"))]
     transposition_type: String,
 
@@ -55,13 +55,40 @@ struct Args {
 /// generate a random sequence
 fn generate_random_sequence(args: &Args) -> Vec<i64> {
     let mut rng = rand::thread_rng();
-    let upper_bound = if (args.transposition_type == "elementary") {args.group_size} else {args.group_size.pow(2)-1};
+    let upper_bound = if (
+        args.transposition_type == "elementary"
+    ) {
+        args.group_size
+    } else {
+        args.group_size.pow(2)-1
+    };
 
     return (
         0..args.max_length
     ).map(
         |_| rng.gen_range(0..upper_bound)
     ).collect();
+}
+
+// converts a sequnce to 
+fn convert_sequence(seq: &[i64], args: &Args) -> Vec<i64> {
+    // assumes that transpositions are in general form
+    // converts them into two seperate indices
+    // this can be used by the scalable transformer
+    let mut new_seq: Vec<i64> = Vec::new();
+    
+    let mut x: i64;
+    let mut y: i64;
+
+    for i in seq.iter() {
+        x = *i/args.group_size;
+        y = *i%args.group_size;
+
+        new_seq.push(x);
+        new_seq.push(y);
+    }
+
+    return new_seq;
 }
 
 fn get_permutation(seq: &[i64], args: &Args) -> Vec<i64> {
@@ -122,7 +149,16 @@ fn main() -> Result<(), Box<dyn Error>> {
         0..((args.dataset_size as f64)*(1.0-args.identity_proportion)) as i64
     ) {
         let seq = generate_random_sequence(&args);
-        general_data.push(seq.clone());
+
+        // check which version to push
+        if (args.transposition_type == "scalable") {
+            // push the converted version
+            general_data.push(convert_sequence(&seq, &args))
+        }
+        else {
+            // push the normal version
+            general_data.push(seq.clone());
+        }
 
         if (args.include_perms) {
             perms.push(get_permutation(&seq, &args))

@@ -7,8 +7,8 @@ MAX_GROUP_SIZE = 4
 # the maximum length of the input sequence
 # this is not the number of transpositions
 # it is the space it takes up in the context length
-MAX_INPUT_LENGTH = 6
-CONTEXT_LENGTH = MAX_INPUT_LENGTH + 1 + MAX_GROUP_SIZE
+MAX_INPUT_LENGTH = 12
+CONTEXT_LENGTH = MAX_INPUT_LENGTH + 1 + MAX_GROUP_SIZE + 1
 PATH = "."
 DATA = "/data/test/"
 MODELNAME = "test"
