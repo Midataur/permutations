@@ -23,19 +23,30 @@ class SimpleDataset(Dataset):
         targets = []
 
         # generate the input output pairs
+        # we're basically simulating what the autoregression process would look like
+        # this massively improves the effective amount of training data
         for sequence, permutation in tqdm(zip(sequences, permutations), desc="Loading data"):
+          # shift the permutation to use the correct tokens
+          # we don't want overlap between the input tokens and the output tokens
           shifted_perm = convert_perm_to_tokens(permutation)
+
           padding_len = CONTEXT_LENGTH - len(sequence) - 1
+
           # baseline input
           new_seq = list(sequence) + [START_PREDICTION_TOKEN] + [NULL_TOKEN]*(padding_len)
-          for pos, char in enumerate(permutation + [END_PREDICTION_TOKEN]):
+
+          # do the fake autoregression
+          for pos, char in enumerate(shifted_perm + [END_PREDICTION_TOKEN]):
             data.append(list(new_seq))
+            print(new_seq)
 
             new_seq[len(sequence) + 1 + pos] = char
 
-            # cross entropy loss prefers accepting an index
+            # cross entropy loss prefers accepting a token
             # it's faster
             targets.append(char)
+          
+          break
 
         self.data = tensor(data, dtype=int).to(dev)
         self.targets = tensor(targets, dtype=int).to(dev)
