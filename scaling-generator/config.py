@@ -3,23 +3,36 @@ import torch
 torch.manual_seed(42)
 
 # GLOBAL
-GROUP_SIZE = 20
-MAX_LENGTH = GROUP_SIZE - 1
+MAX_GROUP_SIZE = 4
+# the maximum length of the input sequence
+# this is not the number of transpositions
+# it is the space it takes up in the context length
+MAX_INPUT_LENGTH = 6
+CONTEXT_LENGTH = MAX_INPUT_LENGTH + 1 + MAX_GROUP_SIZE
 PATH = "."
-DATA = "/data/shorthugegen/"
-MODELNAME = "shorthugegen4"
+DATA = "/data/test/"
+MODELNAME = "test"
 # can be "full" or an integer
 # i recommend 64
 BATCHSIZE = 64
 
 # general or elementary
-TRANSPOSITION_TYPE = "general"
+
+# base to use for inputting transpositions
+TRANS_BASE = 10 # using base 10 for convenience, probably not optimal
+
+# SPECIAL TOKENS
+# do not change manually
+num_normal = TRANS_BASE + MAX_GROUP_SIZE
+num_special = 3
+NULL_TOKEN = num_normal
+START_PREDICTION_TOKEN = num_normal + 1
+END_PREDICTION_TOKEN = num_normal + 2
 
 # TRANSFORMER HYPERPARAMETERS
-n_embed = 102
-normal_tokens = GROUP_SIZE**2 if TRANSPOSITION_TYPE == "general" else GROUP_SIZE
-vocab_size = normal_tokens + 2
-block_size = MAX_LENGTH + 1 + GROUP_SIZE
+vocab_size = num_normal + num_special
+n_embed = vocab_size
+block_size = CONTEXT_LENGTH
 n_head = 6
 n_blocks = 4
 dropout = 0
@@ -35,8 +48,3 @@ weight_decay = 0.03
 lr_factor = 0.1  # Factor by which the learning rate will be reduced
 lr_patience = 10  # Number of epochs with no improvement after which learning rate will be reduced
 threshold = 0.01  # Threshold for measuring the new optimum
-
-# CONSTANTS
-# do not change manually
-START_PREDICTION_TOKEN = normal_tokens
-TO_PREDICT_TOKEN = normal_tokens + 1

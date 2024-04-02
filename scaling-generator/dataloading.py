@@ -7,7 +7,7 @@ from tqdm import tqdm
 import os
 
 class SimpleDataset(Dataset):
-    def __init__(self, sequences):
+    def __init__(self, sequences, permutations):
         # use gpu for processing
         if cuda.is_available():
           dev = "cuda:0"
@@ -22,16 +22,19 @@ class SimpleDataset(Dataset):
         data = []
         targets = []
 
-        for sequence in tqdm(sequences, desc="Loading data"):
-          permutation = get_permutation(sequence)
-          # word + start pred token + permutation
-          new_seq = list(sequence) + [START_PREDICTION_TOKEN] + [TO_PREDICT_TOKEN for x in range(GROUP_SIZE)]
-          for pos, char in enumerate(permutation):
+        # generate the input output pairs
+        for sequence, permutation in tqdm(zip(sequences, permutations), desc="Loading data"):
+          shifted_perm = convert_perm_to_tokens(permutation)
+          padding_len = CONTEXT_LENGTH - len(sequence) - 1
+          # baseline input
+          new_seq = list(sequence) + [START_PREDICTION_TOKEN] + [NULL_TOKEN]*(padding_len)
+          for pos, char in enumerate(permutation + [END_PREDICTION_TOKEN]):
             data.append(list(new_seq))
 
-            new_seq[MAX_LENGTH + 1 + pos] = char
+            new_seq[len(sequence) + 1 + pos] = char
 
             # cross entropy loss prefers accepting an index
+            # it's faster
             targets.append(char)
 
         self.data = tensor(data, dtype=int).to(dev)
@@ -50,46 +53,41 @@ class SimpleDataset(Dataset):
 # load the data
 print("Loading data...")
 
-train_data = np.array([[0 for x in range(MAX_LENGTH)]])
+train_inputs = np.array([[0 for x in range(MAX_INPUT_LENGTH)]])
+train_perms = np.array([[0 for x in range(MAX_GROUP_SIZE)]])
 
 curfile = 1
 while True:
   filename = PATH + DATA + f"train_data{curfile}.csv"
+  perm_filename = PATH + DATA + f"train_data{curfile}_perms.csv"
 
   if not os.path.isfile(filename):
      break
 
   data = np.loadtxt(filename, delimiter=",").astype(int)
+  perms = np.loadtxt(perm_filename, delimiter=",").astype(int)
 
-  train_data = np.concatenate((train_data, data))
+  train_inputs = np.concatenate((train_inputs, data))
+  train_perms = np.concatenate((train_perms, perms))
 
   curfile += 1
 
-train_data = train_data[1:]
-DATASET_SIZE = len(train_data)
+train_inputs = train_inputs[1:]
+train_perms = train_perms[1:]
+DATASET_SIZE = len(train_inputs)
 
-val_data = np.loadtxt(PATH + DATA + "val_data.csv", delimiter=",").astype(int)
-test_data = np.loadtxt(PATH + DATA + "test_data.csv", delimiter=",").astype(int)
+val_seqs = np.loadtxt(PATH + DATA + "val_data.csv", delimiter=",").astype(int)
+val_perms = np.loadtxt(PATH + DATA + "val_data_perms.csv", delimiter=",").astype(int)
 
-# get number of identities in true_test_data
-# print("True identity count:", len(true_test_data[np.apply_along_axis(is_identity, 1, true_test_data)]))
-
-# label the datasets
-X_train = train_data
-X_val = val_data
-X_test = test_data
-
-final_dimension = MAX_LENGTH
-
-train_batch_size = BATCHSIZE if BATCHSIZE != "full" else len(X_train)*GROUP_SIZE
-to_shuffle = BATCHSIZE != "full"
+test_seqs = np.loadtxt(PATH + DATA + "test_data.csv", delimiter=",").astype(int)
+test_perms = np.loadtxt(PATH + DATA + "test_data_perms.csv", delimiter=",").astype(int)
 
 # create the dataloaders
-train_dataset = SimpleDataset(X_train)
-train_dataloader = DataLoader(train_dataset, batch_size=train_batch_size, shuffle=to_shuffle, num_workers=0)
+train_dataset = SimpleDataset(train_inputs, train_perms)
+train_dataloader = DataLoader(train_dataset, batch_size=BATCHSIZE, num_workers=0)
 
-val_dataset = SimpleDataset(X_val)
-val_dataloader = DataLoader(val_dataset, batch_size=64, shuffle=False, num_workers=0)
+val_dataset = SimpleDataset(val_seqs, val_perms)
+val_dataloader = DataLoader(val_dataset, batch_size=BATCHSIZE, num_workers=0)
 
-test_dataset = SimpleDataset(X_test)
-test_dataloader = DataLoader(test_dataset, batch_size=64, shuffle=False, num_workers=0)
+test_dataset = SimpleDataset(test_seqs, test_perms)
+test_dataloader = DataLoader(test_dataset, batch_size=BATCHSIZE, num_workers=0)

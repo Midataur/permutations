@@ -30,7 +30,8 @@ class ZeroShifter(BaseEstimator, TransformerMixin):
 
 # reduce the dimensionality of the dataset without losing information
 # this makes the training process faster and the resulting model is just as good
-# we do lose the ability to interpret what features are useful unfortunately
+# we do lose the ability to interpret what features are useful unfortunately  
+# we don't actually use this anymore
 class DimReducer(BaseEstimator, TransformerMixin):
 
   def __init__(self, ratio=0.999999999, suppress=False):
@@ -69,46 +70,14 @@ class DimReducer(BaseEstimator, TransformerMixin):
     # reduce the dimensionality
     return self.svd.transform(X)
 
-# applies S_i in place
-def apply_word(perm, i):
-  # 0 is the identity
-  if i:
-    if TRANSPOSITION_TYPE == "general":
-      x = i // GROUP_SIZE
-      y = i % GROUP_SIZE
-
-      perm[x], perm[y] = perm[y], perm[x]
-    elif TRANSPOSITION_TYPE == "elementary":
-      perm[i-1], perm[i] = perm[i], perm[i-1]
-
-def get_permutation(sequence):
-  permutation = list(range(GROUP_SIZE))
-
-  for word in sequence:
-    apply_word(permutation, word)
-
-  return permutation
-
-# used to exhaustively generate all possible sequences
-def int_to_seq(num):
-  sequence = []
-
-  for i in range(MAX_LENGTH):
-    sequence.append(num % GROUP_SIZE)
-    num //= GROUP_SIZE
-
-  return sequence
-
 def calculate_accuracy(output, target):
   # targets is a (B) tensor of integers that have the index of the correct class
   # we need to see if the max logit is at the right index
   return (argmax(output, dim=1) == target).float().mean()
 
-# these two only apply to general transpositions
-def int_to_transposition(hashed):
-    x = hashed // GROUP_SIZE
-    y = hashed % GROUP_SIZE
-    return x, y
+# takes a permutation and converts it to tokens
+def convert_perm_to_tokens(perm):
+  return [char + TRANS_BASE for char in perm]
 
-def transposition_to_int(x, y):
-    return x * GROUP_SIZE + y
+def convert_tokens_to_perm(tokens):
+  return [token - TRANS_BASE for token in tokens]
