@@ -10,8 +10,8 @@ MAX_GROUP_SIZE = 4
 MAX_INPUT_LENGTH = 12
 CONTEXT_LENGTH = MAX_INPUT_LENGTH + 1 + MAX_GROUP_SIZE + 1
 PATH = "."
-DATA = "/data/test/"
-MODELNAME = "test"
+DATA = "/data/small/"
+MODELNAME = "small-1.0"
 # can be "full" or an integer
 # i recommend 64
 BATCHSIZE = 64
