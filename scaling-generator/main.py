@@ -61,7 +61,7 @@ print("Training...")
 # start a new wandb run to track this script
 wandb.init(
     # set the wandb project where this run will be logged
-    project="permutations-generator",
+    project="scaling-generator",
 
     # track run hyperparameters and metadata
     config={
@@ -73,16 +73,17 @@ wandb.init(
       "architecture": "Transformer",
       "epochs": num_epochs,
       "optimizer": "AdamW",
-      "group_size": GROUP_SIZE,
+      "max_group_size": MAX_GROUP_SIZE,
       "dataset_size": DATASET_SIZE,
-      "max_length": MAX_LENGTH,
+      "max_input_length": MAX_INPUT_LENGTH,
       "n_embed": n_embed,
       "n_head": n_head,
       "n_blocks": n_blocks,
       "dropout": dropout,
       "weight_decay": weight_decay,
-      "transposition_type": TRANSPOSITION_TYPE,
-      "batch_size": BATCHSIZE
+      "base": TRANS_BASE,
+      "batch_size": BATCHSIZE,
+      "context_length": CONTEXT_LENGTH,
     },
     settings=wandb.Settings(start_method="fork"),
     resume="allow",

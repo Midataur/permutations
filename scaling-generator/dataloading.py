@@ -38,7 +38,6 @@ class SimpleDataset(Dataset):
           # do the fake autoregression
           for pos, char in enumerate(shifted_perm + [END_PREDICTION_TOKEN]):
             data.append(list(new_seq))
-            print(new_seq)
 
             new_seq[len(sequence) + 1 + pos] = char
 

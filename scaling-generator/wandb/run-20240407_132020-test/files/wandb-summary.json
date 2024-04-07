@@ -1,0 +1,1 @@
+{"validation_accuracy": 0.20000000298023224, "loss": 2.810697555541992, "training_accuracy": 0.20000000298023224, "training_loss": 2.835421085357666, "_timestamp": 1712460026.506764, "_runtime": 6.184363842010498, "_step": 120, "delta_train_loss": 0.0, "delta_val_loss": -2.384185791015625e-07, "_wandb": {"runtime": 5}}
