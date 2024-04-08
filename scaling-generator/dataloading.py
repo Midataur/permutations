@@ -47,7 +47,6 @@ class SimpleDataset(Dataset):
 
         self.data = tensor(data, dtype=int).to(dev)
         self.targets = tensor(targets, dtype=int).to(dev)
-        print(targets)
 
     def __len__(self):
         return len(self.data)
