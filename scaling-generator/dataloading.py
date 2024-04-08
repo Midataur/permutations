@@ -44,11 +44,10 @@ class SimpleDataset(Dataset):
             # cross entropy loss prefers accepting a token
             # it's faster
             targets.append(char)
-          
-          break
 
         self.data = tensor(data, dtype=int).to(dev)
         self.targets = tensor(targets, dtype=int).to(dev)
+        print(targets)
 
     def __len__(self):
         return len(self.data)
