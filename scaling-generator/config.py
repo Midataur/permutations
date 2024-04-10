@@ -11,7 +11,7 @@ MAX_INPUT_LENGTH = 12
 CONTEXT_LENGTH = MAX_INPUT_LENGTH + 1 + MAX_GROUP_SIZE + 1
 PATH = "."
 DATA = "/data/small/"
-MODELNAME = "small-2.0"
+MODELNAME = "small-3.0"
 # can be "full" or an integer
 # i recommend 64
 BATCHSIZE = 64
@@ -43,7 +43,7 @@ learning_rate = 3*(10**-6)
 num_epochs = 10**8
 
 # good starting value: 0.01
-weight_decay = 0.03
+weight_decay = 0.01
 
 lr_factor = 0.1  # Factor by which the learning rate will be reduced
 lr_patience = 10  # Number of epochs with no improvement after which learning rate will be reduced
