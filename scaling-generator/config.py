@@ -11,7 +11,7 @@ MAX_INPUT_LENGTH = 12
 CONTEXT_LENGTH = MAX_INPUT_LENGTH + 1 + MAX_GROUP_SIZE + 1
 PATH = "."
 DATA = "/data/small/"
-MODELNAME = "small-4.0"
+MODELNAME = "small-5.0"
 # can be "full" or an integer
 # i recommend 64
 BATCHSIZE = 64
@@ -34,7 +34,7 @@ vocab_size = num_normal + num_special
 n_embed = vocab_size + 1 # 18
 block_size = CONTEXT_LENGTH
 n_head = 6
-n_blocks = 5
+n_blocks = 8
 dropout = 0
 
 # TRAINING HYPERPARAMETERS
