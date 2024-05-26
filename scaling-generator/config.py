@@ -1,17 +1,22 @@
 import torch
+from math import log2
 
 torch.manual_seed(42)
 
 # GLOBAL
-MAX_GROUP_SIZE = 4
+MAX_GROUP_SIZE = 16
+
+if int(log2(MAX_GROUP_SIZE)) != MAX_GROUP_SIZE:
+    raise Exception("MAX_GROUP_SIZE must be a power of 2")
+
 # the maximum length of the input sequence
 # this is not the number of transpositions
 # it is the space it takes up in the context length
-MAX_INPUT_LENGTH = 12
+MAX_INPUT_LENGTH = 60
 CONTEXT_LENGTH = MAX_INPUT_LENGTH + 1 + MAX_GROUP_SIZE + 1
 PATH = "."
-DATA = "/data/small/"
-MODELNAME = "small-9.0"
+DATA = "/data/bin_medium/"
+MODELNAME = "bin-medium-1.0"
 # can be "full" or an integer
 # i recommend 64
 BATCHSIZE = 64
@@ -19,7 +24,7 @@ BATCHSIZE = 64
 # general or elementary
 
 # base to use for inputting transpositions
-TRANS_BASE = 10 # using base 10 for convenience, probably not optimal
+TRANS_BASE = 2
 
 # SPECIAL TOKENS
 # do not change manually
@@ -34,7 +39,7 @@ vocab_size = num_normal + num_special
 n_embed = vocab_size + 1 # 18
 block_size = CONTEXT_LENGTH
 n_head = 6
-n_blocks = 16
+n_blocks = 12
 dropout = 0
 
 # TRAINING HYPERPARAMETERS

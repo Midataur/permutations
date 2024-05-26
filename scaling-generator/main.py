@@ -184,7 +184,7 @@ for epoch in range(num_epochs):
     #     break
 
     if cur_patience % lr_patience == 0 and cur_patience != 0:
-        print("Reducing learning rate")
+        print(f"\n\nReducing learning rate!\n\n")
 
     # learning rate scheduling
     scheduler.step(train_loss)

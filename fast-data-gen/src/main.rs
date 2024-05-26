@@ -1,5 +1,6 @@
 #![allow(unused)]
 
+use clap::Arg;
 use clap::Parser;
 use rand::Rng;
 use kdam::tqdm;
@@ -10,46 +11,61 @@ use std::sync::mpsc;
 use csv::WriterBuilder;
 use std::error::Error;
 
-/// Program to generate data for the bianry classifier
+/// Program to generate data for the bianry classifier.
 #[derive(Parser, Debug, Clone)]
 #[command(about, long_about = None)]
 struct Args {
-    /// Maximum length of a sequence
+    /// Maximum length of a sequence.
     #[arg(short, long, default_value_t = 10)]
     max_length: i64,
 
-    /// Group size to use
+    /// Group order to use in practice.
     #[arg(short, long, default_value_t = 5)]
     group_size: i64,
 
-    /// Dataset size
+    /// Dataset size.
     #[arg(short, long, default_value_t = 100_000)]
     dataset_size: i64,
 
-    /// Identity proportion
+    /// Identity proportion.
     #[arg(short, long, default_value_t = 0.5)]
     identity_proportion: f64,
 
-    /// Filename to write to
-    /// Don't include file extensions
+    /// Filename to write to.
+    /// Don't include file extensions.
     #[arg(short, long, default_value_t = String::from("data"))]
     filename: String,
 
-    /// Number of threads to use
-    /// Ensure threads number divides dataset size
+    /// Number of threads to use.
+    /// Ensure threads number divides dataset size.
     #[arg(short, long, default_value_t = 1)]
     threads: i64,
 
-    /// Type of transposition to use
-    /// Can be "general", "elementary", or "scalable"
+    /// Type of transposition to use.
+    /// Can be "general", "elementary", or "scalable".
+    /// If scalable, identity proportion must be 0.
     #[arg(short='T', long, default_value_t = String::from("elementary"))]
     transposition_type: String,
 
     /// Include permutations?
-    /// Determines whether to include the actual permutations as well
-    /// Used for the scaling generator
+    /// Determines whether to include the actual permutations as well.
+    /// Permutations are written to a seperate file.
+    /// Used for the scaling generator.
     #[arg(short='P', long, default_value_t = false)]
     include_perms: bool,
+
+    /// Base to use.
+    /// Accepts dec or bin.
+    /// Used for the scaling generator only.
+    #[arg(short, long, default_value_t = String::from("dec"))]
+    base: String,
+
+    /// Maximum hypothetical group order that can be used later.
+    /// This is the exponent for the maximum group order base 2.
+    /// eg. if this argument is 4, then the maxmimum group order is 2^4=16.
+    /// Used for the scaling generator only.
+    #[arg(short, long, default_value_t = 64)]
+    log_max_group_size: i64,
 }
 
 /// generate a random sequence
@@ -70,11 +86,10 @@ fn generate_random_sequence(args: &Args) -> Vec<i64> {
     ).collect();
 }
 
-// converts a sequnce to 
+/// assumes that transpositions are in general form.
+/// converts them into two seperate indices.
+/// this can be used by the scalable transformer.
 fn convert_sequence(seq: &[i64], args: &Args) -> Vec<i64> {
-    // assumes that transpositions are in general form
-    // converts them into two seperate indices
-    // this can be used by the scalable transformer
     let mut new_seq: Vec<i64> = Vec::new();
     
     let mut x: i64;
@@ -86,6 +101,26 @@ fn convert_sequence(seq: &[i64], args: &Args) -> Vec<i64> {
 
         new_seq.push(x);
         new_seq.push(y);
+    }
+
+    return new_seq;
+}
+
+/// converts a sequence into binary digits.
+/// resulting sequence will be little endian
+fn convert_binary(seq: &[i64], args: &Args) -> Vec<i64> {
+    let mut new_seq: Vec<i64> = Vec::new();
+    
+    for i in seq.iter() {
+        // do some funky bitwise operations to extract the binary
+
+        let mut x = *i;
+
+        for j in 0..(args.log_max_group_size+1) {
+            // extracts the xth digit of i
+            new_seq.push(x & 1);
+            x = x >> 1;
+        }
     }
 
     return new_seq;
@@ -139,6 +174,11 @@ fn main() -> Result<(), Box<dyn Error>> {
         "\nThreads must divide dataset size\n"
     );
 
+    assert!(
+        args.group_size <= 2_i64.pow(args.log_max_group_size.try_into().unwrap()),
+        "\nGroup size can't be lower than 2^log_max_group_size\n"
+    );
+
     // do the general data
     let mut general_data: Vec<Vec<i64>> = Vec::new();
     let mut perms: Vec<Vec<i64>> = Vec::new();
@@ -148,17 +188,20 @@ fn main() -> Result<(), Box<dyn Error>> {
     for _ in tqdm!(
         0..((args.dataset_size as f64)*(1.0-args.identity_proportion)) as i64
     ) {
-        let seq = generate_random_sequence(&args);
+        let mut seq = generate_random_sequence(&args);
 
         // check which version to push
         if (args.transposition_type == "scalable") {
-            // push the converted version
-            general_data.push(convert_sequence(&seq, &args))
+            // convert the sequence to individual swaps
+            seq = convert_sequence(&seq, &args);
+
+            if (args.base == "bin") {
+                // convert the sequence to binary
+                seq = convert_binary(&seq, &args)
+            }
         }
-        else {
-            // push the normal version
-            general_data.push(seq.clone());
-        }
+        
+        general_data.push(seq.clone());
 
         if (args.include_perms) {
             perms.push(get_permutation(&seq, &args))
