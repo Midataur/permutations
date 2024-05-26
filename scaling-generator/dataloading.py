@@ -75,8 +75,6 @@ while True:
   data = np.loadtxt(filename, delimiter=",").astype(int)
   perms = np.loadtxt(perm_filename, delimiter=",").astype(int)
 
-  print("wahoo",len(data[0]), INPUT_LENGTH)
-
   train_inputs = np.concatenate((train_inputs, data))
   train_perms = np.concatenate((train_perms, perms))
 

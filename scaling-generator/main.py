@@ -75,7 +75,7 @@ wandb.init(
       "optimizer": "AdamW",
       "max_group_size": MAX_GROUP_SIZE,
       "dataset_size": DATASET_SIZE,
-      "max_input_length": MAX_INPUT_LENGTH,
+      "input_length": INPUT_LENGTH,
       "n_embed": n_embed,
       "n_head": n_head,
       "n_blocks": n_blocks,
