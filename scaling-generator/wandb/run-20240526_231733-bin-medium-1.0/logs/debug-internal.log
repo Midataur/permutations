@@ -1,0 +1,234 @@
+2024-05-26 23:17:33,360 INFO    StreamThr :84809 [internal.py:wandb_internal():86] W&B internal server running at pid: 84809, started at: 2024-05-26 23:17:33.359579
+2024-05-26 23:17:33,360 DEBUG   HandlerThread:84809 [handler.py:handle_request():146] handle_request: status
+2024-05-26 23:17:33,361 INFO    WriterThread:84809 [datastore.py:open_for_write():85] open: /Users/midataur/Documents/github/permutations/scaling-generator/wandb/run-20240526_231733-bin-medium-1.0/run-bin-medium-1.0.wandb
+2024-05-26 23:17:33,362 DEBUG   SenderThread:84809 [sender.py:send():382] send: header
+2024-05-26 23:17:33,379 DEBUG   SenderThread:84809 [sender.py:send():382] send: run
+2024-05-26 23:17:33,381 INFO    SenderThread:84809 [sender.py:_maybe_setup_resume():763] checking resume status for None/scaling-generator/bin-medium-1.0
+2024-05-26 23:17:34,382 INFO    SenderThread:84809 [dir_watcher.py:__init__():211] watching files in: /Users/midataur/Documents/github/permutations/scaling-generator/wandb/run-20240526_231733-bin-medium-1.0/files
+2024-05-26 23:17:34,383 INFO    SenderThread:84809 [sender.py:_start_run_threads():1136] run started: bin-medium-1.0 with start time 1716729453.360026
+2024-05-26 23:17:34,395 DEBUG   HandlerThread:84809 [handler.py:handle_request():146] handle_request: check_version
+2024-05-26 23:17:34,396 DEBUG   SenderThread:84809 [sender.py:send_request():409] send_request: check_version
+2024-05-26 23:17:34,647 DEBUG   HandlerThread:84809 [handler.py:handle_request():146] handle_request: run_start
+2024-05-26 23:17:34,660 DEBUG   HandlerThread:84809 [system_info.py:__init__():32] System info init
+2024-05-26 23:17:34,660 DEBUG   HandlerThread:84809 [system_info.py:__init__():47] System info init done
+2024-05-26 23:17:34,660 INFO    HandlerThread:84809 [system_monitor.py:start():194] Starting system monitor
+2024-05-26 23:17:34,660 INFO    SystemMonitor:84809 [system_monitor.py:_start():158] Starting system asset monitoring threads
+2024-05-26 23:17:34,660 INFO    HandlerThread:84809 [system_monitor.py:probe():214] Collecting system info
+2024-05-26 23:17:34,661 INFO    SystemMonitor:84809 [interfaces.py:start():190] Started cpu monitoring
+2024-05-26 23:17:34,661 DEBUG   HandlerThread:84809 [system_info.py:probe():196] Probing system
+2024-05-26 23:17:34,662 INFO    SystemMonitor:84809 [interfaces.py:start():190] Started disk monitoring
+2024-05-26 23:17:34,663 INFO    SystemMonitor:84809 [interfaces.py:start():190] Started gpuapple monitoring
+2024-05-26 23:17:34,667 INFO    SystemMonitor:84809 [interfaces.py:start():190] Started memory monitoring
+2024-05-26 23:17:34,668 INFO    SystemMonitor:84809 [interfaces.py:start():190] Started network monitoring
+2024-05-26 23:17:34,673 DEBUG   HandlerThread:84809 [system_info.py:_probe_git():181] Probing git
+2024-05-26 23:17:34,693 DEBUG   HandlerThread:84809 [system_info.py:_probe_git():189] Probing git done
+2024-05-26 23:17:34,694 DEBUG   HandlerThread:84809 [system_info.py:probe():244] Probing system done
+2024-05-26 23:17:34,694 DEBUG   HandlerThread:84809 [system_monitor.py:probe():223] {'os': 'macOS-14.3.1-arm64-arm-64bit', 'python': '3.11.5', 'heartbeatAt': '2024-05-26T13:17:34.662082', 'startedAt': '2024-05-26T13:17:33.355376', 'docker': None, 'cuda': None, 'args': (), 'state': 'running', 'program': '/Users/midataur/Documents/github/permutations/scaling-generator/./main.py', 'codePathLocal': 'main.py', 'codePath': 'scaling-generator/main.py', 'git': {'remote': 'https://github.com/Midataur/permutations.git', 'commit': 'fb2ec5e6bc8144c67c0c0638647251d9f52b710b'}, 'email': '18609293+Midataur@users.noreply.github.com', 'root': '/Users/midataur/Documents/github/permutations', 'host': 'Maxs-Air-2', 'username': 'midataur', 'executable': '/Users/midataur/Documents/github/permutations/binary-classifier/venv/bin/python3', 'cpu_count': 8, 'cpu_count_logical': 8, 'disk': {'/': {'total': 228.27386474609375, 'used': 13.396995544433594}}, 'gpuapple': {'type': 'arm', 'vendor': 'Apple'}, 'memory': {'total': 8.0}}
+2024-05-26 23:17:34,694 INFO    HandlerThread:84809 [system_monitor.py:probe():224] Finished collecting system info
+2024-05-26 23:17:34,694 INFO    HandlerThread:84809 [system_monitor.py:probe():227] Publishing system info
+2024-05-26 23:17:34,694 DEBUG   HandlerThread:84809 [system_info.py:_save_pip():52] Saving list of pip packages installed into the current environment
+2024-05-26 23:17:34,694 DEBUG   HandlerThread:84809 [system_info.py:_save_pip():68] Saving pip packages done
+2024-05-26 23:17:34,695 INFO    HandlerThread:84809 [system_monitor.py:probe():229] Finished publishing system info
+2024-05-26 23:17:34,698 DEBUG   SenderThread:84809 [sender.py:send():382] send: files
+2024-05-26 23:17:34,698 INFO    SenderThread:84809 [sender.py:_save_file():1392] saving file wandb-metadata.json with policy now
+2024-05-26 23:17:34,702 DEBUG   HandlerThread:84809 [handler.py:handle_request():146] handle_request: stop_status
+2024-05-26 23:17:34,703 DEBUG   SenderThread:84809 [sender.py:send_request():409] send_request: stop_status
+2024-05-26 23:17:34,704 DEBUG   HandlerThread:84809 [handler.py:handle_request():146] handle_request: internal_messages
+2024-05-26 23:17:35,104 DEBUG   SenderThread:84809 [sender.py:send():382] send: telemetry
+2024-05-26 23:17:35,389 INFO    Thread-12 :84809 [dir_watcher.py:_on_file_created():271] file/dir created: /Users/midataur/Documents/github/permutations/scaling-generator/wandb/run-20240526_231733-bin-medium-1.0/files/requirements.txt
+2024-05-26 23:17:35,389 INFO    Thread-12 :84809 [dir_watcher.py:_on_file_created():271] file/dir created: /Users/midataur/Documents/github/permutations/scaling-generator/wandb/run-20240526_231733-bin-medium-1.0/files/wandb-metadata.json
+2024-05-26 23:17:35,389 INFO    Thread-12 :84809 [dir_watcher.py:_on_file_created():271] file/dir created: /Users/midataur/Documents/github/permutations/scaling-generator/wandb/run-20240526_231733-bin-medium-1.0/files/output.log
+2024-05-26 23:17:35,922 INFO    wandb-upload_0:84809 [upload_job.py:push():131] Uploaded file /var/folders/p4/1rmlg_v12mb6mnfg709f5wdw0000gn/T/tmp0566eq6pwandb/hw02zz8c-wandb-metadata.json
+2024-05-26 23:17:37,398 INFO    Thread-12 :84809 [dir_watcher.py:_on_file_modified():288] file/dir modified: /Users/midataur/Documents/github/permutations/scaling-generator/wandb/run-20240526_231733-bin-medium-1.0/files/output.log
+2024-05-26 23:17:38,475 DEBUG   HandlerThread:84809 [handler.py:handle_request():146] handle_request: status_report
+2024-05-26 23:17:39,409 INFO    Thread-12 :84809 [dir_watcher.py:_on_file_modified():288] file/dir modified: /Users/midataur/Documents/github/permutations/scaling-generator/wandb/run-20240526_231733-bin-medium-1.0/files/output.log
+2024-05-26 23:17:41,419 INFO    Thread-12 :84809 [dir_watcher.py:_on_file_modified():288] file/dir modified: /Users/midataur/Documents/github/permutations/scaling-generator/wandb/run-20240526_231733-bin-medium-1.0/files/output.log
+2024-05-26 23:17:43,430 INFO    Thread-12 :84809 [dir_watcher.py:_on_file_modified():288] file/dir modified: /Users/midataur/Documents/github/permutations/scaling-generator/wandb/run-20240526_231733-bin-medium-1.0/files/output.log
+2024-05-26 23:17:43,911 DEBUG   HandlerThread:84809 [handler.py:handle_request():146] handle_request: status_report
+2024-05-26 23:17:45,437 INFO    Thread-12 :84809 [dir_watcher.py:_on_file_modified():288] file/dir modified: /Users/midataur/Documents/github/permutations/scaling-generator/wandb/run-20240526_231733-bin-medium-1.0/files/output.log
+2024-05-26 23:17:47,447 INFO    Thread-12 :84809 [dir_watcher.py:_on_file_modified():288] file/dir modified: /Users/midataur/Documents/github/permutations/scaling-generator/wandb/run-20240526_231733-bin-medium-1.0/files/output.log
+2024-05-26 23:17:49,425 DEBUG   HandlerThread:84809 [handler.py:handle_request():146] handle_request: status_report
+2024-05-26 23:17:49,458 INFO    Thread-12 :84809 [dir_watcher.py:_on_file_modified():288] file/dir modified: /Users/midataur/Documents/github/permutations/scaling-generator/wandb/run-20240526_231733-bin-medium-1.0/files/output.log
+2024-05-26 23:17:49,707 DEBUG   HandlerThread:84809 [handler.py:handle_request():146] handle_request: internal_messages
+2024-05-26 23:17:49,707 DEBUG   HandlerThread:84809 [handler.py:handle_request():146] handle_request: stop_status
+2024-05-26 23:17:49,708 DEBUG   SenderThread:84809 [sender.py:send_request():409] send_request: stop_status
+2024-05-26 23:17:51,469 INFO    Thread-12 :84809 [dir_watcher.py:_on_file_modified():288] file/dir modified: /Users/midataur/Documents/github/permutations/scaling-generator/wandb/run-20240526_231733-bin-medium-1.0/files/output.log
+2024-05-26 23:17:53,480 INFO    Thread-12 :84809 [dir_watcher.py:_on_file_modified():288] file/dir modified: /Users/midataur/Documents/github/permutations/scaling-generator/wandb/run-20240526_231733-bin-medium-1.0/files/output.log
+2024-05-26 23:17:54,891 DEBUG   HandlerThread:84809 [handler.py:handle_request():146] handle_request: status_report
+2024-05-26 23:17:55,490 INFO    Thread-12 :84809 [dir_watcher.py:_on_file_modified():288] file/dir modified: /Users/midataur/Documents/github/permutations/scaling-generator/wandb/run-20240526_231733-bin-medium-1.0/files/output.log
+2024-05-26 23:17:57,501 INFO    Thread-12 :84809 [dir_watcher.py:_on_file_modified():288] file/dir modified: /Users/midataur/Documents/github/permutations/scaling-generator/wandb/run-20240526_231733-bin-medium-1.0/files/output.log
+2024-05-26 23:17:59,511 INFO    Thread-12 :84809 [dir_watcher.py:_on_file_modified():288] file/dir modified: /Users/midataur/Documents/github/permutations/scaling-generator/wandb/run-20240526_231733-bin-medium-1.0/files/output.log
+2024-05-26 23:18:00,495 DEBUG   HandlerThread:84809 [handler.py:handle_request():146] handle_request: status_report
+2024-05-26 23:18:01,522 INFO    Thread-12 :84809 [dir_watcher.py:_on_file_modified():288] file/dir modified: /Users/midataur/Documents/github/permutations/scaling-generator/wandb/run-20240526_231733-bin-medium-1.0/files/output.log
+2024-05-26 23:18:03,532 INFO    Thread-12 :84809 [dir_watcher.py:_on_file_modified():288] file/dir modified: /Users/midataur/Documents/github/permutations/scaling-generator/wandb/run-20240526_231733-bin-medium-1.0/files/output.log
+2024-05-26 23:18:04,712 DEBUG   HandlerThread:84809 [handler.py:handle_request():146] handle_request: stop_status
+2024-05-26 23:18:04,712 DEBUG   HandlerThread:84809 [handler.py:handle_request():146] handle_request: internal_messages
+2024-05-26 23:18:04,713 DEBUG   SenderThread:84809 [sender.py:send_request():409] send_request: stop_status
+2024-05-26 23:18:05,543 INFO    Thread-12 :84809 [dir_watcher.py:_on_file_modified():288] file/dir modified: /Users/midataur/Documents/github/permutations/scaling-generator/wandb/run-20240526_231733-bin-medium-1.0/files/output.log
+2024-05-26 23:18:06,012 DEBUG   HandlerThread:84809 [handler.py:handle_request():146] handle_request: status_report
+2024-05-26 23:18:06,549 INFO    Thread-12 :84809 [dir_watcher.py:_on_file_modified():288] file/dir modified: /Users/midataur/Documents/github/permutations/scaling-generator/wandb/run-20240526_231733-bin-medium-1.0/files/config.yaml
+2024-05-26 23:18:07,554 INFO    Thread-12 :84809 [dir_watcher.py:_on_file_modified():288] file/dir modified: /Users/midataur/Documents/github/permutations/scaling-generator/wandb/run-20240526_231733-bin-medium-1.0/files/output.log
+2024-05-26 23:18:09,564 INFO    Thread-12 :84809 [dir_watcher.py:_on_file_modified():288] file/dir modified: /Users/midataur/Documents/github/permutations/scaling-generator/wandb/run-20240526_231733-bin-medium-1.0/files/output.log
+2024-05-26 23:18:11,575 INFO    Thread-12 :84809 [dir_watcher.py:_on_file_modified():288] file/dir modified: /Users/midataur/Documents/github/permutations/scaling-generator/wandb/run-20240526_231733-bin-medium-1.0/files/output.log
+2024-05-26 23:18:11,602 DEBUG   HandlerThread:84809 [handler.py:handle_request():146] handle_request: status_report
+2024-05-26 23:18:13,586 INFO    Thread-12 :84809 [dir_watcher.py:_on_file_modified():288] file/dir modified: /Users/midataur/Documents/github/permutations/scaling-generator/wandb/run-20240526_231733-bin-medium-1.0/files/output.log
+2024-05-26 23:18:15,597 INFO    Thread-12 :84809 [dir_watcher.py:_on_file_modified():288] file/dir modified: /Users/midataur/Documents/github/permutations/scaling-generator/wandb/run-20240526_231733-bin-medium-1.0/files/output.log
+2024-05-26 23:18:16,639 DEBUG   HandlerThread:84809 [handler.py:handle_request():146] handle_request: status_report
+2024-05-26 23:18:17,607 INFO    Thread-12 :84809 [dir_watcher.py:_on_file_modified():288] file/dir modified: /Users/midataur/Documents/github/permutations/scaling-generator/wandb/run-20240526_231733-bin-medium-1.0/files/output.log
+2024-05-26 23:18:19,618 INFO    Thread-12 :84809 [dir_watcher.py:_on_file_modified():288] file/dir modified: /Users/midataur/Documents/github/permutations/scaling-generator/wandb/run-20240526_231733-bin-medium-1.0/files/output.log
+2024-05-26 23:18:19,717 DEBUG   HandlerThread:84809 [handler.py:handle_request():146] handle_request: stop_status
+2024-05-26 23:18:19,717 DEBUG   HandlerThread:84809 [handler.py:handle_request():146] handle_request: internal_messages
+2024-05-26 23:18:19,718 DEBUG   SenderThread:84809 [sender.py:send_request():409] send_request: stop_status
+2024-05-26 23:18:21,629 INFO    Thread-12 :84809 [dir_watcher.py:_on_file_modified():288] file/dir modified: /Users/midataur/Documents/github/permutations/scaling-generator/wandb/run-20240526_231733-bin-medium-1.0/files/output.log
+2024-05-26 23:18:21,717 DEBUG   HandlerThread:84809 [handler.py:handle_request():146] handle_request: status_report
+2024-05-26 23:18:23,639 INFO    Thread-12 :84809 [dir_watcher.py:_on_file_modified():288] file/dir modified: /Users/midataur/Documents/github/permutations/scaling-generator/wandb/run-20240526_231733-bin-medium-1.0/files/output.log
+2024-05-26 23:18:25,650 INFO    Thread-12 :84809 [dir_watcher.py:_on_file_modified():288] file/dir modified: /Users/midataur/Documents/github/permutations/scaling-generator/wandb/run-20240526_231733-bin-medium-1.0/files/output.log
+2024-05-26 23:18:27,301 DEBUG   HandlerThread:84809 [handler.py:handle_request():146] handle_request: status_report
+2024-05-26 23:18:27,660 INFO    Thread-12 :84809 [dir_watcher.py:_on_file_modified():288] file/dir modified: /Users/midataur/Documents/github/permutations/scaling-generator/wandb/run-20240526_231733-bin-medium-1.0/files/output.log
+2024-05-26 23:18:29,671 INFO    Thread-12 :84809 [dir_watcher.py:_on_file_modified():288] file/dir modified: /Users/midataur/Documents/github/permutations/scaling-generator/wandb/run-20240526_231733-bin-medium-1.0/files/output.log
+2024-05-26 23:18:31,681 INFO    Thread-12 :84809 [dir_watcher.py:_on_file_modified():288] file/dir modified: /Users/midataur/Documents/github/permutations/scaling-generator/wandb/run-20240526_231733-bin-medium-1.0/files/output.log
+2024-05-26 23:18:32,384 DEBUG   HandlerThread:84809 [handler.py:handle_request():146] handle_request: status_report
+2024-05-26 23:18:33,692 INFO    Thread-12 :84809 [dir_watcher.py:_on_file_modified():288] file/dir modified: /Users/midataur/Documents/github/permutations/scaling-generator/wandb/run-20240526_231733-bin-medium-1.0/files/output.log
+2024-05-26 23:18:34,672 DEBUG   SystemMonitor:84809 [system_monitor.py:_start():172] Starting system metrics aggregation loop
+2024-05-26 23:18:34,673 DEBUG   SenderThread:84809 [sender.py:send():382] send: telemetry
+2024-05-26 23:18:34,673 DEBUG   SenderThread:84809 [sender.py:send():382] send: stats
+2024-05-26 23:18:34,721 DEBUG   HandlerThread:84809 [handler.py:handle_request():146] handle_request: stop_status
+2024-05-26 23:18:34,722 DEBUG   HandlerThread:84809 [handler.py:handle_request():146] handle_request: internal_messages
+2024-05-26 23:18:34,722 DEBUG   SenderThread:84809 [sender.py:send_request():409] send_request: stop_status
+2024-05-26 23:18:35,702 INFO    Thread-12 :84809 [dir_watcher.py:_on_file_modified():288] file/dir modified: /Users/midataur/Documents/github/permutations/scaling-generator/wandb/run-20240526_231733-bin-medium-1.0/files/output.log
+2024-05-26 23:18:37,458 DEBUG   HandlerThread:84809 [handler.py:handle_request():146] handle_request: status_report
+2024-05-26 23:18:37,713 INFO    Thread-12 :84809 [dir_watcher.py:_on_file_modified():288] file/dir modified: /Users/midataur/Documents/github/permutations/scaling-generator/wandb/run-20240526_231733-bin-medium-1.0/files/output.log
+2024-05-26 23:18:38,718 INFO    Thread-12 :84809 [dir_watcher.py:_on_file_modified():288] file/dir modified: /Users/midataur/Documents/github/permutations/scaling-generator/wandb/run-20240526_231733-bin-medium-1.0/files/config.yaml
+2024-05-26 23:18:39,723 INFO    Thread-12 :84809 [dir_watcher.py:_on_file_modified():288] file/dir modified: /Users/midataur/Documents/github/permutations/scaling-generator/wandb/run-20240526_231733-bin-medium-1.0/files/output.log
+2024-05-26 23:18:41,730 INFO    Thread-12 :84809 [dir_watcher.py:_on_file_modified():288] file/dir modified: /Users/midataur/Documents/github/permutations/scaling-generator/wandb/run-20240526_231733-bin-medium-1.0/files/output.log
+2024-05-26 23:18:43,158 DEBUG   HandlerThread:84809 [handler.py:handle_request():146] handle_request: status_report
+2024-05-26 23:18:43,739 INFO    Thread-12 :84809 [dir_watcher.py:_on_file_modified():288] file/dir modified: /Users/midataur/Documents/github/permutations/scaling-generator/wandb/run-20240526_231733-bin-medium-1.0/files/output.log
+2024-05-26 23:18:45,749 INFO    Thread-12 :84809 [dir_watcher.py:_on_file_modified():288] file/dir modified: /Users/midataur/Documents/github/permutations/scaling-generator/wandb/run-20240526_231733-bin-medium-1.0/files/output.log
+2024-05-26 23:18:47,760 INFO    Thread-12 :84809 [dir_watcher.py:_on_file_modified():288] file/dir modified: /Users/midataur/Documents/github/permutations/scaling-generator/wandb/run-20240526_231733-bin-medium-1.0/files/output.log
+2024-05-26 23:18:48,198 DEBUG   HandlerThread:84809 [handler.py:handle_request():146] handle_request: status_report
+2024-05-26 23:18:49,726 DEBUG   HandlerThread:84809 [handler.py:handle_request():146] handle_request: internal_messages
+2024-05-26 23:18:49,726 DEBUG   HandlerThread:84809 [handler.py:handle_request():146] handle_request: stop_status
+2024-05-26 23:18:49,727 DEBUG   SenderThread:84809 [sender.py:send_request():409] send_request: stop_status
+2024-05-26 23:18:49,771 INFO    Thread-12 :84809 [dir_watcher.py:_on_file_modified():288] file/dir modified: /Users/midataur/Documents/github/permutations/scaling-generator/wandb/run-20240526_231733-bin-medium-1.0/files/output.log
+2024-05-26 23:18:51,782 INFO    Thread-12 :84809 [dir_watcher.py:_on_file_modified():288] file/dir modified: /Users/midataur/Documents/github/permutations/scaling-generator/wandb/run-20240526_231733-bin-medium-1.0/files/output.log
+2024-05-26 23:18:53,293 DEBUG   HandlerThread:84809 [handler.py:handle_request():146] handle_request: status_report
+2024-05-26 23:18:53,792 INFO    Thread-12 :84809 [dir_watcher.py:_on_file_modified():288] file/dir modified: /Users/midataur/Documents/github/permutations/scaling-generator/wandb/run-20240526_231733-bin-medium-1.0/files/output.log
+2024-05-26 23:18:55,804 INFO    Thread-12 :84809 [dir_watcher.py:_on_file_modified():288] file/dir modified: /Users/midataur/Documents/github/permutations/scaling-generator/wandb/run-20240526_231733-bin-medium-1.0/files/output.log
+2024-05-26 23:18:57,814 INFO    Thread-12 :84809 [dir_watcher.py:_on_file_modified():288] file/dir modified: /Users/midataur/Documents/github/permutations/scaling-generator/wandb/run-20240526_231733-bin-medium-1.0/files/output.log
+2024-05-26 23:18:58,831 DEBUG   HandlerThread:84809 [handler.py:handle_request():146] handle_request: status_report
+2024-05-26 23:18:59,826 INFO    Thread-12 :84809 [dir_watcher.py:_on_file_modified():288] file/dir modified: /Users/midataur/Documents/github/permutations/scaling-generator/wandb/run-20240526_231733-bin-medium-1.0/files/output.log
+2024-05-26 23:19:01,837 INFO    Thread-12 :84809 [dir_watcher.py:_on_file_modified():288] file/dir modified: /Users/midataur/Documents/github/permutations/scaling-generator/wandb/run-20240526_231733-bin-medium-1.0/files/output.log
+2024-05-26 23:19:03,848 INFO    Thread-12 :84809 [dir_watcher.py:_on_file_modified():288] file/dir modified: /Users/midataur/Documents/github/permutations/scaling-generator/wandb/run-20240526_231733-bin-medium-1.0/files/output.log
+2024-05-26 23:19:03,893 DEBUG   HandlerThread:84809 [handler.py:handle_request():146] handle_request: status_report
+2024-05-26 23:19:04,679 DEBUG   SenderThread:84809 [sender.py:send():382] send: stats
+2024-05-26 23:19:04,731 DEBUG   HandlerThread:84809 [handler.py:handle_request():146] handle_request: internal_messages
+2024-05-26 23:19:04,731 DEBUG   HandlerThread:84809 [handler.py:handle_request():146] handle_request: stop_status
+2024-05-26 23:19:04,732 DEBUG   SenderThread:84809 [sender.py:send_request():409] send_request: stop_status
+2024-05-26 23:19:05,858 INFO    Thread-12 :84809 [dir_watcher.py:_on_file_modified():288] file/dir modified: /Users/midataur/Documents/github/permutations/scaling-generator/wandb/run-20240526_231733-bin-medium-1.0/files/output.log
+2024-05-26 23:19:07,869 INFO    Thread-12 :84809 [dir_watcher.py:_on_file_modified():288] file/dir modified: /Users/midataur/Documents/github/permutations/scaling-generator/wandb/run-20240526_231733-bin-medium-1.0/files/output.log
+2024-05-26 23:19:08,912 DEBUG   HandlerThread:84809 [handler.py:handle_request():146] handle_request: status_report
+2024-05-26 23:19:09,879 INFO    Thread-12 :84809 [dir_watcher.py:_on_file_modified():288] file/dir modified: /Users/midataur/Documents/github/permutations/scaling-generator/wandb/run-20240526_231733-bin-medium-1.0/files/output.log
+2024-05-26 23:19:11,890 INFO    Thread-12 :84809 [dir_watcher.py:_on_file_modified():288] file/dir modified: /Users/midataur/Documents/github/permutations/scaling-generator/wandb/run-20240526_231733-bin-medium-1.0/files/output.log
+2024-05-26 23:19:13,901 INFO    Thread-12 :84809 [dir_watcher.py:_on_file_modified():288] file/dir modified: /Users/midataur/Documents/github/permutations/scaling-generator/wandb/run-20240526_231733-bin-medium-1.0/files/output.log
+2024-05-26 23:19:14,035 DEBUG   HandlerThread:84809 [handler.py:handle_request():146] handle_request: status_report
+2024-05-26 23:19:15,946 INFO    Thread-12 :84809 [dir_watcher.py:_on_file_modified():288] file/dir modified: /Users/midataur/Documents/github/permutations/scaling-generator/wandb/run-20240526_231733-bin-medium-1.0/files/output.log
+2024-05-26 23:19:17,957 INFO    Thread-12 :84809 [dir_watcher.py:_on_file_modified():288] file/dir modified: /Users/midataur/Documents/github/permutations/scaling-generator/wandb/run-20240526_231733-bin-medium-1.0/files/output.log
+2024-05-26 23:19:19,134 DEBUG   HandlerThread:84809 [handler.py:handle_request():146] handle_request: status_report
+2024-05-26 23:19:19,736 DEBUG   HandlerThread:84809 [handler.py:handle_request():146] handle_request: stop_status
+2024-05-26 23:19:19,737 DEBUG   HandlerThread:84809 [handler.py:handle_request():146] handle_request: internal_messages
+2024-05-26 23:19:19,737 DEBUG   SenderThread:84809 [sender.py:send_request():409] send_request: stop_status
+2024-05-26 23:19:19,965 INFO    Thread-12 :84809 [dir_watcher.py:_on_file_modified():288] file/dir modified: /Users/midataur/Documents/github/permutations/scaling-generator/wandb/run-20240526_231733-bin-medium-1.0/files/output.log
+2024-05-26 23:19:21,670 DEBUG   SenderThread:84809 [sender.py:send():382] send: exit
+2024-05-26 23:19:21,670 INFO    SenderThread:84809 [sender.py:send_exit():589] handling exit code: 255
+2024-05-26 23:19:21,670 INFO    SenderThread:84809 [sender.py:send_exit():591] handling runtime: 107
+2024-05-26 23:19:21,671 INFO    SenderThread:84809 [sender.py:_save_file():1392] saving file wandb-summary.json with policy end
+2024-05-26 23:19:21,671 INFO    SenderThread:84809 [sender.py:send_exit():597] send defer
+2024-05-26 23:19:21,671 DEBUG   HandlerThread:84809 [handler.py:handle_request():146] handle_request: defer
+2024-05-26 23:19:21,671 INFO    HandlerThread:84809 [handler.py:handle_request_defer():172] handle defer: 0
+2024-05-26 23:19:21,671 DEBUG   SenderThread:84809 [sender.py:send_request():409] send_request: defer
+2024-05-26 23:19:21,671 INFO    SenderThread:84809 [sender.py:send_request_defer():613] handle sender defer: 0
+2024-05-26 23:19:21,671 INFO    SenderThread:84809 [sender.py:transition_state():617] send defer: 1
+2024-05-26 23:19:21,671 DEBUG   HandlerThread:84809 [handler.py:handle_request():146] handle_request: defer
+2024-05-26 23:19:21,671 INFO    HandlerThread:84809 [handler.py:handle_request_defer():172] handle defer: 1
+2024-05-26 23:19:21,671 DEBUG   SenderThread:84809 [sender.py:send_request():409] send_request: defer
+2024-05-26 23:19:21,671 INFO    SenderThread:84809 [sender.py:send_request_defer():613] handle sender defer: 1
+2024-05-26 23:19:21,672 INFO    SenderThread:84809 [sender.py:transition_state():617] send defer: 2
+2024-05-26 23:19:21,672 DEBUG   HandlerThread:84809 [handler.py:handle_request():146] handle_request: defer
+2024-05-26 23:19:21,672 INFO    HandlerThread:84809 [handler.py:handle_request_defer():172] handle defer: 2
+2024-05-26 23:19:21,672 INFO    HandlerThread:84809 [system_monitor.py:finish():203] Stopping system monitor
+2024-05-26 23:19:21,672 DEBUG   SystemMonitor:84809 [system_monitor.py:_start():179] Finished system metrics aggregation loop
+2024-05-26 23:19:21,672 DEBUG   SystemMonitor:84809 [system_monitor.py:_start():183] Publishing last batch of metrics
+2024-05-26 23:19:21,672 INFO    HandlerThread:84809 [interfaces.py:finish():202] Joined cpu monitor
+2024-05-26 23:19:21,672 INFO    HandlerThread:84809 [interfaces.py:finish():202] Joined disk monitor
+2024-05-26 23:19:21,672 INFO    HandlerThread:84809 [interfaces.py:finish():202] Joined gpuapple monitor
+2024-05-26 23:19:21,672 INFO    HandlerThread:84809 [interfaces.py:finish():202] Joined memory monitor
+2024-05-26 23:19:21,673 INFO    HandlerThread:84809 [interfaces.py:finish():202] Joined network monitor
+2024-05-26 23:19:21,673 DEBUG   SenderThread:84809 [sender.py:send_request():409] send_request: defer
+2024-05-26 23:19:21,673 INFO    SenderThread:84809 [sender.py:send_request_defer():613] handle sender defer: 2
+2024-05-26 23:19:21,673 INFO    SenderThread:84809 [sender.py:transition_state():617] send defer: 3
+2024-05-26 23:19:21,673 DEBUG   SenderThread:84809 [sender.py:send():382] send: stats
+2024-05-26 23:19:21,673 DEBUG   HandlerThread:84809 [handler.py:handle_request():146] handle_request: defer
+2024-05-26 23:19:21,673 INFO    HandlerThread:84809 [handler.py:handle_request_defer():172] handle defer: 3
+2024-05-26 23:19:21,673 DEBUG   SenderThread:84809 [sender.py:send_request():409] send_request: defer
+2024-05-26 23:19:21,673 INFO    SenderThread:84809 [sender.py:send_request_defer():613] handle sender defer: 3
+2024-05-26 23:19:21,673 INFO    SenderThread:84809 [sender.py:transition_state():617] send defer: 4
+2024-05-26 23:19:21,673 DEBUG   HandlerThread:84809 [handler.py:handle_request():146] handle_request: defer
+2024-05-26 23:19:21,673 INFO    HandlerThread:84809 [handler.py:handle_request_defer():172] handle defer: 4
+2024-05-26 23:19:21,673 DEBUG   SenderThread:84809 [sender.py:send_request():409] send_request: defer
+2024-05-26 23:19:21,673 INFO    SenderThread:84809 [sender.py:send_request_defer():613] handle sender defer: 4
+2024-05-26 23:19:21,673 INFO    SenderThread:84809 [sender.py:transition_state():617] send defer: 5
+2024-05-26 23:19:21,673 DEBUG   HandlerThread:84809 [handler.py:handle_request():146] handle_request: defer
+2024-05-26 23:19:21,673 INFO    HandlerThread:84809 [handler.py:handle_request_defer():172] handle defer: 5
+2024-05-26 23:19:21,673 DEBUG   SenderThread:84809 [sender.py:send():382] send: summary
+2024-05-26 23:19:21,674 INFO    SenderThread:84809 [sender.py:_save_file():1392] saving file wandb-summary.json with policy end
+2024-05-26 23:19:21,674 DEBUG   SenderThread:84809 [sender.py:send_request():409] send_request: defer
+2024-05-26 23:19:21,674 INFO    SenderThread:84809 [sender.py:send_request_defer():613] handle sender defer: 5
+2024-05-26 23:19:21,674 INFO    SenderThread:84809 [sender.py:transition_state():617] send defer: 6
+2024-05-26 23:19:21,674 DEBUG   HandlerThread:84809 [handler.py:handle_request():146] handle_request: defer
+2024-05-26 23:19:21,674 INFO    HandlerThread:84809 [handler.py:handle_request_defer():172] handle defer: 6
+2024-05-26 23:19:21,674 DEBUG   SenderThread:84809 [sender.py:send_request():409] send_request: defer
+2024-05-26 23:19:21,674 INFO    SenderThread:84809 [sender.py:send_request_defer():613] handle sender defer: 6
+2024-05-26 23:19:21,674 INFO    SenderThread:84809 [sender.py:transition_state():617] send defer: 7
+2024-05-26 23:19:21,674 DEBUG   HandlerThread:84809 [handler.py:handle_request():146] handle_request: status_report
+2024-05-26 23:19:21,674 DEBUG   HandlerThread:84809 [handler.py:handle_request():146] handle_request: defer
+2024-05-26 23:19:21,674 INFO    HandlerThread:84809 [handler.py:handle_request_defer():172] handle defer: 7
+2024-05-26 23:19:21,674 DEBUG   SenderThread:84809 [sender.py:send_request():409] send_request: defer
+2024-05-26 23:19:21,674 INFO    SenderThread:84809 [sender.py:send_request_defer():613] handle sender defer: 7
+2024-05-26 23:19:21,977 INFO    Thread-12 :84809 [dir_watcher.py:_on_file_modified():288] file/dir modified: /Users/midataur/Documents/github/permutations/scaling-generator/wandb/run-20240526_231733-bin-medium-1.0/files/output.log
+2024-05-26 23:19:21,977 INFO    Thread-12 :84809 [dir_watcher.py:_on_file_created():271] file/dir created: /Users/midataur/Documents/github/permutations/scaling-generator/wandb/run-20240526_231733-bin-medium-1.0/files/wandb-summary.json
+2024-05-26 23:19:22,675 DEBUG   HandlerThread:84809 [handler.py:handle_request():146] handle_request: poll_exit
+2024-05-26 23:19:23,733 INFO    SenderThread:84809 [sender.py:transition_state():617] send defer: 8
+2024-05-26 23:19:23,733 DEBUG   SenderThread:84809 [sender.py:send_request():409] send_request: poll_exit
+2024-05-26 23:19:23,733 DEBUG   HandlerThread:84809 [handler.py:handle_request():146] handle_request: defer
+2024-05-26 23:19:23,733 INFO    HandlerThread:84809 [handler.py:handle_request_defer():172] handle defer: 8
+2024-05-26 23:19:23,734 DEBUG   SenderThread:84809 [sender.py:send_request():409] send_request: defer
+2024-05-26 23:19:23,734 INFO    SenderThread:84809 [sender.py:send_request_defer():613] handle sender defer: 8
+2024-05-26 23:19:23,734 INFO    SenderThread:84809 [job_builder.py:build():298] Attempting to build job artifact
+2024-05-26 23:19:23,735 INFO    SenderThread:84809 [job_builder.py:_get_source_type():428] is repo sourced job
+2024-05-26 23:19:23,794 INFO    SenderThread:84809 [job_builder.py:build():404] adding wandb-job metadata file
+2024-05-26 23:19:23,797 INFO    SenderThread:84809 [sender.py:transition_state():617] send defer: 9
+2024-05-26 23:19:23,797 DEBUG   HandlerThread:84809 [handler.py:handle_request():146] handle_request: defer
+2024-05-26 23:19:23,797 DEBUG   SenderThread:84809 [sender.py:send():382] send: artifact
+2024-05-26 23:19:23,797 INFO    HandlerThread:84809 [handler.py:handle_request_defer():172] handle defer: 9
+2024-05-26 23:19:23,987 INFO    Thread-12 :84809 [dir_watcher.py:_on_file_modified():288] file/dir modified: /Users/midataur/Documents/github/permutations/scaling-generator/wandb/run-20240526_231733-bin-medium-1.0/files/output.log
+2024-05-26 23:19:25,699 INFO    wandb-upload_1:84809 [upload_job.py:push():86] Skipped uploading /Users/midataur/Library/Application Support/wandb/artifacts/staging/tmph1bp2kaz
+2024-05-26 23:19:26,505 INFO    wandb-upload_0:84809 [upload_job.py:push():89] Uploaded file /Users/midataur/Library/Application Support/wandb/artifacts/staging/tmp85n3d4ym
+2024-05-26 23:19:27,699 DEBUG   HandlerThread:84809 [handler.py:handle_request():146] handle_request: keepalive
+2024-05-26 23:19:28,669 INFO    SenderThread:84809 [sender.py:send_artifact():1470] sent artifact job-https___github.com_Midataur_permutations.git_scaling-generator_main.py - {'id': 'QXJ0aWZhY3Q6ODUwMzQ3MDcx', 'state': 'PENDING', 'artifactSequence': {'id': 'QXJ0aWZhY3RDb2xsZWN0aW9uOjE1ODYxMTI2Nw==', 'latestArtifact': {'id': 'QXJ0aWZhY3Q6Nzg2NjI5MzQ3', 'versionIndex': 0}}}
+2024-05-26 23:19:28,670 DEBUG   SenderThread:84809 [sender.py:send_request():409] send_request: defer
+2024-05-26 23:19:28,670 DEBUG   HandlerThread:84809 [handler.py:handle_request():146] handle_request: status_report
+2024-05-26 23:19:28,670 INFO    SenderThread:84809 [sender.py:send_request_defer():613] handle sender defer: 9
+2024-05-26 23:19:28,671 INFO    SenderThread:84809 [dir_watcher.py:finish():358] shutting down directory watcher
+2024-05-26 23:19:29,012 INFO    SenderThread:84809 [dir_watcher.py:finish():388] scan: /Users/midataur/Documents/github/permutations/scaling-generator/wandb/run-20240526_231733-bin-medium-1.0/files
+2024-05-26 23:19:29,013 INFO    SenderThread:84809 [dir_watcher.py:finish():402] scan save: /Users/midataur/Documents/github/permutations/scaling-generator/wandb/run-20240526_231733-bin-medium-1.0/files/requirements.txt requirements.txt
+2024-05-26 23:19:29,013 INFO    SenderThread:84809 [dir_watcher.py:finish():402] scan save: /Users/midataur/Documents/github/permutations/scaling-generator/wandb/run-20240526_231733-bin-medium-1.0/files/output.log output.log
+2024-05-26 23:19:29,016 INFO    SenderThread:84809 [dir_watcher.py:finish():402] scan save: /Users/midataur/Documents/github/permutations/scaling-generator/wandb/run-20240526_231733-bin-medium-1.0/files/config.yaml config.yaml
+2024-05-26 23:19:29,019 INFO    SenderThread:84809 [dir_watcher.py:finish():402] scan save: /Users/midataur/Documents/github/permutations/scaling-generator/wandb/run-20240526_231733-bin-medium-1.0/files/wandb-summary.json wandb-summary.json
+2024-05-26 23:19:29,023 INFO    SenderThread:84809 [dir_watcher.py:finish():402] scan save: /Users/midataur/Documents/github/permutations/scaling-generator/wandb/run-20240526_231733-bin-medium-1.0/files/wandb-metadata.json wandb-metadata.json
+2024-05-26 23:19:29,023 INFO    SenderThread:84809 [sender.py:transition_state():617] send defer: 10
+2024-05-26 23:19:29,027 DEBUG   HandlerThread:84809 [handler.py:handle_request():146] handle_request: defer
+2024-05-26 23:19:29,028 INFO    HandlerThread:84809 [handler.py:handle_request_defer():172] handle defer: 10
+2024-05-26 23:19:29,029 DEBUG   SenderThread:84809 [sender.py:send_request():409] send_request: defer
+2024-05-26 23:19:29,029 INFO    SenderThread:84809 [sender.py:send_request_defer():613] handle sender defer: 10
+2024-05-26 23:19:29,029 INFO    SenderThread:84809 [file_pusher.py:finish():175] shutting down file pusher
+2024-05-26 23:19:29,697 INFO    wandb-upload_1:84809 [upload_job.py:push():131] Uploaded file /Users/midataur/Documents/github/permutations/scaling-generator/wandb/run-20240526_231733-bin-medium-1.0/files/requirements.txt

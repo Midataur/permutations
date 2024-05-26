@@ -37,7 +37,7 @@ END_PREDICTION_TOKEN = num_normal + 2
 
 # TRANSFORMER HYPERPARAMETERS
 vocab_size = num_normal + num_special
-n_embed = vocab_size + 1 # 18
+n_embed = 24
 block_size = CONTEXT_LENGTH
 n_head = 6
 n_blocks = 12
