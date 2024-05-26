@@ -6,14 +6,15 @@ torch.manual_seed(42)
 # GLOBAL
 MAX_GROUP_SIZE = 16
 
-if int(log2(MAX_GROUP_SIZE)) != MAX_GROUP_SIZE:
+if int(log2(MAX_GROUP_SIZE)) != log2(MAX_GROUP_SIZE):
     raise Exception("MAX_GROUP_SIZE must be a power of 2")
 
-# the maximum length of the input sequence
-# this is not the number of transpositions
-# it is the space it takes up in the context length
-MAX_INPUT_LENGTH = 60
-CONTEXT_LENGTH = MAX_INPUT_LENGTH + 1 + MAX_GROUP_SIZE + 1
+# the maximum number of transpositions in the input sequence
+MAX_TRANS_NUMBER = 10
+# maximum length of input sequence (in tokens)
+# don't touch this
+INPUT_LENGTH = (int(log2(MAX_GROUP_SIZE)) + 1) * 2 * MAX_TRANS_NUMBER
+CONTEXT_LENGTH = INPUT_LENGTH + 1 + MAX_GROUP_SIZE + 1
 PATH = "."
 DATA = "/data/bin_medium/"
 MODELNAME = "bin-medium-1.0"

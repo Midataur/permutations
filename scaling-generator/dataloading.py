@@ -61,7 +61,7 @@ class SimpleDataset(Dataset):
 # load the data
 print("Loading data...")
 
-train_inputs = np.array([[0 for x in range(MAX_INPUT_LENGTH)]])
+train_inputs = np.array([[0 for x in range(INPUT_LENGTH)]])
 train_perms = np.array([[0 for x in range(MAX_GROUP_SIZE)]])
 
 curfile = 1
@@ -74,6 +74,8 @@ while True:
 
   data = np.loadtxt(filename, delimiter=",").astype(int)
   perms = np.loadtxt(perm_filename, delimiter=",").astype(int)
+
+  print("wahoo",len(data[0]), INPUT_LENGTH)
 
   train_inputs = np.concatenate((train_inputs, data))
   train_perms = np.concatenate((train_perms, perms))

@@ -127,8 +127,14 @@ fn convert_binary(seq: &[i64], args: &Args) -> Vec<i64> {
 }
 
 fn get_permutation(seq: &[i64], args: &Args) -> Vec<i64> {
+    let max_group_size = if (args.transposition_type == "scalable") {
+        2_i64.pow(args.log_max_group_size.try_into().unwrap())
+    } else {
+        args.group_size
+    };
+
     // initialize the permutations
-    let mut perm: Vec<i64> = (0..args.group_size).collect();
+    let mut perm: Vec<i64> = (0..max_group_size).collect();
     
     // do the swaps
     for i in seq.iter() {
@@ -189,19 +195,20 @@ fn main() -> Result<(), Box<dyn Error>> {
         0..((args.dataset_size as f64)*(1.0-args.identity_proportion)) as i64
     ) {
         let mut seq = generate_random_sequence(&args);
+        let mut new_seq = seq.clone();
 
         // check which version to push
         if (args.transposition_type == "scalable") {
             // convert the sequence to individual swaps
-            seq = convert_sequence(&seq, &args);
+            new_seq = convert_sequence(&new_seq, &args);
 
             if (args.base == "bin") {
                 // convert the sequence to binary
-                seq = convert_binary(&seq, &args)
+                new_seq = convert_binary(&new_seq, &args)
             }
         }
         
-        general_data.push(seq.clone());
+        general_data.push(new_seq.clone());
 
         if (args.include_perms) {
             perms.push(get_permutation(&seq, &args))
