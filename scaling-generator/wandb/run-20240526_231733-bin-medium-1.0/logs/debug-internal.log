@@ -232,3 +232,49 @@
 2024-05-26 23:19:29,029 INFO    SenderThread:84809 [sender.py:send_request_defer():613] handle sender defer: 10
 2024-05-26 23:19:29,029 INFO    SenderThread:84809 [file_pusher.py:finish():175] shutting down file pusher
 2024-05-26 23:19:29,697 INFO    wandb-upload_1:84809 [upload_job.py:push():131] Uploaded file /Users/midataur/Documents/github/permutations/scaling-generator/wandb/run-20240526_231733-bin-medium-1.0/files/requirements.txt
+2024-05-26 23:19:29,995 INFO    wandb-upload_0:84809 [upload_job.py:push():131] Uploaded file /Users/midataur/Documents/github/permutations/scaling-generator/wandb/run-20240526_231733-bin-medium-1.0/files/output.log
+2024-05-26 23:19:30,033 INFO    wandb-upload_2:84809 [upload_job.py:push():131] Uploaded file /Users/midataur/Documents/github/permutations/scaling-generator/wandb/run-20240526_231733-bin-medium-1.0/files/config.yaml
+2024-05-26 23:19:30,041 INFO    wandb-upload_3:84809 [upload_job.py:push():131] Uploaded file /Users/midataur/Documents/github/permutations/scaling-generator/wandb/run-20240526_231733-bin-medium-1.0/files/wandb-summary.json
+2024-05-26 23:19:30,243 INFO    Thread-11 (_thread_body):84809 [sender.py:transition_state():617] send defer: 11
+2024-05-26 23:19:30,243 DEBUG   HandlerThread:84809 [handler.py:handle_request():146] handle_request: defer
+2024-05-26 23:19:30,243 INFO    HandlerThread:84809 [handler.py:handle_request_defer():172] handle defer: 11
+2024-05-26 23:19:30,244 DEBUG   SenderThread:84809 [sender.py:send_request():409] send_request: defer
+2024-05-26 23:19:30,244 INFO    SenderThread:84809 [sender.py:send_request_defer():613] handle sender defer: 11
+2024-05-26 23:19:30,244 INFO    SenderThread:84809 [file_pusher.py:join():181] waiting for file pusher
+2024-05-26 23:19:30,244 INFO    SenderThread:84809 [sender.py:transition_state():617] send defer: 12
+2024-05-26 23:19:30,244 DEBUG   HandlerThread:84809 [handler.py:handle_request():146] handle_request: defer
+2024-05-26 23:19:30,244 INFO    HandlerThread:84809 [handler.py:handle_request_defer():172] handle defer: 12
+2024-05-26 23:19:30,244 DEBUG   SenderThread:84809 [sender.py:send_request():409] send_request: defer
+2024-05-26 23:19:30,244 INFO    SenderThread:84809 [sender.py:send_request_defer():613] handle sender defer: 12
+2024-05-26 23:19:30,244 INFO    SenderThread:84809 [file_stream.py:finish():595] file stream finish called
+2024-05-26 23:19:30,614 INFO    SenderThread:84809 [file_stream.py:finish():599] file stream finish is done
+2024-05-26 23:19:30,614 INFO    SenderThread:84809 [sender.py:transition_state():617] send defer: 13
+2024-05-26 23:19:30,615 DEBUG   HandlerThread:84809 [handler.py:handle_request():146] handle_request: defer
+2024-05-26 23:19:30,615 INFO    HandlerThread:84809 [handler.py:handle_request_defer():172] handle defer: 13
+2024-05-26 23:19:30,615 DEBUG   SenderThread:84809 [sender.py:send_request():409] send_request: defer
+2024-05-26 23:19:30,615 INFO    SenderThread:84809 [sender.py:send_request_defer():613] handle sender defer: 13
+2024-05-26 23:19:30,615 INFO    SenderThread:84809 [sender.py:transition_state():617] send defer: 14
+2024-05-26 23:19:30,615 DEBUG   HandlerThread:84809 [handler.py:handle_request():146] handle_request: defer
+2024-05-26 23:19:30,616 INFO    HandlerThread:84809 [handler.py:handle_request_defer():172] handle defer: 14
+2024-05-26 23:19:30,616 DEBUG   SenderThread:84809 [sender.py:send():382] send: final
+2024-05-26 23:19:30,616 DEBUG   SenderThread:84809 [sender.py:send():382] send: footer
+2024-05-26 23:19:30,616 DEBUG   SenderThread:84809 [sender.py:send_request():409] send_request: defer
+2024-05-26 23:19:30,616 INFO    SenderThread:84809 [sender.py:send_request_defer():613] handle sender defer: 14
+2024-05-26 23:19:30,617 DEBUG   HandlerThread:84809 [handler.py:handle_request():146] handle_request: poll_exit
+2024-05-26 23:19:30,617 DEBUG   HandlerThread:84809 [handler.py:handle_request():146] handle_request: server_info
+2024-05-26 23:19:30,617 DEBUG   HandlerThread:84809 [handler.py:handle_request():146] handle_request: get_summary
+2024-05-26 23:19:30,618 DEBUG   SenderThread:84809 [sender.py:send_request():409] send_request: poll_exit
+2024-05-26 23:19:30,618 DEBUG   HandlerThread:84809 [handler.py:handle_request():146] handle_request: sampled_history
+2024-05-26 23:19:30,618 DEBUG   SenderThread:84809 [sender.py:send_request():409] send_request: server_info
+2024-05-26 23:19:30,618 DEBUG   HandlerThread:84809 [handler.py:handle_request():146] handle_request: internal_messages
+2024-05-26 23:19:30,621 DEBUG   HandlerThread:84809 [handler.py:handle_request():146] handle_request: job_info
+2024-05-26 23:19:30,892 DEBUG   SenderThread:84809 [sender.py:send_request():409] send_request: job_info
+2024-05-26 23:19:30,892 INFO    MainThread:84809 [wandb_run.py:_footer_history_summary_info():3837] rendering history
+2024-05-26 23:19:30,892 INFO    MainThread:84809 [wandb_run.py:_footer_history_summary_info():3869] rendering summary
+2024-05-26 23:19:30,892 INFO    MainThread:84809 [wandb_run.py:_footer_sync_info():3796] logging synced files
+2024-05-26 23:19:30,893 DEBUG   HandlerThread:84809 [handler.py:handle_request():146] handle_request: shutdown
+2024-05-26 23:19:30,894 INFO    HandlerThread:84809 [handler.py:finish():866] shutting down handler
+2024-05-26 23:19:31,624 INFO    WriterThread:84809 [datastore.py:close():294] close: /Users/midataur/Documents/github/permutations/scaling-generator/wandb/run-20240526_231733-bin-medium-1.0/run-bin-medium-1.0.wandb
+2024-05-26 23:19:31,895 INFO    SenderThread:84809 [sender.py:finish():1548] shutting down sender
+2024-05-26 23:19:31,896 INFO    SenderThread:84809 [file_pusher.py:finish():175] shutting down file pusher
+2024-05-26 23:19:31,896 INFO    SenderThread:84809 [file_pusher.py:join():181] waiting for file pusher

@@ -24,3 +24,4 @@ config: {'learning_rate': 3.0000000000000004e-05, 'scheduling': 'plateau', 'lr_f
 2024-05-26 23:17:34,703 INFO    MainThread:84769 [wandb_run.py:_redirect():2153] Wrapping output streams.
 2024-05-26 23:17:34,703 INFO    MainThread:84769 [wandb_run.py:_redirect():2178] Redirects installed.
 2024-05-26 23:17:34,703 INFO    MainThread:84769 [wandb_init.py:init():841] run started, returning control to user process
+2024-05-26 23:19:32,150 WARNING MsgRouterThr:84769 [router.py:message_loop():77] message_loop has been closed
