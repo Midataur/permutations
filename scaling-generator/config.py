@@ -17,7 +17,7 @@ INPUT_LENGTH = (int(log2(MAX_GROUP_SIZE)) + 1) * 2 * MAX_TRANS_NUMBER
 CONTEXT_LENGTH = INPUT_LENGTH + 1 + MAX_GROUP_SIZE + 1
 PATH = "."
 DATA = "/data/bin_medium/"
-MODELNAME = "bin-medium-2.0"
+MODELNAME = "bin-medium-3.0"
 # can be "full" or an integer
 # i recommend 64
 BATCHSIZE = 64
@@ -45,7 +45,7 @@ dropout = 0
 
 # TRAINING HYPERPARAMETERS
 # good starting value: 3*10^-5
-learning_rate = 3*(10**-5)
+learning_rate = 3*(10**-4)
 num_epochs = 10**8
 
 # good starting value: 0.01
