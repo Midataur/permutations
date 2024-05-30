@@ -17,7 +17,7 @@ INPUT_LENGTH = (int(log2(MAX_GROUP_SIZE)) + 1) * 2 * MAX_TRANS_NUMBER
 CONTEXT_LENGTH = INPUT_LENGTH + 1 + MAX_GROUP_SIZE + 1
 PATH = "."
 DATA = "/data/bin_medium/"
-MODELNAME = "bin-medium-4.0"
+MODELNAME = "bin-medium-5.0"
 # can be "full" or an integer
 # i recommend 64
 BATCHSIZE = 64
@@ -49,7 +49,7 @@ learning_rate = 3*(10**-4)
 num_epochs = 10**8
 
 # good starting value: 0.01
-weight_decay = 0.03
+weight_decay = 0.005
 
 lr_factor = 0.1  # Factor by which the learning rate will be reduced
 lr_patience = 10  # Number of epochs with no improvement after which learning rate will be reduced
