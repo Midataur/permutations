@@ -24,7 +24,6 @@ class SimpleDataset(Dataset):
 
         # generate the input output pairs
         # we're basically simulating what the autoregression process would look like
-        # this massively improves the effective amount of training data
         for sequence, permutation in tqdm(zip(sequences, permutations), desc="Loading data"):
           # shift the permutation to use the correct tokens
           # we don't want overlap between the input tokens and the output tokens

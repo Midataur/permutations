@@ -4,8 +4,6 @@ from dataloading import *
 from transformer import *
 from tqdm import tqdm
 
-SHOW_PLOTS = False
-
 # get the model
 model = BigramLanguageModel()
 
@@ -26,10 +24,9 @@ model.load_state_dict(torch.load(filename, map_location=torch.device(device)))
 
 results = []
 
-for seq in tqdm(test_data, desc="Testing"):
-  real_perm = tuple(get_permutation(seq))
+for seq, real_perm in tqdm(zip(test_seqs, test_perms), desc="Testing", total=len(test_perms)):
   gen_perm = tuple(model.module.generate(seq))
-  results.append(int(real_perm == gen_perm))
+  results.append((real_perm == gen_perm).all())
 
 print(f"Accuracy: {sum(results) / len(results)}")
 

@@ -3,6 +3,8 @@ from torch import cuda
 import torch.nn as nn
 from torch.nn import functional as F
 from config import *
+from utilities import convert_tokens_to_perm
+import numpy as np
 
 # model based off of this video: https://www.youtube.com/watch?v=kCc8FmEb1nY
 # and by "based off" i mean i modifed like two things
@@ -132,16 +134,20 @@ class BigramLanguageModel(nn.Module):
         else:
           dev = "cpu"
         
-        # create an initial input
+        # create an initial input to the network
         input_tensor = torch.ones(block_size, dtype=int).to(dev)
-        input_tensor *= TO_PREDICT_TOKEN
+        input_tensor *= NULL_TOKEN
         input_tensor[:len(sequence)] = torch.tensor(sequence, dtype=int).to(dev)
         input_tensor[len(sequence)] = START_PREDICTION_TOKEN
+
+        # tells us where the input ends and the autoregression starts
+        AR_index = len(sequence) + 1
         
         # actually generate the permutation
         permutation = []
 
-        for x in range(GROUP_SIZE):
+        # do the autoregression
+        for x in range(MAX_GROUP_SIZE):
             # get the logits
             logits = self(input_tensor.unsqueeze(0))
             
@@ -152,6 +158,6 @@ class BigramLanguageModel(nn.Module):
             permutation.append(token)
             
             # add it to the input tensor
-            input_tensor[MAX_LENGTH + 1 + x] = token
+            input_tensor[AR_index + x] = token
         
-        return permutation
+        return np.array(convert_tokens_to_perm(permutation))
