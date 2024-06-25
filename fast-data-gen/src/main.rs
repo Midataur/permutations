@@ -66,6 +66,19 @@ struct Args {
     /// Used for the scaling generator only.
     #[arg(short, long, default_value_t = 64)]
     log_max_group_size: i64,
+
+    /// Use window?
+    /// Determines whether a shift window should be used for the permutations
+    #[arg(short='k', long, default_value_t = false)]
+    use_window: bool,
+}
+
+fn get_max_group_size(args: &Args) -> i64 {
+    return if (args.transposition_type == "scalable") {
+        2_i64.pow(args.log_max_group_size.try_into().unwrap())
+    } else {
+        args.group_size
+    };
 }
 
 /// generate a random sequence
@@ -89,7 +102,7 @@ fn generate_random_sequence(args: &Args) -> Vec<i64> {
 /// assumes that transpositions are in general form.
 /// converts them into two seperate indices.
 /// this can be used by the scalable transformer.
-fn convert_sequence(seq: &[i64], args: &Args) -> Vec<i64> {
+fn convert_sequence(seq: &[i64], shift: i64, args: &Args) -> Vec<i64> {
     let mut new_seq: Vec<i64> = Vec::new();
     
     let mut x: i64;
@@ -99,8 +112,8 @@ fn convert_sequence(seq: &[i64], args: &Args) -> Vec<i64> {
         x = *i/args.group_size;
         y = *i%args.group_size;
 
-        new_seq.push(x);
-        new_seq.push(y);
+        new_seq.push(x + shift);
+        new_seq.push(y + shift);
     }
 
     return new_seq;
@@ -126,12 +139,8 @@ fn convert_binary(seq: &[i64], args: &Args) -> Vec<i64> {
     return new_seq;
 }
 
-fn get_permutation(seq: &[i64], args: &Args) -> Vec<i64> {
-    let max_group_size = if (args.transposition_type == "scalable") {
-        2_i64.pow(args.log_max_group_size.try_into().unwrap())
-    } else {
-        args.group_size
-    };
+fn get_permutation(seq: &[i64], shift: i64, args: &Args) -> Vec<i64> {
+    let max_group_size = get_max_group_size(args);
 
     // initialize the permutations
     let mut perm: Vec<i64> = (0..max_group_size).collect();
@@ -152,7 +161,7 @@ fn get_permutation(seq: &[i64], args: &Args) -> Vec<i64> {
         }
 
         if *i != 0 {
-            perm.swap(x as usize, y as usize);
+            perm.swap((x + shift) as usize, (y + shift) as usize);
         }
     }
 
@@ -189,6 +198,8 @@ fn main() -> Result<(), Box<dyn Error>> {
     let mut general_data: Vec<Vec<i64>> = Vec::new();
     let mut perms: Vec<Vec<i64>> = Vec::new();
 
+    let mut rng = rand::thread_rng();
+
     // generate the general data
     println!("Generating general data...");
     for _ in tqdm!(
@@ -197,10 +208,21 @@ fn main() -> Result<(), Box<dyn Error>> {
         let mut seq = generate_random_sequence(&args);
         let mut new_seq = seq.clone();
 
+        // find window shift if needed
+        let mut shift = 0;
+
+        if (args.use_window) {
+            let max_window_shift = get_max_group_size(&args) - args.group_size + 1;
+
+            if (max_window_shift > 0) {
+                shift = rng.gen_range(0..max_window_shift);
+            }
+        }
+
         // check which version to push
         if (args.transposition_type == "scalable") {
             // convert the sequence to individual swaps
-            new_seq = convert_sequence(&new_seq, &args);
+            new_seq = convert_sequence(&new_seq, shift, &args);
 
             if (args.base == "bin") {
                 // convert the sequence to binary
@@ -211,7 +233,7 @@ fn main() -> Result<(), Box<dyn Error>> {
         general_data.push(new_seq.clone());
 
         if (args.include_perms) {
-            perms.push(get_permutation(&seq, &args))
+            perms.push(get_permutation(&seq, shift, &args))
         }
     }
 
@@ -232,8 +254,9 @@ fn main() -> Result<(), Box<dyn Error>> {
         thread::spawn(move || {
             let mut count = 0;
             while count < identities_needed / args_clone.threads {
+
                 let seq = generate_random_sequence(&args_clone);
-                let perm = get_permutation(&seq, &args_clone);
+                let perm = get_permutation(&seq, 0, &args_clone);
 
                 if is_identity(&perm, &args_clone) {
                     sender_clone.send((seq, perm)).unwrap();
