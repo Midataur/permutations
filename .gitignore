@@ -4,9 +4,11 @@ binary-classifier/model/
 permutation-generator/wandb/
 permutation-generator/venv/
 permutation-generator/model/
+permutation-generator/results/
 scaling-generator/wandb/
 scaling-generator/venv/
 scaling-generator/model/
+scaling-generator/results/
 *.pyc
 .out
 .env
