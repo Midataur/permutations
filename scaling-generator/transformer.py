@@ -116,7 +116,7 @@ class BigramLanguageModel(nn.Module):
 
         x = tok_emb + pos_emb #(B, T, C)
         x = self.sa_heads(x) # apply one head of self attention
-        x = self.blocks(x) # apply feedforward
+        x = self.blocks(x) # apply a bunch of blocks (sa + feedforward)
 
         logits = self.lm_head(x) #(B, T, vocab_size)
 

@@ -11,7 +11,7 @@ use std::sync::mpsc;
 use csv::WriterBuilder;
 use std::error::Error;
 
-/// Program to generate data for the bianry classifier.
+/// Program to generate data
 #[derive(Parser, Debug, Clone)]
 #[command(about, long_about = None)]
 struct Args {
