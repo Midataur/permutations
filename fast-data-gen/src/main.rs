@@ -64,7 +64,7 @@ struct Args {
     /// This is the exponent for the maximum group order base 2.
     /// eg. if this argument is 4, then the maxmimum group order is 2^4=16.
     /// Used for the scaling generator only.
-    #[arg(short, long, default_value_t = 64)]
+    #[arg(short, long, default_value_t = 4)]
     log_max_group_size: i64,
 
     /// Use window?
@@ -129,7 +129,9 @@ fn convert_binary(seq: &[i64], args: &Args) -> Vec<i64> {
 
         let mut x = *i;
 
-        for j in 0..(args.log_max_group_size+1) {
+        // todo: why the hell am i using 5 binary digits to represent, at most, 15?
+        // just set the maxmimum index to 15
+        for j in 0..(args.log_max_group_size) {
             // extracts the xth digit of i
             new_seq.push(x & 1);
             x = x >> 1;
