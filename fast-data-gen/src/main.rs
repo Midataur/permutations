@@ -28,7 +28,8 @@ struct Args {
     dataset_size: i64,
 
     /// Identity proportion.
-    #[arg(short, long, default_value_t = 0.5)]
+    /// Must be a value between 0 and 1.
+    #[arg(short, long, default_value_t = 0.0)]
     identity_proportion: f64,
 
     /// Filename to write to.
@@ -42,43 +43,47 @@ struct Args {
     threads: i64,
 
     /// Type of transposition to use.
-    /// Can be "general", "elementary", or "scalable".
-    /// If scalable, identity proportion must be 0.
+    /// Can be "general", "elementary", "hybrid", or "binary" (binary).
+    /// Binary means general but written using place value notation.
+    /// Hybrid means general, but written as two seperate indices
+    /// If binary or hybrid, identity proportion must be 0.
     #[arg(short='T', long, default_value_t = String::from("elementary"))]
     transposition_type: String,
 
-    /// Include permutations?
-    /// Determines whether to include the actual permutations as well.
-    /// Permutations are written to a seperate file.
-    /// Used for the scaling generator.
-    #[arg(short='P', long, default_value_t = false)]
-    include_perms: bool,
-
-    /// Base to use.
-    /// Accepts dec or bin.
-    /// Used for the scaling generator only.
-    #[arg(short, long, default_value_t = String::from("dec"))]
-    base: String,
+    /// Are we planning on scaling up?
+    /// If so, allows us to have a different max_group size to group_size.
+    /// If scaling is enabled then identity proportion must be zero.
+    #[arg(short='S', long, default_value_t = false)]
+    scaling: bool,
 
     /// Maximum hypothetical group order that can be used later.
-    /// This is the exponent for the maximum group order base 2.
-    /// eg. if this argument is 4, then the maxmimum group order is 2^4=16.
-    /// Used for the scaling generator only.
-    #[arg(short, long, default_value_t = 4)]
-    log_max_group_size: i64,
+    /// Used for scaling gen only.
+    #[arg(short='M', long, default_value_t = 0)]
+    max_group_size: i64,
 
     /// Use window?
-    /// Determines whether a shift window should be used for the permutations
+    /// Determines whether a shift window should be used for the permutations.
+    /// Used for scaling generator only.
     #[arg(short='k', long, default_value_t = false)]
     use_window: bool,
 }
 
 fn get_max_group_size(args: &Args) -> i64 {
-    return if (args.transposition_type == "scalable") {
-        2_i64.pow(args.log_max_group_size.try_into().unwrap())
+    return if (args.scaling) {
+        args.max_group_size
     } else {
         args.group_size
     };
+}
+
+fn get_digits_needed(args: &Args) -> i64 {
+    let largest_possible = if (args.scaling) {
+        args.max_group_size
+    } else {
+        args.group_size
+    } - 1;
+
+    return largest_possible.ilog2() as i64;
 }
 
 /// generate a random sequence
@@ -89,7 +94,7 @@ fn generate_random_sequence(args: &Args) -> Vec<i64> {
     ) {
         args.group_size
     } else {
-        args.group_size.pow(2)-1
+        args.group_size.pow(2)
     };
 
     return (
@@ -99,39 +104,76 @@ fn generate_random_sequence(args: &Args) -> Vec<i64> {
     ).collect();
 }
 
-/// assumes that transpositions are in general form.
-/// converts them into two seperate indices.
-/// this can be used by the scalable transformer.
-fn convert_sequence(seq: &[i64], shift: i64, args: &Args) -> Vec<i64> {
+/// Converts a sequence from the group_size order to the max_group_size_order.
+/// Required for "general" or "binary" transposition types.
+fn convert_order(seq: &[i64], args: &Args) -> Vec<i64> {
     let mut new_seq: Vec<i64> = Vec::new();
-    
-    let mut x: i64;
-    let mut y: i64;
 
     for i in seq.iter() {
-        x = *i/args.group_size;
-        y = *i%args.group_size;
+        let transformed = *i%args.group_size + args.max_group_size*(*i/args.group_size);
 
-        new_seq.push(x + shift);
-        new_seq.push(y + shift);
+        new_seq.push(
+            transformed
+        );
     }
 
     return new_seq;
 }
 
-/// converts a sequence into binary digits.
-/// resulting sequence will be little endian
+/// Shifts a sequence if required.
+fn shift_sequence(seq: &[i64], shift: i64, args: &Args) -> Vec<i64> {
+    let mut new_seq: Vec<i64> = Vec::new();
+
+    let max_group_size = get_max_group_size(args);
+
+    for i in seq.iter() {
+        let shifted = if (args.transposition_type == "elementary") {
+            i + shift
+        } else {
+            i + shift*(max_group_size + 1)
+        };
+
+        new_seq.push(
+            shifted
+        );
+    }
+
+    return new_seq;
+}
+
+/// Assumes that transpositions are in general form.
+/// Converts them into two seperate indices.
+/// This is used if representing bases binaryly
+fn convert_to_seperate_indices(seq: &[i64], args: &Args) -> Vec<i64> {
+    let mut new_seq: Vec<i64> = Vec::new();
+    
+    let mut x: i64;
+    let mut y: i64;
+
+    let max_group_size = get_max_group_size(args);
+
+    for i in seq.iter() {
+        x = *i/max_group_size;
+        y = *i%max_group_size;
+
+        new_seq.push(x);
+        new_seq.push(y);
+    }
+
+    return new_seq;
+}
+
+/// Converts a sequence into binary digits.
+/// Resulting sequence will be little endian
 fn convert_binary(seq: &[i64], args: &Args) -> Vec<i64> {
     let mut new_seq: Vec<i64> = Vec::new();
     
     for i in seq.iter() {
         // do some funky bitwise operations to extract the binary
-
         let mut x = *i;
-
-        // todo: why the hell am i using 5 binary digits to represent, at most, 15?
-        // just set the maxmimum index to 15
-        for j in 0..(args.log_max_group_size) {
+        let digits_needed = get_digits_needed(args);
+    
+        for j in 0..(digits_needed) {
             // extracts the xth digit of i
             new_seq.push(x & 1);
             x = x >> 1;
@@ -141,7 +183,7 @@ fn convert_binary(seq: &[i64], args: &Args) -> Vec<i64> {
     return new_seq;
 }
 
-fn get_permutation(seq: &[i64], shift: i64, args: &Args) -> Vec<i64> {
+fn get_permutation(seq: &[i64], args: &Args) -> Vec<i64> {
     let max_group_size = get_max_group_size(args);
 
     // initialize the permutations
@@ -158,19 +200,19 @@ fn get_permutation(seq: &[i64], shift: i64, args: &Args) -> Vec<i64> {
             x = *i;
             y = *i-1;
         } else {
-            x = *i/args.group_size;
-            y = *i%args.group_size;
+            x = *i/max_group_size;
+            y = *i%max_group_size;
         }
 
         if *i != 0 {
-            perm.swap((x + shift) as usize, (y + shift) as usize);
+            perm.swap(x as usize, y as usize);
         }
     }
 
     return perm;
 }
 
-/// tells you if a sequence is the identity
+/// Tells you if a sequence is the identity
 fn is_identity(perm: &[i64], args: &Args) -> bool {
     // check if the permutation is the identity 
     for i in perm.iter() {
@@ -192,8 +234,18 @@ fn main() -> Result<(), Box<dyn Error>> {
     );
 
     assert!(
-        args.group_size <= 2_i64.pow(args.log_max_group_size.try_into().unwrap()),
-        "\nGroup size can't be lower than 2^log_max_group_size\n"
+        args.scaling && args.group_size <= 2_i64.pow(args.max_group_size.try_into().unwrap()),
+        "\nGroup size can't be lower than max_group_size\n"
+    );
+
+    assert!(
+        args.max_group_size > 0 && args.scaling,
+        "\nmax_group_size must be at least 0\n"
+    );
+
+    assert!(
+        !(args.scaling && args.identity_proportion > 0.0),
+        "\nScaling mode must have identity_proportion = 0\n"
     );
 
     // do the general data
@@ -207,8 +259,8 @@ fn main() -> Result<(), Box<dyn Error>> {
     for _ in tqdm!(
         0..((args.dataset_size as f64)*(1.0-args.identity_proportion)) as i64
     ) {
+        // create sequence
         let mut seq = generate_random_sequence(&args);
-        let mut new_seq = seq.clone();
 
         // find window shift if needed
         let mut shift = 0;
@@ -220,13 +272,27 @@ fn main() -> Result<(), Box<dyn Error>> {
                 shift = rng.gen_range(0..max_window_shift);
             }
         }
+        
+        // convert for scaling if required
+        if (args.scaling) {
+
+            // convert order
+            if (args.transposition_type != "elementary") {
+                seq = convert_order(&seq, &args);
+            }
+
+            // shift
+            seq = shift_sequence(&seq, shift, &args);
+        }
+
+        let mut new_seq = seq.clone();
 
         // check which version to push
-        if (args.transposition_type == "scalable") {
+        if (args.transposition_type == "binary" || args.transposition_type == "hybrid") {
             // convert the sequence to individual swaps
-            new_seq = convert_sequence(&new_seq, shift, &args);
+            new_seq = convert_to_seperate_indices(&new_seq, &args);
 
-            if (args.base == "bin") {
+            if (args.transposition_type == "binary") {
                 // convert the sequence to binary
                 new_seq = convert_binary(&new_seq, &args)
             }
@@ -234,13 +300,13 @@ fn main() -> Result<(), Box<dyn Error>> {
         
         general_data.push(new_seq.clone());
 
-        if (args.include_perms) {
-            perms.push(get_permutation(&seq, shift, &args))
+        if (args.scaling) {
+            perms.push(get_permutation(&seq, &args))
         }
     }
 
-    // generate the identity data
-    // create a progress bar
+    // Generate the identity data
+    // Create a progress bar
     let identities_needed = ((args.dataset_size as f64)*args.identity_proportion) as i64;
     let mut identity_data: Vec<Vec<i64>> = Vec::new();
 
@@ -258,7 +324,7 @@ fn main() -> Result<(), Box<dyn Error>> {
             while count < identities_needed / args_clone.threads {
 
                 let seq = generate_random_sequence(&args_clone);
-                let perm = get_permutation(&seq, 0, &args_clone);
+                let perm = get_permutation(&seq, &args_clone);
 
                 if is_identity(&perm, &args_clone) {
                     sender_clone.send((seq, perm)).unwrap();
@@ -273,7 +339,10 @@ fn main() -> Result<(), Box<dyn Error>> {
         // get a sequence and add it to the data
         let (seq, perm) = receiver.recv().unwrap();
         identity_data.push(seq);
-        perms.push(perm);
+
+        if (args.scaling) {
+            perms.push(perm);
+        }
     }
 
     // Write the data to the file
@@ -291,17 +360,19 @@ fn main() -> Result<(), Box<dyn Error>> {
     seq_writer.flush()?;
 
     // write perm data if required
-    let mut perm_writer = WriterBuilder::new().from_path(
-        (args.filename.to_string() + "_perms.csv")
-    )?;
+    if (args.scaling) {
+        let mut perm_writer = WriterBuilder::new().from_path(
+            (args.filename.to_string() + "_perms.csv")
+        )?;
 
-    for row in tqdm!(perms.iter()) {
-        let string_row: Vec<String> = row.into_iter().map(|value| value.to_string()).collect();
-        perm_writer.write_record(string_row);
+        for row in tqdm!(perms.iter()) {
+            let string_row: Vec<String> = row.into_iter().map(|value| value.to_string()).collect();
+            perm_writer.write_record(string_row);
+        }
+    
+        // Flush the writer to ensure all data is written to the file
+        perm_writer.flush()?;
     }
-
-    // Flush the writer to ensure all data is written to the file
-    perm_writer.flush()?;
 
     Ok(())
 }

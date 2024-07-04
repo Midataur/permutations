@@ -1,46 +1,85 @@
 import torch
-from math import log2
+from math import log2, floor
 
 torch.manual_seed(42)
 
-# GLOBAL
 MAX_GROUP_SIZE = 16
+ACTUAL_GROUP_SIZE = 10
+WINDOW = True
 
-if int(log2(MAX_GROUP_SIZE)) != log2(MAX_GROUP_SIZE):
-    raise Exception("MAX_GROUP_SIZE must be a power of 2")
+# used to enable legacy features that have been deprecated
+# this is for backwards compatability reasons
+LEGACY_OVERRIDE = True
+# used for backwards compatability with an older version of datagen
+# adds one to the number of digits used for a binary number
+DIGIT_OVERRIDE = True
 
 # the maximum number of transpositions in the input sequence
 MAX_TRANS_NUMBER = 10
+
+# can be elementary (one token per transposition, only adjacent transpositions allowed)
+# can be general (one token per transposition, general transpositions allowed) 
+# or digital (each tranposition is written in place value notation)
+INPUT_TYPE = "digital"
 # maximum length of input sequence (in tokens)
 # don't touch this
-INPUT_LENGTH = (int(log2(MAX_GROUP_SIZE)) + 1) * 2 * MAX_TRANS_NUMBER
-CONTEXT_LENGTH = INPUT_LENGTH + 1 + MAX_GROUP_SIZE + 1
+
+# base to use for inputting transpositions (if using digital)
+#should be None or an integer
+TRANS_BASE = 2
+
+if INPUT_TYPE == "digital":
+    DIGITS_USED = floor(log2(MAX_GROUP_SIZE)/log2(TRANS_BASE))
+
+    if DIGIT_OVERRIDE:
+        DIGITS_USED += 1
+
+    INPUT_LENGTH = DIGITS_USED * 2 * MAX_TRANS_NUMBER
+
+else:
+    INPUT_LENGTH = MAX_TRANS_NUMBER
+
+CONTEXT_LENGTH = INPUT_LENGTH + 1 + MAX_GROUP_SIZE
+
+if LEGACY_OVERRIDE:
+    CONTEXT_LENGTH += 1 # allows for deprecated end_sequence_token
+
 PATH = "."
 DATA = "/data/window_test/"
-MODELNAME = "window-8.0"
+MODELNAME = "window-7.0"
 # can be "full" or an integer
 # i recommend 64
 BATCHSIZE = 64
 
-# general or elementary
+# TOKENS
+# do not change unless you're max
+match INPUT_TYPE:
+    case "elementary":
+        num_trans = MAX_GROUP_SIZE
+    case "general":
+        num_trans = MAX_GROUP_SIZE**2
+    case "digital":
+        num_trans = TRANS_BASE
 
-# base to use for inputting transpositions
-TRANS_BASE = 2
+num_normal = num_trans + MAX_GROUP_SIZE
 
-# SPECIAL TOKENS
-# do not change manually
-num_normal = TRANS_BASE + MAX_GROUP_SIZE
-num_special = 3
+num_special = 2
+if LEGACY_OVERRIDE:
+    num_special = 3
+
 NULL_TOKEN = num_normal
 START_PREDICTION_TOKEN = num_normal + 1
+
+# this is deprecated and should no longer be used
 END_PREDICTION_TOKEN = num_normal + 2
 
 # TRANSFORMER HYPERPARAMETERS
+# you can change these if you want
 vocab_size = num_normal + num_special
-n_embed = 102
+n_embed = 402
 block_size = CONTEXT_LENGTH
 n_head = 6
-n_blocks = 8
+n_blocks = 4
 dropout = 0
 
 # TRAINING HYPERPARAMETERS

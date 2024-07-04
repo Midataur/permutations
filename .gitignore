@@ -9,6 +9,7 @@ scaling-generator/wandb/
 scaling-generator/venv/
 scaling-generator/model/
 scaling-generator/results/
+scaling-generator/visualisation/
 *.pyc
 .out
 .env

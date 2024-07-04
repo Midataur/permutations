@@ -84,6 +84,10 @@ wandb.init(
       "base": TRANS_BASE,
       "batch_size": BATCHSIZE,
       "context_length": CONTEXT_LENGTH,
+      "actual_group_size": ACTUAL_GROUP_SIZE,
+      "window": WINDOW,
+      "input_type": INPUT_TYPE,
+      "legacy_override": LEGACY_OVERRIDE
     },
     settings=wandb.Settings(start_method="fork"),
     resume="allow",

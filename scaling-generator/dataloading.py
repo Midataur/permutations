@@ -35,7 +35,12 @@ class SimpleDataset(Dataset):
           new_seq = list(sequence) + [START_PREDICTION_TOKEN] + [NULL_TOKEN]*(padding_len)
 
           # do the fake autoregression
-          for pos, char in enumerate(shifted_perm + [END_PREDICTION_TOKEN]):
+          adding = shifted_perm
+
+          if LEGACY_OVERRIDE:
+            adding += [END_PREDICTION_TOKEN]
+
+          for pos, char in enumerate(adding):
             data.append(list(new_seq))
 
             new_seq[len(sequence) + 1 + pos] = char
