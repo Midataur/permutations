@@ -234,12 +234,12 @@ fn main() -> Result<(), Box<dyn Error>> {
     );
 
     assert!(
-        args.scaling && args.group_size <= 2_i64.pow(args.max_group_size.try_into().unwrap()),
+        !(args.scaling && args.group_size > args.max_group_size),
         "\nGroup size can't be lower than max_group_size\n"
     );
 
     assert!(
-        args.max_group_size > 0 && args.scaling,
+        !(args.max_group_size <= 0 && args.scaling),
         "\nmax_group_size must be at least 0\n"
     );
 
