@@ -47,21 +47,20 @@ if LEGACY_OVERRIDE:
     CONTEXT_LENGTH += 1 # allows for deprecated end_sequence_token
 
 PATH = "."
-DATA = "/data/elementary/"
-MODELNAME = "elementary-1.0"
+DATA = "/data/hybrid_test/"
+MODELNAME = "hybrid-1.0"
 # can be "full" or an integer
 # i recommend 64
 BATCHSIZE = 64
 
 # TOKENS
 # do not change unless you're max
-match INPUT_TYPE:
-    case "elementary" | "hybrid":
-        num_trans = MAX_GROUP_SIZE
-    case "general":
-        num_trans = MAX_GROUP_SIZE**2
-    case "digital":
-        num_trans = TRANS_BASE
+if INPUT_TYPE in ["elementary", "hybrid"]:
+    num_trans = MAX_GROUP_SIZE
+elif INPUT_TYPE == "general":
+    num_trans = MAX_GROUP_SIZE**2
+elif INPUT_TYPE == "digital":
+    num_trans = TRANS_BASE
 
 num_normal = num_trans + MAX_GROUP_SIZE
 
