@@ -47,8 +47,8 @@ if LEGACY_OVERRIDE:
     CONTEXT_LENGTH += 1 # allows for deprecated end_sequence_token
 
 PATH = "."
-DATA = "/data/hybrid_test/"
-MODELNAME = "hybrid-1.0"
+DATA = "/data/elementary/"
+MODELNAME = "elementary-1.0"
 # can be "full" or an integer
 # i recommend 64
 BATCHSIZE = 64
