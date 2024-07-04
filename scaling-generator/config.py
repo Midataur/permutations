@@ -9,10 +9,10 @@ WINDOW = True
 
 # used to enable legacy features that have been deprecated
 # this is for backwards compatability reasons
-LEGACY_OVERRIDE = False
+LEGACY_OVERRIDE = True
 # used for backwards compatability with an older version of datagen
 # adds one to the number of digits used for a binary number
-DIGIT_OVERRIDE = False
+DIGIT_OVERRIDE = True
 
 # the maximum number of transpositions in the input sequence
 MAX_TRANS_NUMBER = 10
@@ -20,17 +20,16 @@ MAX_TRANS_NUMBER = 10
 # can be elementary (one token per transposition, only adjacent transpositions allowed)
 # can be general (one token per transposition, general transpositions allowed)
 # can be hybrid (two tokens per transposition, general transpositions allowed)
-# or digital (each tranposition is written in place value notation)
-INPUT_TYPE = "hybrid"
+# or binary (each tranposition is written in binary)
+INPUT_TYPE = "binary"
 # maximum length of input sequence (in tokens)
 # don't touch this
 
 # base to use for inputting transpositions (if using digital)
 #should be None or an integer
-TRANS_BASE = None
 
-if INPUT_TYPE == "digital":
-    DIGITS_USED = floor(log2(MAX_GROUP_SIZE)/log2(TRANS_BASE))
+if INPUT_TYPE == "binary":
+    DIGITS_USED = floor(log2(MAX_GROUP_SIZE))
 
     if DIGIT_OVERRIDE:
         DIGITS_USED += 1
@@ -47,8 +46,8 @@ if LEGACY_OVERRIDE:
     CONTEXT_LENGTH += 1 # allows for deprecated end_sequence_token
 
 PATH = "."
-DATA = "/data/hybrid_test/"
-MODELNAME = "hybrid-1.0"
+DATA = "/data/window_test/"
+MODELNAME = "window-7.0"
 # can be "full" or an integer
 # i recommend 64
 BATCHSIZE = 64
@@ -59,8 +58,8 @@ if INPUT_TYPE in ["elementary", "hybrid"]:
     num_trans = MAX_GROUP_SIZE
 elif INPUT_TYPE == "general":
     num_trans = MAX_GROUP_SIZE**2
-elif INPUT_TYPE == "digital":
-    num_trans = TRANS_BASE
+elif INPUT_TYPE == "binary":
+    num_trans = 2
 
 num_normal = num_trans + MAX_GROUP_SIZE
 
@@ -77,10 +76,10 @@ END_PREDICTION_TOKEN = num_normal + 2
 # TRANSFORMER HYPERPARAMETERS
 # you can change these if you want
 vocab_size = num_normal + num_special
-n_embed = 402
+n_embed = 102
 block_size = CONTEXT_LENGTH
 n_head = 6
-n_blocks = 4
+n_blocks = 8
 dropout = 0
 
 # TRAINING HYPERPARAMETERS

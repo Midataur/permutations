@@ -81,3 +81,11 @@ def convert_perm_to_tokens(perm):
 
 def convert_tokens_to_perm(tokens):
   return [token - num_trans for token in tokens]
+
+# takes a token and tells you what type it is
+def token_type(token):
+  if token < num_trans:
+    return "transposition"
+  elif token < num_normal:
+    return "permutation"
+  return "special"

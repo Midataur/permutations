@@ -81,7 +81,6 @@ wandb.init(
       "n_blocks": n_blocks,
       "dropout": dropout,
       "weight_decay": weight_decay,
-      "base": TRANS_BASE,
       "batch_size": BATCHSIZE,
       "context_length": CONTEXT_LENGTH,
       "actual_group_size": ACTUAL_GROUP_SIZE,

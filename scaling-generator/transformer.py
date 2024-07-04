@@ -3,7 +3,7 @@ from torch import cuda
 import torch.nn as nn
 from torch.nn import functional as F
 from config import *
-from utilities import convert_tokens_to_perm
+from utilities import convert_tokens_to_perm, token_type
 import numpy as np
 
 # model based off of this video: https://www.youtube.com/watch?v=kCc8FmEb1nY
@@ -11,7 +11,7 @@ import numpy as np
 # basically i removed the masking from the self attention step
 # and changed the output to be logisitic and one node instead of softmax
 
-assert n_embed % n_head == 0 
+assert n_embed % n_head == 0
 
 class Head(nn.Module):
     def __init__(self, head_size):
@@ -125,7 +125,13 @@ class BigramLanguageModel(nn.Module):
 
         return logits
     
-    def generate(self, sequence):
+    def generate(self, sequence, force_valid=False):
+        """
+            Generates a permutation for a sequence.
+            If force_valid is set to True then the sequence is
+            guaranteed to be a valid permutation, if not a correct one.
+        """
+
         self.eval()
 
         # use gpu for processing
@@ -152,12 +158,23 @@ class BigramLanguageModel(nn.Module):
             logits = self(input_tensor.unsqueeze(0))
             
             # get the most likely token
-            token = torch.argmax(logits, dim=1).item()
+            chosen = None
+
+            if not force_valid:
+                chosen = logits.argmax().item()
+            else:
+                for token in logits.argsort(descending=True)[0]:
+                    if token not in permutation and token_type(token) == "permutation":
+                        chosen = token
+                        break
+            
+            if chosen == None:
+                raise Exception("No possible token found - this shouldn't be possible")
             
             # append it to the permutation
-            permutation.append(token)
+            permutation.append(chosen)
             
             # add it to the input tensor
-            input_tensor[AR_index + x] = token
+            input_tensor[AR_index + x] = chosen
         
         return np.array(convert_tokens_to_perm(permutation))
