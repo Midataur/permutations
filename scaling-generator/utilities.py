@@ -77,7 +77,7 @@ def calculate_accuracy(output, target):
 
 # takes a permutation and converts it to tokens
 def convert_perm_to_tokens(perm):
-  return [char + TRANS_BASE for char in perm]
+  return [char + num_trans for char in perm]
 
 def convert_tokens_to_perm(tokens):
-  return [token - TRANS_BASE for token in tokens]
+  return [token - num_trans for token in tokens]
