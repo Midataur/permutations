@@ -77,10 +77,10 @@ def calculate_accuracy(output, target):
 
 # takes a permutation and converts it to tokens
 def convert_perm_to_tokens(perm):
-  return [char + num_trans for char in perm]
+  return [int(char + num_trans) for char in perm]
 
 def convert_tokens_to_perm(tokens):
-  return [token - num_trans for token in tokens]
+  return [int(token - num_trans) for token in tokens]
 
 # takes a token and tells you what type it is
 def token_type(token):
