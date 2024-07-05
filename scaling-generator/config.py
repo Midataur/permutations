@@ -8,8 +8,8 @@ ACTUAL_GROUP_SIZE = 10
 WINDOW = True
 
 PATH = "."
-DATA = "/data/hybrid_test/"
-MODELNAME = "hybrid-3.0"
+DATA = "/data/hybrid_long/"
+MODELNAME = "hybrid-long-1.0"
 
 # used to enable legacy features that have been deprecated
 # this is for backwards compatability reasons
@@ -19,7 +19,7 @@ LEGACY_OVERRIDE = False
 DIGIT_OVERRIDE = False
 
 # the maximum number of transpositions in the input sequence
-MAX_TRANS_NUMBER = 10
+MAX_TRANS_NUMBER = 40
 
 # can be elementary (one token per transposition, only adjacent transpositions allowed)
 # can be general (one token per transposition, general transpositions allowed)
@@ -88,7 +88,7 @@ num_epochs = 10**8
 BATCHSIZE = 64
 
 # good starting value: 0.01
-weight_decay = 0.02
+weight_decay = 0.01
 
 lr_factor = 0.1  # Factor by which the learning rate will be reduced
 lr_patience = 10  # Number of epochs with no improvement after which learning rate will be reduced
