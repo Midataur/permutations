@@ -9,7 +9,7 @@ WINDOW = True
 
 PATH = "."
 DATA = "/data/hybrid_test/"
-MODELNAME = "hybrid-1.0"
+MODELNAME = "hybrid-2.0"
 
 # used to enable legacy features that have been deprecated
 # this is for backwards compatability reasons
@@ -73,7 +73,7 @@ END_PREDICTION_TOKEN = num_normal + 2
 # TRANSFORMER HYPERPARAMETERS
 # you can change these if you want
 vocab_size = num_normal + num_special
-n_embed = 402
+n_embed = 102
 block_size = CONTEXT_LENGTH
 n_head = 6
 n_blocks = 4

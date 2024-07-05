@@ -125,7 +125,7 @@ class BigramLanguageModel(nn.Module):
 
         return logits
     
-    def generate(self, sequence, force_valid=False):
+    def generate(self, sequence, force_valid=False, debug=False):
         """
             Generates a permutation for a sequence.
             If force_valid is set to True then the sequence is
@@ -156,6 +156,9 @@ class BigramLanguageModel(nn.Module):
         for x in range(MAX_GROUP_SIZE):
             # get the logits
             logits = self(input_tensor.unsqueeze(0))
+
+            if debug:
+                print(f"Step {x} logits: {logits}")
             
             # get the most likely token
             chosen = None
