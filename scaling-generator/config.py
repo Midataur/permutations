@@ -8,8 +8,8 @@ ACTUAL_GROUP_SIZE = 10
 WINDOW = True
 
 PATH = "."
-DATA = "/data/elementary/"
-MODELNAME = "elementary-1.0"
+DATA = "/data/hybrid_test/"
+MODELNAME = "hybrid-1.0"
 
 # used to enable legacy features that have been deprecated
 # this is for backwards compatability reasons
