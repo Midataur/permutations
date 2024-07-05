@@ -25,7 +25,7 @@ MAX_TRANS_NUMBER = 10
 # can be general (one token per transposition, general transpositions allowed)
 # can be hybrid (two tokens per transposition, general transpositions allowed)
 # or binary (each tranposition is written in binary)
-INPUT_TYPE = "elementary"
+INPUT_TYPE = "hybrid"
 # maximum length of input sequence (in tokens)
 # don't touch this
 
