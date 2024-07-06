@@ -8,8 +8,8 @@ ACTUAL_GROUP_SIZE = 10
 WINDOW = True
 
 PATH = "."
-DATA = "/data/hybrid_long/"
-MODELNAME = "hybrid-long-1.0"
+DATA = "/data/hybrid_test/"
+MODELNAME = "hybrid-4.0"
 
 # used to enable legacy features that have been deprecated
 # this is for backwards compatability reasons
@@ -19,7 +19,7 @@ LEGACY_OVERRIDE = False
 DIGIT_OVERRIDE = False
 
 # the maximum number of transpositions in the input sequence
-MAX_TRANS_NUMBER = 40
+MAX_TRANS_NUMBER = 10
 
 # can be elementary (one token per transposition, only adjacent transpositions allowed)
 # can be general (one token per transposition, general transpositions allowed)
@@ -73,7 +73,7 @@ END_PREDICTION_TOKEN = num_normal + 2
 # TRANSFORMER HYPERPARAMETERS
 # you can change these if you want
 vocab_size = num_normal + num_special
-n_embed = 102
+n_embed = 402
 block_size = CONTEXT_LENGTH
 n_head = 6
 n_blocks = 4
