@@ -9,7 +9,7 @@ WINDOW = True
 
 PATH = "."
 DATA = "/data/hybrid_test/"
-MODELNAME = "hybrid-5.0"
+MODELNAME = "hybrid-6.0"
 
 # used to enable legacy features that have been deprecated
 # this is for backwards compatability reasons
