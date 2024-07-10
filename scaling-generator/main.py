@@ -181,6 +181,9 @@ for epoch in range(num_epochs):
         
     # always save the model
     torch.save(model.state_dict(), filename)
+    
+    # save embedding pictures so we can make gifs later
+    save_embedding_pictures(model)
 
     # if cur_patience == patience:
     #     print("Early stopping activated")

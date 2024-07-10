@@ -11,5 +11,6 @@ scaling-generator/model/
 scaling-generator/results/
 scaling-generator/visualisation/
 *.pyc
+*.npy
 .out
 .env
