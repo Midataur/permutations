@@ -95,8 +95,8 @@ test_seqs = np.loadtxt(PATH + DATA + "test_data.csv", delimiter=",").astype(int)
 test_perms = np.loadtxt(PATH + DATA + "test_data_perms.csv", delimiter=",").astype(int)
 
 # create the dataloaders
-# train_dataset = SimpleDataset(train_inputs, train_perms)
-# train_dataloader = DataLoader(train_dataset, batch_size=BATCHSIZE, num_workers=0)
+train_dataset = SimpleDataset(train_inputs, train_perms)
+train_dataloader = DataLoader(train_dataset, batch_size=BATCHSIZE, num_workers=0)
 
 val_dataset = SimpleDataset(val_seqs, val_perms)
 val_dataloader = DataLoader(val_dataset, batch_size=BATCHSIZE, num_workers=0)

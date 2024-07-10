@@ -10,6 +10,7 @@ use std::thread;
 use std::sync::mpsc;
 use csv::WriterBuilder;
 use std::error::Error;
+use rand::seq::SliceRandom;
 
 /// Program to generate data
 #[derive(Parser, Debug, Clone)]
@@ -64,8 +65,17 @@ struct Args {
     /// Use window?
     /// Determines whether a shift window should be used for the permutations.
     /// Used for scaling generator only.
+    /// Can't be used at the same time as relabelling.
     #[arg(short='k', long, default_value_t = false)]
     use_window: bool,
+
+    /// Use relabelling?
+    /// Determines whether index relabelling should be used for the permutations.
+    /// Used for scaling generator only.
+    /// Can't be used at the same time as window.
+    /// Can't be used with elementary transpositions.
+    #[arg(short='R', long, default_value_t = false)]
+    use_relabelling: bool,
 }
 
 fn get_max_group_size(args: &Args) -> i64 {
@@ -121,6 +131,7 @@ fn convert_order(seq: &[i64], args: &Args) -> Vec<i64> {
 }
 
 /// Shifts a sequence if required.
+/// Used for the window method.
 fn shift_sequence(seq: &[i64], shift: i64, args: &Args) -> Vec<i64> {
     let mut new_seq: Vec<i64> = Vec::new();
 
@@ -139,6 +150,38 @@ fn shift_sequence(seq: &[i64], shift: i64, args: &Args) -> Vec<i64> {
     }
 
     return new_seq;
+}
+
+/// Relabels a sequence if required.
+/// Used for the relabelling method.
+fn relabel_sequence(seq: &[i64], args: &Args) -> Vec<i64> {
+    let max_group_size = get_max_group_size(args);
+    
+    // generate a random relabelling
+    let mut rng = rand::thread_rng();
+    let mut relabelling: Vec<i64> = (0..max_group_size).collect();
+    relabelling.shuffle(&mut rng);
+
+    let mut relabelled: Vec<i64> = Vec::new();
+
+    // do the relabelling
+    for i in seq.iter() {
+        // decompose the transposition
+        let x = *i/max_group_size;
+        let y = *i%max_group_size;
+
+        // find new indices
+        let new_x = relabelling[x as usize];
+        let new_y = relabelling[y as usize];
+
+        // recombine
+        let new_trans = new_x*max_group_size + new_y;
+
+        // push the new one
+        relabelled.push(new_trans);
+    }
+
+    return relabelled;
 }
 
 /// Assumes that transpositions are in general form.
@@ -224,10 +267,7 @@ fn is_identity(perm: &[i64], args: &Args) -> bool {
     return true
 }
 
-fn main() -> Result<(), Box<dyn Error>> {
-    let args = Args::parse();
-
-    // throw error if inputs are bad
+fn check_inputs(args: &Args) {
     assert!(
         args.dataset_size % args.threads == 0, 
         "\nThreads must divide dataset size\n"
@@ -247,6 +287,23 @@ fn main() -> Result<(), Box<dyn Error>> {
         !(args.scaling && args.identity_proportion > 0.0),
         "\nScaling mode must have identity_proportion = 0\n"
     );
+
+    assert!(
+        !(args.use_window && args.use_relabelling),
+        "\nYou can't use window and relabelling at the same time\n"
+    );
+
+    assert!(
+        !(args.use_relabelling && args.transposition_type == "elementary"),
+        "\nYou can't use relabelling with elementary transpositions.\n"
+    );
+}
+
+fn main() -> Result<(), Box<dyn Error>> {
+    let args = Args::parse();
+
+    // throw error if inputs are bad
+    check_inputs(&args);
 
     // do the general data
     let mut general_data: Vec<Vec<i64>> = Vec::new();
@@ -272,17 +329,21 @@ fn main() -> Result<(), Box<dyn Error>> {
                 shift = rng.gen_range(0..max_window_shift);
             }
         }
-        
+
         // convert for scaling if required
         if (args.scaling) {
-
             // convert order
             if (args.transposition_type != "elementary") {
                 seq = convert_order(&seq, &args);
             }
 
-            // shift
+            // shift if needed
             seq = shift_sequence(&seq, shift, &args);
+
+            // relabel if needed
+            if (args.use_relabelling) {
+                seq = relabel_sequence(&seq, &args);
+            }
         }
 
         let mut new_seq = seq.clone();
