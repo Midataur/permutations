@@ -93,9 +93,15 @@ def token_type(token):
 
 # saves the embedding similarity matrices so we can make a gif later
 def save_embedding_pictures(model):
+    # cuda? (gpu)
+    if torch.cuda.is_available():
+        device = "cuda:0"
+    else:
+        device = "cpu"
+
     types = [
-        ("position", model.module.position_embedding(torch.arange(block_size))),
-        ("token", model.module.token_embedding_table(torch.arange(vocab_size)))
+        ("position", model.module.position_embedding(torch.arange(block_size, device=device))),
+        ("token", model.module.token_embedding_table(torch.arange(vocab_size, device=device)))
     ]
 
     for embedding_type, embedding in types:
