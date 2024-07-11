@@ -86,7 +86,8 @@ wandb.init(
       "actual_group_size": ACTUAL_GROUP_SIZE,
       "window": WINDOW,
       "input_type": INPUT_TYPE,
-      "legacy_override": LEGACY_OVERRIDE
+      "legacy_override": LEGACY_OVERRIDE,
+      "relabel": RELABEL
     },
     settings=wandb.Settings(start_method="fork"),
     resume="allow",

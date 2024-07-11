@@ -3,13 +3,14 @@ from math import log2, floor
 
 torch.manual_seed(42)
 
-MAX_GROUP_SIZE = 16
+MAX_GROUP_SIZE = 25
 ACTUAL_GROUP_SIZE = 10
-WINDOW = True
+WINDOW = False
+RELABEL = True
 
 PATH = "."
-DATA = "/data/torn/"
-MODELNAME = "torn-2.0"
+DATA = "/data/torn_long/"
+MODELNAME = "torn_long-1.0"
 
 # used to enable legacy features that have been deprecated
 # this is for backwards compatability reasons
@@ -19,7 +20,7 @@ LEGACY_OVERRIDE = False
 DIGIT_OVERRIDE = False
 
 # the maximum number of transpositions in the input sequence
-MAX_TRANS_NUMBER = 10
+MAX_TRANS_NUMBER = 20
 
 # can be elementary (one token per transposition, only adjacent transpositions allowed)
 # can be general (one token per transposition, general transpositions allowed)
@@ -85,7 +86,7 @@ num_epochs = 10**8
 BATCHSIZE = 64
 
 # good starting value: 0.01
-weight_decay = 0.005
+weight_decay = 0.01
 
 lr_factor = 0.1  # Factor by which the learning rate will be reduced
 lr_patience = 10  # Number of epochs with no improvement after which learning rate will be reduced
