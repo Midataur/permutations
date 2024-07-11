@@ -106,7 +106,7 @@ def save_embedding_pictures(model):
 
     for embedding_type, embedding in types:
         # generate the picture
-        embedding = embedding.detach().numpy()
+        embedding = embedding.detach().cpu().numpy()
 
         similarity = []
 
