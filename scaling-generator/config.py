@@ -9,8 +9,8 @@ WINDOW = False
 RELABEL = True
 
 PATH = "."
-DATA = "/data/torn_long/"
-MODELNAME = "torn_long-1.0"
+DATA = "/data/hybrid_big/"
+MODELNAME = "hybrid-big-1.0"
 
 # used to enable legacy features that have been deprecated
 # this is for backwards compatability reasons
@@ -26,7 +26,7 @@ MAX_TRANS_NUMBER = 20
 # can be general (one token per transposition, general transpositions allowed)
 # can be hybrid (two tokens per transposition, general transpositions allowed)
 # or binary (each tranposition is written in binary)
-INPUT_TYPE = "general"
+INPUT_TYPE = "hybrid"
 
 # maximum length of input sequence (in tokens)
 # don't touch this
