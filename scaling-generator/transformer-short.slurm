@@ -50,7 +50,7 @@ fi
 
 # The job command(s):
 source ./venv/bin/activate
-python ./main.py
+accelerate launch main.py
 
 ##DO NOT ADD/EDIT BEYOND THIS LINE##
 ##Job monitor command to list the resource usage
