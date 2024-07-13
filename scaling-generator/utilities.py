@@ -100,8 +100,8 @@ def save_embedding_pictures(model):
         device = "cpu"
 
     types = [
-        ("position", model.module.position_embedding(torch.arange(block_size, device=device))),
-        ("token", model.module.token_embedding_table(torch.arange(vocab_size, device=device)))
+        ("position", model.position_embedding(torch.arange(block_size, device=device))),
+        ("token", model.token_embedding_table(torch.arange(vocab_size, device=device)))
     ]
 
     for embedding_type, embedding in types:

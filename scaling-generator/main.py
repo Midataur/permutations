@@ -5,195 +5,224 @@ import torch.nn.functional as F
 from torch.optim.lr_scheduler import ReduceLROnPlateau
 import torch
 import wandb
+import config
 from utilities import *
-from config import *
 from dataloading import *
-from tqdm import tqdm
+from tqdm.auto import tqdm
 from transformer import *
 import os
 
-print("Logging in...")
-wandb.login()
+def main():
+    accelerator = Accelerator()
 
-# this is the training script, assumes you're using the transformer
-# if you're using the MLP, you'll need to change the data pipeline and the final dimension
-# also you can modify the transformer config in the transformer.py file
+    print("Logging in...")
+    wandb.login()
 
-# setup the model
-model = BigramLanguageModel()
+    # this is the training script, assumes you're using the transformer
+    # if you're using the MLP, you'll need to change the data pipeline and the final dimension
+    # also you can modify the transformer config in the transformer.py file
 
-# cuda? (gpu)
-if torch.cuda.is_available():
-  device = "cuda:0"
-else:
-  device = "cpu"
+    # load the data
+    print("Loading data...")
 
-# send to gpu (maybe)
-model = nn.DataParallel(model)
-model = model.to(device)
+    # i know this code is kinda bad, it's the result of tech debt
+    (
+        train_inputs, train_perms, train_dataloader, 
+        val_seqs, val_perms, val_dataloader,
+        test_seqs, test_perms, test_dataloader,
+        dataset_size
+    ) = load_data(accelerator)
 
-# optionally: load the model
-filename = PATH + "/model/" + MODELNAME + ".pth"
-if os.path.isfile(filename):
-    model.load_state_dict(torch.load(filename, map_location=torch.device(device)))
+    # setup the model
+    model = BigramLanguageModel()
 
-# Define the loss function
-criterion = nn.CrossEntropyLoss()
+    # send to gpu (maybe)
+    device = accelerator.device
+    model = model.to(device)
 
-# Define the optimizer and scheduler
-optimizer = optim.AdamW(
-    model.parameters(), 
-    lr=learning_rate,
-    weight_decay=weight_decay
-)
+    # optionally: load the model
+    filename = PATH + "/model/" + MODELNAME + ".pth"
+    if os.path.isfile(filename):
+        unwrapped_model = accelerator.unwrap_model(model)
+        unwrapped_model.load_state_dict(torch.load(filename))
 
-scheduler = ReduceLROnPlateau(
-    optimizer,
-    mode='min',
-    factor=lr_factor,
-    patience=lr_patience,
-    threshold=threshold
-)
+    # Define the loss function
+    criterion = nn.CrossEntropyLoss()
 
-print("Training...")
+    # Define the optimizer and scheduler
+    optimizer = optim.AdamW(
+        model.parameters(), 
+        lr=learning_rate,
+        weight_decay=weight_decay
+    )
 
-# train the model
-# start a new wandb run to track this script
-wandb.init(
-    # set the wandb project where this run will be logged
-    project="scaling-generator",
+    scheduler = ReduceLROnPlateau(
+        optimizer,
+        mode='min',
+        factor=lr_factor,
+        patience=lr_patience,
+        threshold=threshold
+    )
 
-    # track run hyperparameters and metadata
-    config={
-      "learning_rate": learning_rate,
-      "scheduling": "plateau",
-      "lr_factor": lr_factor,
-      "lr_patience": lr_patience,
-      "threshold": threshold,
-      "architecture": "Transformer",
-      "epochs": num_epochs,
-      "optimizer": "AdamW",
-      "max_group_size": MAX_GROUP_SIZE,
-      "dataset_size": DATASET_SIZE,
-      "input_length": INPUT_LENGTH,
-      "n_embed": n_embed,
-      "n_head": n_head,
-      "n_blocks": n_blocks,
-      "dropout": dropout,
-      "weight_decay": weight_decay,
-      "batch_size": BATCHSIZE,
-      "context_length": CONTEXT_LENGTH,
-      "actual_group_size": ACTUAL_GROUP_SIZE,
-      "window": WINDOW,
-      "input_type": INPUT_TYPE,
-      "legacy_override": LEGACY_OVERRIDE,
-      "relabel": RELABEL
-    },
-    settings=wandb.Settings(start_method="fork"),
-    resume="allow",
-    id=MODELNAME #CHECK IF THIS IS CORRECT
-)
+    # set up accelerator
+    model, optimizer, train_dataloader, scheduler = accelerator.prepare(
+        model, optimizer, train_dataloader, scheduler
+    )
 
-patience = 45
-cur_patience = 0
-best_loss = float("inf")
+    val_dataloader = accelerator.prepare(val_dataloader)
 
-last_train_loss = None
-last_val_loss = None
+    if accelerator.is_local_main_process:
+        print("Training...")
 
-# training loop
-for epoch in range(num_epochs):
-    model.train()  # Set the model to training mode
+        # train the model
+        # start a new wandb run to track this script
+        wandb.init(
+            # set the wandb project where this run will be logged
+            project="scaling-generator",
 
-    total_train_loss = 0.0
-    total_train_accuracy = 0.0
-    num_batches = 0
+            # track run hyperparameters and metadata
+            config={
+            "learning_rate": learning_rate,
+            "scheduling": "plateau",
+            "lr_factor": lr_factor,
+            "lr_patience": lr_patience,
+            "threshold": threshold,
+            "architecture": "Transformer",
+            "epochs": num_epochs,
+            "optimizer": "AdamW",
+            "max_group_size": MAX_GROUP_SIZE,
+            "dataset_size": dataset_size,
+            "input_length": INPUT_LENGTH,
+            "n_embed": n_embed,
+            "n_head": n_head,
+            "n_blocks": n_blocks,
+            "dropout": dropout,
+            "weight_decay": weight_decay,
+            "batch_size": BATCHSIZE,
+            "context_length": CONTEXT_LENGTH,
+            "actual_group_size": ACTUAL_GROUP_SIZE,
+            "window": WINDOW,
+            "input_type": INPUT_TYPE,
+            "legacy_override": LEGACY_OVERRIDE,
+            "relabel": RELABEL
+            },
+            settings=wandb.Settings(start_method="fork"),
+            resume="allow",
+            id=MODELNAME #CHECK IF THIS IS CORRECT
+        )
 
-    print("Training...")
-    for inputs, targets in tqdm(train_dataloader):  # Assuming you have a DataLoader for your training data
-        optimizer.zero_grad()  # Zero the gradients
-        outputs = model(inputs)  # Forward pass
-        loss = criterion(outputs, targets)  # Calculate the loss
-        loss.backward()  # Backward pass
-        optimizer.step()  # Update weights
+    patience = 45
+    cur_patience = 0
+    best_loss = float("inf")
 
-        # stat track
-        total_train_loss += loss.item()
-        accuracy = calculate_accuracy(outputs, targets)
-        total_train_accuracy += accuracy
-        num_batches += 1
+    last_train_loss = None
+    last_val_loss = None
 
-    average_train_accuracy = total_train_accuracy / num_batches
-    train_loss = total_train_loss / num_batches
+    # training loop
+    for epoch in range(num_epochs):
+        model.train()  # Set the model to training mode
 
-    # Calculate and print accuracy after each epoch
-    with torch.no_grad():
-        model.eval()  # Set the model to evaluation mode
-
-        # calculate validation stats
-        total_accuracy = 0.0
-        total_loss = 0.0
-
+        total_train_loss = 0.0
+        total_train_accuracy = 0.0
         num_batches = 0
 
-        print("Evaluating...")
-        for inputs, targets in tqdm(val_dataloader):
-            outputs = model(inputs)
+        if accelerator.is_local_main_process:
+            print("Training...")
+        
+        for inputs, targets in tqdm(train_dataloader, disable=not accelerator.is_local_main_process):
+            optimizer.zero_grad()  # Zero the gradients
+            outputs = model(inputs)  # Forward pass
+            loss = criterion(outputs, targets)  # Calculate the loss
+            accelerator.backward(loss)  # Backward pass
+            optimizer.step()  # Update weights
 
-            # calculate the val accuracy
+            # stat track
+            total_train_loss += loss.item()
             accuracy = calculate_accuracy(outputs, targets)
-            total_accuracy += accuracy
-
-            # Calculate the val loss
-            loss = criterion(outputs, targets)
-            total_loss += loss.item()
+            total_train_accuracy += accuracy
             num_batches += 1
 
-        average_accuracy = total_accuracy / num_batches
-        val_loss = total_loss / num_batches
+        average_train_accuracy = total_train_accuracy / num_batches
+        train_loss = total_train_loss / num_batches
 
-        metrics = {
-            "validation_accuracy": average_accuracy,
-            "loss": val_loss,
-            "training_accuracy": average_train_accuracy,
-            "training_loss": train_loss,
-        }
+        # Calculate and print accuracy after each epoch
+        with torch.no_grad():
+            model.eval()  # Set the model to evaluation mode
 
-        # to show how fast we're plateauing
-        if epoch > 0:
-            metrics["delta_train_loss"] = train_loss - last_train_loss
-            metrics["delta_val_loss"] = val_loss - last_val_loss
+            # calculate validation stats
+            total_accuracy = 0.0
+            total_loss = 0.0
+
+            num_batches = 0
+
+            if accelerator.is_local_main_process:
+                print("Evaluating...")
+
+            for inputs, targets in tqdm(val_dataloader, disable=not accelerator.is_local_main_process):
+                outputs = model(inputs)
+
+                all_outputs, all_targets = accelerator.gather_for_metrics((outputs, targets))
+
+                # calculate the val accuracy
+                accuracy = calculate_accuracy(outputs, targets)
+                total_accuracy += accuracy
+
+                # Calculate the val loss
+                loss = criterion(all_outputs, all_targets)
+                total_loss += loss.item()
+                num_batches += 1
+
+            average_accuracy = total_accuracy / num_batches
+            val_loss = total_loss / num_batches
+
+            metrics = {
+                "validation_accuracy": average_accuracy,
+                "loss": val_loss,
+                "training_accuracy": average_train_accuracy,
+                "training_loss": train_loss,
+            }
+
+            # to show how fast we're plateauing
+            if epoch > 0:
+                metrics["delta_train_loss"] = train_loss - last_train_loss
+                metrics["delta_val_loss"] = val_loss - last_val_loss
+            
+            last_train_loss = train_loss
+            last_val_loss = val_loss
+
+            if accelerator.is_local_main_process:
+                print(f"Epoch {epoch + 1}, Train loss {train_loss} Train Accuracy {average_train_accuracy} Validation Accuracy: {average_accuracy}, Val loss: {val_loss}")
+
+                # log metrics to wandb
+                wandb.log(metrics)
+
+        # early stopping
+        # if train_loss < best_loss:
+        #     best_loss = train_loss
+        #     cur_patience = 0
+        #     torch.save(model.state_dict(), filename)
+        # else:
+        #     cur_patience += 1
+            
+        # always save the model
+        accelerator.wait_for_everyone()
+        accelerator.save_model(model, filename)
         
-        last_train_loss = train_loss
-        last_val_loss = val_loss
+        # save embedding pictures so we can make gifs later
+        # this is broken since we added accelerate
+        # TODO: FIX this later
+        # if accelerator.is_local_main_process:
+        #     save_embedding_pictures(model)
 
-        print(f"Epoch {epoch + 1}, Train loss {train_loss} Train Accuracy {average_train_accuracy} Validation Accuracy: {average_accuracy}, Val loss: {val_loss}")
+        # if cur_patience == patience:
+        #     print("Early stopping activated")
+        #     break
 
-        # log metrics to wandb
-        wandb.log(metrics)
+        if cur_patience % lr_patience == 0 and cur_patience != 0 and accelerator.is_local_main_process:
+            print(f"\n\nReducing learning rate!\n\n")
 
-    # early stopping
-    # if train_loss < best_loss:
-    #     best_loss = train_loss
-    #     cur_patience = 0
-    #     torch.save(model.state_dict(), filename)
-    # else:
-    #     cur_patience += 1
-        
-    # always save the model
-    torch.save(model.state_dict(), filename)
-    
-    # save embedding pictures so we can make gifs later
-    save_embedding_pictures(model)
+        # learning rate scheduling
+        scheduler.step(train_loss)
 
-    # if cur_patience == patience:
-    #     print("Early stopping activated")
-    #     break
-
-    if cur_patience % lr_patience == 0 and cur_patience != 0:
-        print(f"\n\nReducing learning rate!\n\n")
-
-    # learning rate scheduling
-    scheduler.step(train_loss)
-
-print("done!", num_epochs)
+if __name__ == "__main__":
+    main()

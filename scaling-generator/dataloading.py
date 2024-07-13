@@ -4,17 +4,13 @@ from torch.utils.data import DataLoader, Dataset
 from torch import tensor, float32, cuda, device
 from scipy import sparse
 from tqdm import tqdm
+from accelerate import Accelerator
 import os
 
 class SimpleDataset(Dataset):
-    def __init__(self, sequences, permutations):
+    def __init__(self, sequences, permutations, accelerator):
         # use gpu for processing
-        if cuda.is_available():
-          dev = "cuda:0"
-        else:
-          dev = "cpu"
-
-        dev = device(dev)
+        dev = accelerator.device
 
         if type(sequences) == sparse._csr.csr_matrix:
           sequences = sequences.todense()
@@ -62,44 +58,49 @@ class SimpleDataset(Dataset):
         )
         return sample
 
-# load the data
-print("Loading data...")
+def load_data(accelerator):
+  train_inputs = np.array([[0 for x in range(INPUT_LENGTH)]])
+  train_perms = np.array([[0 for x in range(MAX_GROUP_SIZE)]])
 
-train_inputs = np.array([[0 for x in range(INPUT_LENGTH)]])
-train_perms = np.array([[0 for x in range(MAX_GROUP_SIZE)]])
+  curfile = 1
+  while True:
+    filename = PATH + DATA + f"train_data{curfile}.csv"
+    perm_filename = PATH + DATA + f"train_data{curfile}_perms.csv"
 
-curfile = 1
-while True:
-  filename = PATH + DATA + f"train_data{curfile}.csv"
-  perm_filename = PATH + DATA + f"train_data{curfile}_perms.csv"
+    if not os.path.isfile(filename):
+      break
 
-  if not os.path.isfile(filename):
-     break
+    data = np.loadtxt(filename, delimiter=",").astype(int)
+    perms = np.loadtxt(perm_filename, delimiter=",").astype(int)
 
-  data = np.loadtxt(filename, delimiter=",").astype(int)
-  perms = np.loadtxt(perm_filename, delimiter=",").astype(int)
+    train_inputs = np.concatenate((train_inputs, data))
+    train_perms = np.concatenate((train_perms, perms))
 
-  train_inputs = np.concatenate((train_inputs, data))
-  train_perms = np.concatenate((train_perms, perms))
+    curfile += 1
 
-  curfile += 1
+  train_inputs = train_inputs[1:]
+  train_perms = train_perms[1:]
+  dataset_size = len(train_inputs)
 
-train_inputs = train_inputs[1:]
-train_perms = train_perms[1:]
-DATASET_SIZE = len(train_inputs)
+  val_seqs = np.loadtxt(PATH + DATA + "val_data.csv", delimiter=",").astype(int)
+  val_perms = np.loadtxt(PATH + DATA + "val_data_perms.csv", delimiter=",").astype(int)
 
-val_seqs = np.loadtxt(PATH + DATA + "val_data.csv", delimiter=",").astype(int)
-val_perms = np.loadtxt(PATH + DATA + "val_data_perms.csv", delimiter=",").astype(int)
+  test_seqs = np.loadtxt(PATH + DATA + "test_data.csv", delimiter=",").astype(int)
+  test_perms = np.loadtxt(PATH + DATA + "test_data_perms.csv", delimiter=",").astype(int)
 
-test_seqs = np.loadtxt(PATH + DATA + "test_data.csv", delimiter=",").astype(int)
-test_perms = np.loadtxt(PATH + DATA + "test_data_perms.csv", delimiter=",").astype(int)
+  # create the dataloaders
+  train_dataset = SimpleDataset(train_inputs, train_perms, accelerator)
+  train_dataloader = DataLoader(train_dataset, batch_size=BATCHSIZE, num_workers=0)
 
-# create the dataloaders
-train_dataset = SimpleDataset(train_inputs, train_perms)
-train_dataloader = DataLoader(train_dataset, batch_size=BATCHSIZE, num_workers=0)
+  val_dataset = SimpleDataset(val_seqs, val_perms, accelerator)
+  val_dataloader = DataLoader(val_dataset, batch_size=BATCHSIZE, num_workers=0)
 
-val_dataset = SimpleDataset(val_seqs, val_perms)
-val_dataloader = DataLoader(val_dataset, batch_size=BATCHSIZE, num_workers=0)
+  test_dataset = SimpleDataset(test_seqs, test_perms, accelerator)
+  test_dataloader = DataLoader(test_dataset, batch_size=BATCHSIZE, num_workers=0)
 
-test_dataset = SimpleDataset(test_seqs, test_perms)
-test_dataloader = DataLoader(test_dataset, batch_size=BATCHSIZE, num_workers=0)
+  return (
+     train_inputs, train_perms, train_dataloader, 
+     val_seqs, val_perms, val_dataloader,
+     test_seqs, test_perms, test_dataloader,
+     dataset_size
+  )
