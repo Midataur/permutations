@@ -42,11 +42,11 @@ def main():
 
     # optionally: load the model
     save_directory = f"{PATH}/model/{MODELNAME}"
-    filename = f"{save_directory}/model.safetensors"
+    file_path = f"{save_directory}/model.safetensors"
     
-    if os.path.isfile(filename):
+    if os.path.isfile(file_path):
         unwrapped_model = accelerator.unwrap_model(model)
-        unwrapped_model.load_state_dict(torch.load(filename))
+        unwrapped_model.load_state_dict(torch.load(file_path))
 
     # Define the loss function
     criterion = nn.CrossEntropyLoss()
@@ -182,6 +182,7 @@ def main():
                 "loss": val_loss,
                 "training_accuracy": average_train_accuracy,
                 "training_loss": train_loss,
+                "learning_rate": scheduler.get_lr()
             }
 
             # to show how fast we're plateauing
