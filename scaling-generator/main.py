@@ -41,7 +41,9 @@ def main():
     model = model.to(device)
 
     # optionally: load the model
-    filename = PATH + "/model/" + MODELNAME + ".pth"
+    save_directory = f"{PATH}/model/{MODELNAME}"
+    filename = f"{save_directory}/model.safetensors"
+    
     if os.path.isfile(filename):
         unwrapped_model = accelerator.unwrap_model(model)
         unwrapped_model.load_state_dict(torch.load(filename))
@@ -206,7 +208,7 @@ def main():
             
         # always save the model
         accelerator.wait_for_everyone()
-        accelerator.save_model(model, filename)
+        accelerator.save_model(model, save_directory)
         
         # save embedding pictures so we can make gifs later
         # this is broken since we added accelerate
