@@ -182,7 +182,7 @@ def main():
                 "loss": val_loss,
                 "training_accuracy": average_train_accuracy,
                 "training_loss": train_loss,
-                "learning_rate": scheduler.get_lr()
+                "learning_rate": scheduler.get_last_lr()
             }
 
             # to show how fast we're plateauing
