@@ -181,8 +181,7 @@ def main():
                 "validation_accuracy": average_accuracy,
                 "loss": val_loss,
                 "training_accuracy": average_train_accuracy,
-                "training_loss": train_loss,
-                "learning_rate": scheduler.get_last_lr()
+                "training_loss": train_loss
             }
 
             # to show how fast we're plateauing
@@ -220,9 +219,6 @@ def main():
         # if cur_patience == patience:
         #     print("Early stopping activated")
         #     break
-
-        if cur_patience % lr_patience == 0 and cur_patience != 0 and accelerator.is_local_main_process:
-            print(f"\n\nReducing learning rate!\n\n")
 
         # learning rate scheduling
         scheduler.step(train_loss)
