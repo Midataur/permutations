@@ -10,6 +10,7 @@ from utilities import *
 from dataloading import *
 from tqdm.auto import tqdm
 from transformer import *
+from accelerate import accelerator, load_checkpoint_and_dispatch
 import os
 
 def main():
@@ -45,8 +46,7 @@ def main():
     file_path = f"{save_directory}/model.safetensors"
     
     if os.path.isfile(file_path):
-        unwrapped_model = accelerator.unwrap_model(model)
-        unwrapped_model.load_state_dict(torch.load(file_path))
+        model = load_checkpoint_and_dispatch(model, file_path)
 
     # Define the loss function
     criterion = nn.CrossEntropyLoss()
@@ -84,38 +84,38 @@ def main():
 
             # track run hyperparameters and metadata
             config={
-            "learning_rate": learning_rate,
-            "scheduling": "plateau",
-            "lr_factor": lr_factor,
-            "lr_patience": lr_patience,
-            "threshold": threshold,
-            "architecture": "Transformer",
-            "epochs": num_epochs,
-            "optimizer": "AdamW",
-            "max_group_size": MAX_GROUP_SIZE,
-            "dataset_size": dataset_size,
-            "input_length": INPUT_LENGTH,
-            "n_embed": n_embed,
-            "n_head": n_head,
-            "n_blocks": n_blocks,
-            "dropout": dropout,
-            "weight_decay": weight_decay,
-            "batch_size": BATCHSIZE,
-            "context_length": CONTEXT_LENGTH,
-            "actual_group_size": ACTUAL_GROUP_SIZE,
-            "window": WINDOW,
-            "input_type": INPUT_TYPE,
-            "legacy_override": LEGACY_OVERRIDE,
-            "relabel": RELABEL
+                "learning_rate": learning_rate,
+                "scheduling": "plateau",
+                "lr_factor": lr_factor,
+                "lr_patience": lr_patience,
+                "threshold": threshold,
+                "architecture": "Transformer",
+                "epochs": num_epochs,
+                "optimizer": "AdamW",
+                "max_group_size": MAX_GROUP_SIZE,
+                "dataset_size": dataset_size,
+                "input_length": INPUT_LENGTH,
+                "n_embed": n_embed,
+                "n_head": n_head,
+                "n_blocks": n_blocks,
+                "dropout": dropout,
+                "weight_decay": weight_decay,
+                "batch_size": BATCHSIZE,
+                "context_length": CONTEXT_LENGTH,
+                "actual_group_size": ACTUAL_GROUP_SIZE,
+                "window": WINDOW,
+                "input_type": INPUT_TYPE,
+                "legacy_override": LEGACY_OVERRIDE,
+                "relabel": RELABEL
             },
             settings=wandb.Settings(start_method="fork"),
             resume="allow",
             id=MODELNAME #CHECK IF THIS IS CORRECT
         )
 
-    patience = 45
-    cur_patience = 0
-    best_loss = float("inf")
+    # patience = 45
+    # cur_patience = 0
+    # best_loss = float("inf")
 
     last_train_loss = None
     last_val_loss = None
