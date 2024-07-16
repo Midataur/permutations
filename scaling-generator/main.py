@@ -106,7 +106,9 @@ def main():
                 "window": WINDOW,
                 "input_type": INPUT_TYPE,
                 "legacy_override": LEGACY_OVERRIDE,
-                "relabel": RELABEL
+                "relabel": RELABEL,
+                "floating_point_type": "fp16",
+                "deepspeed": "enabled"
             },
             settings=wandb.Settings(start_method="fork"),
             resume="allow",
