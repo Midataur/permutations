@@ -16,7 +16,7 @@
 
 # Maximum number of tasks/CPU cores used by the job:
 #SBATCH --ntasks=1
-#SBATCH --cpus-per-task=8
+#SBATCH --cpus-per-task=1
 
 # Number of GPUs requested per node:
 #SBATCH --gres=gpu:1
