@@ -83,8 +83,8 @@ dropout = 0
 learning_rate = 3*(10**-4)
 num_epochs = 10**8
 # can be "full" or an integer
-# i recommend 64
-BATCHSIZE = 64
+# good starting value: 64
+BATCHSIZE = 128
 
 # good starting value: 0.01
 weight_decay = 0.01
