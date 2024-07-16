@@ -47,6 +47,7 @@ fi
 # Run the job from the directory where it was launched (default)
 
 # The modules to load:
+module load CUDA/12.4.1
 
 # The job command(s):
 source ./venv/bin/activate
