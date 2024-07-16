@@ -19,7 +19,7 @@
 #SBATCH --cpus-per-task=1
 
 # Number of GPUs requested per node:
-#SBATCH --gres=gpu:2
+#SBATCH --gres=gpu:1
 # The amount of memory in megabytes per node:
 #SBATCH --mem=32000
 
@@ -35,8 +35,7 @@
 #SBATCH --mail-type=END
 
 # The maximum running time of the job in days-hours:mins:sec
-##SBATCH --time=3-0:0:00
-#SBATCH --time=0-1:0:00
+#SBATCH --time=3-0:0:00
 
 # check that the script is launched with sbatch
 if [ "x$SLURM_JOB_ID" == "x" ]; then

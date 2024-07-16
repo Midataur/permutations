@@ -1,7 +1,8 @@
-import torch
 from math import log2, floor
+from accelerate.utils import set_seed
+import torch
 
-torch.manual_seed(42)
+set_seed(42)
 
 MAX_GROUP_SIZE = 25
 ACTUAL_GROUP_SIZE = 10
