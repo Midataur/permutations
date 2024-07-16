@@ -84,7 +84,7 @@ learning_rate = 3*(10**-4)
 num_epochs = 10**8
 # can be "full" or an integer
 # good starting value: 64
-BATCHSIZE = 512
+BATCHSIZE = 256
 
 # good starting value: 0.01
 weight_decay = 0.01
