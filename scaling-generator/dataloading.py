@@ -45,8 +45,8 @@ class SimpleDataset(Dataset):
             # it's faster
             targets.append(char)
 
-        self.data = tensor(data, dtype=int).to(dev)
-        self.targets = tensor(targets, dtype=int).to(dev)
+        self.data = tensor(data, dtype=int)
+        self.targets = tensor(targets, dtype=int)
 
     def __len__(self):
         return len(self.data)

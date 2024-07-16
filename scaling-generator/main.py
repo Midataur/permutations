@@ -37,10 +37,6 @@ def main():
     # setup the model
     model = BigramLanguageModel()
 
-    # send to gpu (maybe)
-    device = accelerator.device
-    model = model.to(device)
-
     # optionally: load the model
     save_directory = f"{PATH}/model/{MODELNAME}"
     file_path = f"{save_directory}/model.safetensors"
