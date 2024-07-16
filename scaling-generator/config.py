@@ -94,4 +94,4 @@ lr_patience = 10  # Number of epochs with no improvement after which learning ra
 threshold = 0.01  # Threshold for measuring the new optimum
 
 # for dataloading
-N_WORKERS = 8
+N_WORKERS = 16
