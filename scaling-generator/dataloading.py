@@ -90,13 +90,13 @@ def load_data(accelerator):
 
   # create the dataloaders
   train_dataset = SimpleDataset(train_inputs, train_perms, accelerator)
-  train_dataloader = DataLoader(train_dataset, batch_size=BATCHSIZE, num_workers=0)
+  train_dataloader = DataLoader(train_dataset, batch_size=BATCHSIZE, num_workers=N_WORKERS)
 
   val_dataset = SimpleDataset(val_seqs, val_perms, accelerator)
-  val_dataloader = DataLoader(val_dataset, batch_size=BATCHSIZE, num_workers=0)
+  val_dataloader = DataLoader(val_dataset, batch_size=BATCHSIZE, num_workers=N_WORKERS)
 
   test_dataset = SimpleDataset(test_seqs, test_perms, accelerator)
-  test_dataloader = DataLoader(test_dataset, batch_size=BATCHSIZE, num_workers=0)
+  test_dataloader = DataLoader(test_dataset, batch_size=BATCHSIZE, num_workers=N_WORKERS)
 
   return (
      train_inputs, train_perms, train_dataloader, 

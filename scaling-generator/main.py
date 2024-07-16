@@ -108,7 +108,8 @@ def main():
                 "legacy_override": LEGACY_OVERRIDE,
                 "relabel": RELABEL,
                 "floating_point_type": "bf16",
-                "deepspeed": "enabled"
+                "deepspeed": "enabled",
+                "dataload_workers": N_WORKERS
             },
             settings=wandb.Settings(start_method="fork"),
             resume="allow",
