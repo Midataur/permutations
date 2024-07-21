@@ -8,10 +8,8 @@ from accelerate import Accelerator
 import os
 
 class SimpleDataset(Dataset):
-    def __init__(self, sequences, permutations, accelerator):
+    def __init__(self, sequences, permutations):
         # use gpu for processing
-        dev = accelerator.device
-
         if type(sequences) == sparse._csr.csr_matrix:
           sequences = sequences.todense()
 
@@ -58,7 +56,7 @@ class SimpleDataset(Dataset):
         )
         return sample
 
-def load_data(accelerator):
+def load_data():
   train_inputs = np.array([[0 for x in range(INPUT_LENGTH)]])
   train_perms = np.array([[0 for x in range(MAX_GROUP_SIZE)]])
 
@@ -89,13 +87,13 @@ def load_data(accelerator):
   test_perms = np.loadtxt(PATH + DATA + "test_data_perms.csv", delimiter=",").astype(int)
 
   # create the dataloaders
-  train_dataset = SimpleDataset(train_inputs, train_perms, accelerator)
+  train_dataset = SimpleDataset(train_inputs, train_perms)
   train_dataloader = DataLoader(train_dataset, batch_size=BATCHSIZE, num_workers=N_WORKERS)
 
-  val_dataset = SimpleDataset(val_seqs, val_perms, accelerator)
+  val_dataset = SimpleDataset(val_seqs, val_perms)
   val_dataloader = DataLoader(val_dataset, batch_size=BATCHSIZE, num_workers=N_WORKERS)
 
-  test_dataset = SimpleDataset(test_seqs, test_perms, accelerator)
+  test_dataset = SimpleDataset(test_seqs, test_perms)
   test_dataloader = DataLoader(test_dataset, batch_size=BATCHSIZE, num_workers=N_WORKERS)
 
   return (

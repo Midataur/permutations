@@ -32,7 +32,7 @@ def main():
         val_seqs, val_perms, val_dataloader,
         test_seqs, test_perms, test_dataloader,
         dataset_size
-    ) = load_data(accelerator)
+    ) = load_data()
 
     # setup the model
     model = BigramLanguageModel()
