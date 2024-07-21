@@ -11,7 +11,7 @@ RELABEL = True
 
 PATH = "."
 DATA = "/data/hybrid_big/"
-MODELNAME = "hybrid-big-1.0"
+MODELNAME = "hybrid-big-10"
 
 # used to enable legacy features that have been deprecated
 # this is for backwards compatability reasons
