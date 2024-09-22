@@ -11,7 +11,7 @@ RELABEL = True
 
 PATH = "."
 DATA = "/data/hybrid_big/"
-MODELNAME = "hybrid-big-33"
+MODELNAME = "hybrid-big-34"
 
 # used to enable legacy features that have been deprecated
 # this is for backwards compatability reasons
@@ -74,7 +74,7 @@ END_PREDICTION_TOKEN = num_normal + 2
 vocab_size = num_normal + num_special
 n_embed = 600
 block_size = CONTEXT_LENGTH
-n_head = 6
+n_head = 4
 n_blocks = 8
 dropout = 0
 
