@@ -11,7 +11,7 @@ RELABEL = True
 
 PATH = "."
 DATA = "/data/hybrid_big/"
-MODELNAME = "hybrid-big-38"
+MODELNAME = "hybrid-big-39"
 
 # used to enable legacy features that have been deprecated
 # this is for backwards compatability reasons
@@ -75,7 +75,7 @@ vocab_size = num_normal + num_special
 n_embed = 800
 block_size = CONTEXT_LENGTH
 n_head = 4
-n_blocks = 8
+n_blocks = 16
 dropout = 0
 
 # TRAINING HYPERPARAMETERS
