@@ -51,7 +51,7 @@ module load CUDA/12.4.1
 
 # The job command(s):
 source ./venv/bin/activate
-accelerate launch main.py
+accelerate launch main.py --main_process_port 0
 
 ##DO NOT ADD/EDIT BEYOND THIS LINE##
 ##Job monitor command to list the resource usage
