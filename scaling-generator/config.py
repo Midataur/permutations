@@ -11,7 +11,7 @@ RELABEL = True
 
 PATH = "."
 DATA = "/data/hybrid_big/"
-MODELNAME = "hybrid-big-62"
+MODELNAME = "hybrid-big-63"
 
 # used to enable legacy features that have been deprecated
 # this is for backwards compatability reasons
@@ -84,10 +84,10 @@ learning_rate = 3*(10**-6)
 num_epochs = 10**8
 # can be "full" or an integer
 # good starting value: 64
-BATCHSIZE = 256
+BATCHSIZE = 512
 
 # good starting value: 0.01
-weight_decay = 0.1
+weight_decay = 0.01
 
 lr_factor = 0.1  # Factor by which the learning rate will be reduced
 lr_patience = 10  # Number of epochs with no improvement after which learning rate will be reduced
