@@ -20,7 +20,7 @@
 #SBATCH --cpus-per-task=4
 
 # Number of GPUs requested per node:
-#SBATCH --gres=gpu:2
+#SBATCH --gres=gpu:4
 # The amount of memory in megabytes per node:
 #SBATCH --mem=128000
 
