@@ -11,7 +11,7 @@ RELABEL = True
 
 PATH = "."
 DATA = "/data/hybrid_big/"
-MODELNAME = "hybrid-big-64"
+MODELNAME = "hybrid-big-65"
 
 # used to enable legacy features that have been deprecated
 # this is for backwards compatability reasons
@@ -72,7 +72,7 @@ END_PREDICTION_TOKEN = num_normal + 2
 # TRANSFORMER HYPERPARAMETERS
 # you can change these if you want
 vocab_size = num_normal + num_special
-n_embed = 204
+n_embed = 312
 block_size = CONTEXT_LENGTH
 n_head = 6
 n_blocks = 4
@@ -87,7 +87,7 @@ num_epochs = 10**8
 BATCHSIZE = 512
 
 # good starting value: 0.01
-weight_decay = 0.01
+weight_decay = 0.3
 
 lr_factor = 0.1  # Factor by which the learning rate will be reduced
 lr_patience = 10  # Number of epochs with no improvement after which learning rate will be reduced
