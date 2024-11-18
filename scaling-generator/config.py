@@ -11,7 +11,7 @@ RELABEL = True
 
 PATH = "."
 DATA = "/data/hybrid_big/"
-MODELNAME = "hybrid-big-78"
+MODELNAME = "hybrid-big-79"
 
 # used to enable legacy features that have been deprecated
 # this is for backwards compatability reasons
@@ -80,7 +80,7 @@ dropout = 0
 
 # TRAINING HYPERPARAMETERS
 # good starting value: 3*10^-5
-learning_rate = 3*(10**-4)
+learning_rate = 3*(10**-6)
 num_epochs = 10**8
 # can be "full" or an integer
 # good starting value: 64
