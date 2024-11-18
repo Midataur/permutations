@@ -11,7 +11,7 @@ RELABEL = True
 
 PATH = "."
 DATA = "/data/hybrid_big/"
-MODELNAME = "hybrid-big-79"
+MODELNAME = "hybrid-big-test-1"
 
 # used to enable legacy features that have been deprecated
 # this is for backwards compatability reasons
@@ -80,11 +80,11 @@ dropout = 0
 
 # TRAINING HYPERPARAMETERS
 # good starting value: 3*10^-5
-learning_rate = 3*(10**-6)
+learning_rate = 3*(10**-5)
 num_epochs = 10**8
 # can be "full" or an integer
 # good starting value: 64
-BATCHSIZE = 512
+BATCHSIZE = 1024
 
 # good starting value: 0.01
 weight_decay = 0.001
