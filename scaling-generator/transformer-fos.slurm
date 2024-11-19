@@ -7,7 +7,7 @@
 #SBATCH --qos=fos
 
 # Multithreaded (SMP) job: must run on one node 
-#SBATCH --nodes=1
+#SBATCH --nodes=2
 
 # The name of the job:
 #SBATCH --job-name="permutations-transformer-training"
