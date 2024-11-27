@@ -211,7 +211,7 @@ def train(
             
         # always save the model
         accelerator.wait_for_everyone()
-        accelerator.save_model(model, save_directory)
+        accelerator.save_model(model, f"{save_directory}{suffix}")
         
         # save embedding pictures so we can make gifs later
         # this is broken since we added accelerate
