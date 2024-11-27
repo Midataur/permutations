@@ -7,7 +7,7 @@ from utilities import convert_tokens_to_perm, token_type
 import numpy as np
 
 # model based off of this video: https://www.youtube.com/watch?v=kCc8FmEb1nY
-# and by "based off" i mean i modifed like two things
+# and by "based off" i mean i modifed like two things (edit: a bit more than that by now)
 # basically i removed the masking from the self attention step
 # and changed the output to be logisitic and one node instead of softmax
 
@@ -21,6 +21,9 @@ class Head(nn.Module):
         self.value = nn.Linear(n_embed, head_size, bias=False)
         self.dropout = nn.Dropout(dropout)
 
+        # this is just a place to attach a hook
+        self.attention_hook = nn.Identity()
+
     def forward(self, x):
         B, T, C = x.shape
 
@@ -31,6 +34,8 @@ class Head(nn.Module):
         wei = q @ k.transpose(-2, -1) * C**-0.5 # (B, T, C) @ (B, C, T) -> (B, T, T)
         wei = F.softmax(wei, dim=-1) # (B, T, T)
         wei = self.dropout(wei)
+
+        wei = self.attention_hook(wei)
 
         # perform the weighted aggregation of the values
         v = self.value(x) # (B, T, C)
@@ -85,12 +90,14 @@ class Block(nn.Module):
         return x
 
 class BigramLanguageModel(nn.Module):
-    def __init__(self):
+    def __init__(self, *args):
         super().__init__()
 
-        # each token directly reads off the logits for the next token from a lookup table
         self.token_embedding_table = nn.Embedding(vocab_size, n_embed)
         self.position_embedding = nn.Embedding(block_size, n_embed)
+
+        # this is just a place to attach a hook
+        self.embed_hook = nn.Identity()
 
         self.sa_heads = MultiHeadAttention(n_head, n_embed//n_head)
         self.blocks = [Block(n_embed, n_head) for _ in range(n_blocks)]
@@ -115,8 +122,10 @@ class BigramLanguageModel(nn.Module):
         pos_emb = self.position_embedding(torch.arange(idx.shape[1], device=idx.device)) #(T, C)
 
         x = tok_emb + pos_emb #(B, T, C)
-        x = self.sa_heads(x) # apply one head of self attention
-        x = self.blocks(x) # apply a bunch of blocks (sa + feedforward)
+        x = self.embed_hook(x)
+
+        x = self.sa_heads(x) # apply one head of self attention (B, T, C)
+        x = self.blocks(x) # apply a bunch of blocks (sa + feedforward) (B, T, C)
 
         logits = self.lm_head(x) #(B, T, vocab_size)
 
@@ -125,7 +134,7 @@ class BigramLanguageModel(nn.Module):
 
         return logits
     
-    def generate(self, sequence, force_valid=False, debug=False):
+    def generate(self, sequence, force_valid=False, debug=False, stop_at=float("inf")):
         """
             Generates a permutation for a sequence.
             If force_valid is set to True then the sequence is
@@ -179,5 +188,9 @@ class BigramLanguageModel(nn.Module):
             
             # add it to the input tensor
             input_tensor[AR_index + x] = chosen
+
+            # allows for early stopping
+            if x >= stop_at:
+                break
         
         return np.array(convert_tokens_to_perm(permutation))

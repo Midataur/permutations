@@ -8,7 +8,7 @@ from accelerate import Accelerator
 import os
 
 class SimpleDataset(Dataset):
-    def __init__(self, sequences, permutations):
+    def __init__(self, sequences, permutations, *args, **kwargs):
         # use gpu for processing
         if type(sequences) == sparse._csr.csr_matrix:
           sequences = sequences.todense()
@@ -55,8 +55,59 @@ class SimpleDataset(Dataset):
             self.targets[index]
         )
         return sample
+    
+class ProbeDataset(Dataset):
+    def __init__(self, sequences, permutations, question):
+        # use gpu for processing
+        if type(sequences) == sparse._csr.csr_matrix:
+          sequences = sequences.todense()
 
-def load_data():
+        data = []
+        targets = []
+
+        # generate the input output pairs
+        # the target must be 0 or 1
+        for sequence, permutation in tqdm(zip(sequences, permutations), desc="Loading data"):
+          # shift the permutation to use the correct tokens
+          # we don't want overlap between the input tokens and the output tokens
+          shifted_perm = convert_perm_to_tokens(permutation)
+
+          target = question(permutation)
+
+          padding_len = CONTEXT_LENGTH - len(sequence) - 1
+
+          # baseline input
+          new_seq = list(sequence) + [START_PREDICTION_TOKEN] + [NULL_TOKEN]*(padding_len)
+
+          # do the fake autoregression
+          adding = shifted_perm
+
+          if LEGACY_OVERRIDE:
+            adding += [END_PREDICTION_TOKEN]
+
+          for pos, char in enumerate(adding):
+            data.append(list(new_seq))
+
+            new_seq[len(sequence) + 1 + pos] = char
+
+            # cross entropy loss prefers accepting a token
+            # it's faster
+            targets.append(target)
+
+        self.data = tensor(data, dtype=int)
+        self.targets = tensor(targets, dtype=int)
+
+    def __len__(self):
+        return len(self.data)
+
+    def __getitem__(self, index):
+        sample = (
+            self.data[index],
+            self.targets[index]
+        )
+        return sample
+
+def load_data(dataset_class=SimpleDataset, question=None):
   train_inputs = np.array([[0 for x in range(INPUT_LENGTH)]])
   train_perms = np.array([[0 for x in range(MAX_GROUP_SIZE)]])
 
@@ -87,13 +138,13 @@ def load_data():
   test_perms = np.loadtxt(PATH + DATA + "test_data_perms.csv", delimiter=",").astype(int)
 
   # create the dataloaders
-  train_dataset = SimpleDataset(train_inputs, train_perms)
+  train_dataset = dataset_class(train_inputs, train_perms, question=question)
   train_dataloader = DataLoader(train_dataset, batch_size=BATCHSIZE, num_workers=N_WORKERS)
 
-  val_dataset = SimpleDataset(val_seqs, val_perms)
+  val_dataset = dataset_class(val_seqs, val_perms, question=question)
   val_dataloader = DataLoader(val_dataset, batch_size=BATCHSIZE, num_workers=N_WORKERS)
 
-  test_dataset = SimpleDataset(test_seqs, test_perms)
+  test_dataset = dataset_class(test_seqs, test_perms, question=question)
   test_dataloader = DataLoader(test_dataset, batch_size=BATCHSIZE, num_workers=N_WORKERS)
 
   return (
