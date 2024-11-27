@@ -6,7 +6,7 @@ from config import *
 from utilities import convert_tokens_to_perm, token_type
 import numpy as np
 import re
-from transformer import BigramLanguageModel
+from transformer import Transformer
 
 class Probe(nn.Module):
     def __init__(self, in_shape):
@@ -17,7 +17,7 @@ class Probe(nn.Module):
     def forward(self, x):
         return self.classifier(x.flatten(start_dim=1))
 
-class ProbedTransformer(BigramLanguageModel):
+class ProbedTransformer(Transformer):
     def __init__(self, stop_block=0):
         super().__init__()
 

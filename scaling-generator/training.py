@@ -12,7 +12,7 @@ from accelerate import accelerator, load_checkpoint_and_dispatch
 import os
 
 def train(
-        model_class=BigramLanguageModel, 
+        model_class=Transformer, 
         dataset_class=SimpleDataset, 
         question=None,
         suffix="",
@@ -109,7 +109,8 @@ def train(
                 "relabel": RELABEL,
                 "floating_point_type": "bf16",
                 "deepspeed": "enabled",
-                "dataload_workers": N_WORKERS
+                "dataload_workers": N_WORKERS,
+                "stop_block": stop_block
             },
             settings=wandb.Settings(start_method="fork"),
             resume="allow",

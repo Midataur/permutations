@@ -107,29 +107,35 @@ class ProbeDataset(Dataset):
         )
         return sample
 
-def load_data(dataset_class=SimpleDataset, question=None):
+def load_data(dataset_class=SimpleDataset, question=None, skip_train=False):
   train_inputs = np.array([[0 for x in range(INPUT_LENGTH)]])
   train_perms = np.array([[0 for x in range(MAX_GROUP_SIZE)]])
 
-  curfile = 1
-  while True:
-    filename = PATH + DATA + f"train_data{curfile}.csv"
-    perm_filename = PATH + DATA + f"train_data{curfile}_perms.csv"
+  if not skip_train:
+    curfile = 1
 
-    if not os.path.isfile(filename):
-      break
+    while True:
+      filename = PATH + DATA + f"train_data{curfile}.csv"
+      perm_filename = PATH + DATA + f"train_data{curfile}_perms.csv"
 
-    data = np.loadtxt(filename, delimiter=",").astype(int)
-    perms = np.loadtxt(perm_filename, delimiter=",").astype(int)
+      if not os.path.isfile(filename):
+        break
 
-    train_inputs = np.concatenate((train_inputs, data))
-    train_perms = np.concatenate((train_perms, perms))
+      data = np.loadtxt(filename, delimiter=",").astype(int)
+      perms = np.loadtxt(perm_filename, delimiter=",").astype(int)
 
-    curfile += 1
+      train_inputs = np.concatenate((train_inputs, data))
+      train_perms = np.concatenate((train_perms, perms))
 
-  train_inputs = train_inputs[1:]
-  train_perms = train_perms[1:]
-  dataset_size = len(train_inputs)
+      curfile += 1
+
+    train_inputs = train_inputs[1:]
+    train_perms = train_perms[1:]
+    dataset_size = len(train_inputs)
+  else:
+    train_inputs = None
+    train_perms = None
+    dataset_size = None
 
   val_seqs = np.loadtxt(PATH + DATA + "val_data.csv", delimiter=",").astype(int)
   val_perms = np.loadtxt(PATH + DATA + "val_data_perms.csv", delimiter=",").astype(int)
@@ -138,8 +144,12 @@ def load_data(dataset_class=SimpleDataset, question=None):
   test_perms = np.loadtxt(PATH + DATA + "test_data_perms.csv", delimiter=",").astype(int)
 
   # create the dataloaders
-  train_dataset = dataset_class(train_inputs, train_perms, question=question)
-  train_dataloader = DataLoader(train_dataset, batch_size=BATCHSIZE, num_workers=N_WORKERS)
+  if not skip_train:
+    train_dataset = dataset_class(train_inputs, train_perms, question=question)
+    train_dataloader = DataLoader(train_dataset, batch_size=BATCHSIZE, num_workers=N_WORKERS)
+  else:
+    train_dataset = None
+    train_dataloader = None
 
   val_dataset = dataset_class(val_seqs, val_perms, question=question)
   val_dataloader = DataLoader(val_dataset, batch_size=BATCHSIZE, num_workers=N_WORKERS)

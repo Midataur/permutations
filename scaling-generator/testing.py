@@ -3,38 +3,46 @@ from config import *
 from dataloading import *
 from transformer import *
 from tqdm import tqdm
+from accelerate import Accelerator, load_checkpoint_and_dispatch
 
-# get the model
-model = BigramLanguageModel()
+def test():
+    accelerator = Accelerator()
 
-# send to gpu (maybe)
-if torch.cuda.is_available():
-  device = "cuda:0"
-else:
-  device = "cpu"
+    # i know this code is kinda bad, it's the result of tech debt
+    (
+        train_inputs, train_perms, train_dataloader, 
+        val_seqs, val_perms, val_dataloader,
+        test_seqs, test_perms, test_dataloader,
+        dataset_size
+    ) = load_data(skip_train=True)
 
-model = nn.DataParallel(model)
-model = model.to(device)
+    # setup the model
+    model = Transformer()
 
-# reload the model
-filename = PATH + "/model/" + MODELNAME + ".pth"
-model.load_state_dict(torch.load(filename, map_location=torch.device(device)))
+    # optionally: load the model
+    save_directory = f"{PATH}/model/{MODELNAME}"
+    file_path = f"{save_directory}/model.safetensors"
+    
+    if os.path.isfile(file_path):
+        model = load_checkpoint_and_dispatch(model, file_path)
 
-# test for all sequences
+    # test for all sequences
+    results = []
 
-results = []
+    for seq, real_perm in tqdm(zip(test_seqs, test_perms), desc="Testing", total=len(test_perms)):
+        gen_perm = tuple(model.generate(seq, force_valid=True))
+        results.append((real_perm == gen_perm).all())
 
-for seq, real_perm in tqdm(zip(test_seqs, test_perms), desc="Testing", total=len(test_perms)):
-  gen_perm = tuple(model.module.generate(seq, force_valid=True))
-  results.append((real_perm == gen_perm).all())
-
-print(f"Accuracy: {sum(results) / len(results)}")
+    print(f"Accuracy: {sum(results) / len(results)}")
 
 
-# write results to a file that r can read
-print("Writing results to file")
-with open(PATH + "/results/" + MODELNAME + ".csv", "w") as f:
-  f.write("results\n")
-  for r in results:
-    f.write(f"{r}\n")
-  f.write("\n")
+    # write results to a file that r can read
+    print("Writing results to file")
+    with open(PATH + "/results/" + MODELNAME + ".csv", "w") as f:
+        f.write("results\n")
+        for r in results:
+            f.write(f"{r}\n")
+        f.write("\n")
+
+if __name__ == "__main__":
+    test()

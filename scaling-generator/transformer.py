@@ -89,7 +89,7 @@ class Block(nn.Module):
         x = x + self.ffwd(self.ln2(x))
         return x
 
-class BigramLanguageModel(nn.Module):
+class Transformer(nn.Module):
     def __init__(self, *args):
         super().__init__()
 

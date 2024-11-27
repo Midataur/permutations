@@ -3,25 +3,26 @@
 # Mon Jan 08 2024 21:45:49 GMT+1100 (Australian Eastern Daylight Time)
 
 # Partition for the job:
-#SBATCH --partition=gpu-a100-short
+#SBATCH --partition=fos-gpu-l40s
+#SBATCH --qos=fos
 
 # Multithreaded (SMP) job: must run on one node 
 #SBATCH --nodes=1
 
 # The name of the job:
-#SBATCH --job-name="permutations-transformer-testing"
+#SBATCH --job-name="permutations-transformer-training"
 
 # The project ID which this job should run under:
 #SBATCH --account="punim2163"
 
 # Maximum number of tasks/CPU cores used by the job:
 #SBATCH --ntasks=1
-#SBATCH --cpus-per-task=1
+#SBATCH --cpus-per-task=6
 
 # Number of GPUs requested per node:
-#SBATCH --gres=gpu:1
+#SBATCH --gres=gpu:4
 # The amount of memory in megabytes per node:
-#SBATCH --mem=20480
+#SBATCH --mem=500000
 
 # Use this email address:
 #SBATCH --mail-user=mpetschack@student.unimelb.edu.au
@@ -35,7 +36,7 @@
 #SBATCH --mail-type=END
 
 # The maximum running time of the job in days-hours:mins:sec
-#SBATCH --time=0-2:0:00
+#SBATCH --time=4-0:0:00
 
 # check that the script is launched with sbatch
 if [ "x$SLURM_JOB_ID" == "x" ]; then
@@ -49,7 +50,7 @@ fi
 
 # The job command(s):
 source ./venv/bin/activate
-python ./testing.py
+accelerate launch testing.py
 
 ##DO NOT ADD/EDIT BEYOND THIS LINE##
 ##Job monitor command to list the resource usage
