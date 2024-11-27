@@ -8,7 +8,7 @@ from utilities import *
 from dataloading import *
 from tqdm.auto import tqdm
 from transformer import *
-from accelerate import accelerator, load_checkpoint_and_dispatch
+from accelerate import Accelerator, load_checkpoint_and_dispatch
 import os
 
 def train(

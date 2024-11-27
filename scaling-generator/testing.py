@@ -4,6 +4,7 @@ from dataloading import *
 from transformer import *
 from tqdm import tqdm
 from accelerate import Accelerator, load_checkpoint_and_dispatch
+import torch
 
 def test():
     accelerator = Accelerator()
