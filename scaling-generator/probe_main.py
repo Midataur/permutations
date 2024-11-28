@@ -14,6 +14,6 @@ if __name__ == "__main__":
         model_class=ProbedTransformer,
         dataset_class=ProbeDataset,
         question=question,
-        stop_block=0,
+        stop_block=1,
         suffix="-probed"
     )
