@@ -24,6 +24,8 @@ class Head(nn.Module):
         # this is just a place to attach a hook
         self.attention_hook = nn.Identity()
 
+        self.sanity_hook = nn.Identity()
+
     def forward(self, x):
         B, T, C = x.shape
 
@@ -32,6 +34,9 @@ class Head(nn.Module):
 
         # compute attention scores ("affinities")
         wei = q @ k.transpose(-2, -1) * C**-0.5 # (B, T, C) @ (B, C, T) -> (B, T, T)
+
+        wei = self.sanity_hook(wei)
+
         wei = F.softmax(wei, dim=-1) # (B, T, T)
         wei = self.dropout(wei)
 
@@ -103,9 +108,7 @@ class Transformer(nn.Module):
         self.blocks = [Block(n_embed, n_head) for _ in range(n_blocks)]
         self.blocks.append(nn.LayerNorm(n_embed))
 
-        self.blocks = nn.Sequential(
-            *self.blocks
-        )
+        self.blocks = nn.Sequential(*self.blocks)
 
         # the output layer
         # projects the final vector down to the output dimension

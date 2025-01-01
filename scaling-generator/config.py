@@ -6,12 +6,12 @@ set_seed(42)
 
 MAX_GROUP_SIZE = 25
 ACTUAL_GROUP_SIZE = 10
-WINDOW = False
-RELABEL = True
+WINDOW = True
+RELABEL = False
 
 PATH = "."
-DATA = "/data/torn_big/"
-MODELNAME = "torn-big-17"
+DATA = "/data/elem_big/"
+MODELNAME = "elem-big-15"
 
 # used to enable legacy features that have been deprecated
 # this is for backwards compatability reasons
@@ -27,7 +27,7 @@ MAX_TRANS_NUMBER = 20
 # can be general (one token per transposition, general transpositions allowed)
 # can be hybrid (two tokens per transposition, general transpositions allowed)
 # or binary (each tranposition is written in binary)
-INPUT_TYPE = "general"
+INPUT_TYPE = "elementary"
 
 # maximum length of input sequence (in tokens)
 # don't touch this
@@ -87,7 +87,7 @@ num_epochs = 10**8
 BATCHSIZE = 1024
 
 # good starting value: 0.01
-weight_decay = 0.2
+weight_decay = 0.01
 
 lr_factor = 0.1  # Factor by which the learning rate will be reduced
 lr_patience = 10  # Number of epochs with no improvement after which learning rate will be reduced

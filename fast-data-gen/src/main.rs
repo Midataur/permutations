@@ -1,3 +1,5 @@
+// this code is bad
+
 #![allow(unused)]
 
 use clap::Arg;
