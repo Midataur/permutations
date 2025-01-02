@@ -11,7 +11,7 @@ RELABEL = False
 
 PATH = "."
 DATA = "/data/elem_big/"
-MODELNAME = "elem-big-1"
+MODELNAME = "elem-big-2"
 
 # used to enable legacy features that have been deprecated
 # this is for backwards compatability reasons
