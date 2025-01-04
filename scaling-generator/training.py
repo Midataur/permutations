@@ -110,7 +110,8 @@ def train(
                 "floating_point_type": "bf16",
                 "deepspeed": "enabled",
                 "dataload_workers": N_WORKERS,
-                "stop_block": stop_block
+                "stop_block": stop_block,
+                "window_count": WINDOW_COUNT
             },
             settings=wandb.Settings(start_method="fork"),
             resume="allow",

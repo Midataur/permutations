@@ -4,12 +4,15 @@
 
 use clap::Arg;
 use clap::Parser;
+use rand::rngs::ThreadRng;
+use rand::thread_rng;
 use rand::Rng;
 use kdam::tqdm;
 use kdam::BarExt;
 use std::env::args;
 use std::thread;
 use std::sync::mpsc;
+use std::thread::Thread;
 use csv::WriterBuilder;
 use std::error::Error;
 use rand::seq::SliceRandom;
@@ -70,6 +73,13 @@ struct Args {
     /// Can't be used at the same time as relabelling.
     #[arg(short='k', long, default_value_t = false)]
     use_window: bool,
+
+    /// How many windows to use.
+    /// Requires use_window to be turned on.
+    /// window_count must divide group_size.
+    /// Only works with elementary tranpositions.
+    #[arg(short='w', long, default_value_t = 1)]
+    window_count: i64,
 
     /// Use relabelling?
     /// Determines whether index relabelling should be used for the permutations.
@@ -134,16 +144,18 @@ fn convert_order(seq: &[i64], args: &Args) -> Vec<i64> {
 
 /// Shifts a sequence if required.
 /// Used for the window method.
-fn shift_sequence(seq: &[i64], shift: i64, args: &Args) -> Vec<i64> {
+fn shift_sequence(seq: &[i64], shifts: Vec<i64>, args: &Args, rng: &mut ThreadRng) -> Vec<i64> {
     let mut new_seq: Vec<i64> = Vec::new();
+
+    let used_shift= shifts.choose(rng).unwrap();
 
     let max_group_size = get_max_group_size(args);
 
     for i in seq.iter() {
         let shifted = if (args.transposition_type == "elementary") {
-            i + shift
+            used_shift + (i % args.group_size/args.window_count)
         } else {
-            i + shift*(max_group_size + 1)
+            i + used_shift*(max_group_size + 1)
         };
 
         new_seq.push(
@@ -299,6 +311,16 @@ fn check_inputs(args: &Args) {
         !(args.use_relabelling && args.transposition_type == "elementary"),
         "\nYou can't use relabelling with elementary transpositions.\n"
     );
+
+    assert!(
+        !(args.window_count > 1 && args.group_size % args.window_count != 0),
+        "\nWindow count must divide the group size.\n"
+    );
+
+    assert!(
+        !(args.window_count > 1 && args.transposition_type != "elementary"),
+        "\nOnly elementary tranpositions support window_count > 1.\n"
+    );
 }
 
 fn main() -> Result<(), Box<dyn Error>> {
@@ -321,14 +343,16 @@ fn main() -> Result<(), Box<dyn Error>> {
         // create sequence
         let mut seq = generate_random_sequence(&args);
 
-        // find window shift if needed
-        let mut shift = 0;
+        // find window shifts if needed
+        let mut shifts = Vec::new();
 
-        if (args.use_window) {
-            let max_window_shift = get_max_group_size(&args) - args.group_size + 1;
-
-            if (max_window_shift > 0) {
-                shift = rng.gen_range(0..max_window_shift);
+        for i in 0..args.window_count {
+            if (args.use_window) {
+                let max_window_shift = get_max_group_size(&args) - args.group_size + 1;
+    
+                if (max_window_shift > 0) {
+                    shifts.push(rng.gen_range(0..max_window_shift));
+                }
             }
         }
 
@@ -340,7 +364,7 @@ fn main() -> Result<(), Box<dyn Error>> {
             }
 
             // shift if needed
-            seq = shift_sequence(&seq, shift, &args);
+            seq = shift_sequence(&seq, shifts, &args, &mut rng);
 
             // relabel if needed
             if (args.use_relabelling) {

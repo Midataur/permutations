@@ -7,11 +7,12 @@ set_seed(42)
 MAX_GROUP_SIZE = 25
 ACTUAL_GROUP_SIZE = 10
 WINDOW = True
+WINDOW_COUNT = 2
 RELABEL = False
 
 PATH = "."
-DATA = "/data/elem_big/"
-MODELNAME = "elem-big-2"
+DATA = "/data/elem_wacky/"
+MODELNAME = "elem-wacky-1"
 
 # used to enable legacy features that have been deprecated
 # this is for backwards compatability reasons
