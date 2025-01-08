@@ -6,13 +6,13 @@ set_seed(42)
 
 MAX_GROUP_SIZE = 25
 ACTUAL_GROUP_SIZE = 10
-WINDOW = True
-WINDOW_COUNT = 2
-RELABEL = False
+WINDOW = False
+WINDOW_COUNT = None
+RELABEL = True
 
 PATH = "."
-DATA = "/data/elem_wacky/"
-MODELNAME = "elem-wacky-1"
+DATA = "/data/torn_bigger/"
+MODELNAME = "torn-bigger-1"
 
 # used to enable legacy features that have been deprecated
 # this is for backwards compatability reasons
@@ -22,13 +22,13 @@ LEGACY_OVERRIDE = False
 DIGIT_OVERRIDE = False
 
 # the maximum number of transpositions in the input sequence
-MAX_TRANS_NUMBER = 20
+MAX_TRANS_NUMBER = 25
 
 # can be elementary (one token per transposition, only adjacent transpositions allowed)
 # can be general (one token per transposition, general transpositions allowed)
 # can be hybrid (two tokens per transposition, general transpositions allowed)
 # or binary (each tranposition is written in binary)
-INPUT_TYPE = "elementary"
+INPUT_TYPE = "general"
 
 # maximum length of input sequence (in tokens)
 # don't touch this
@@ -88,7 +88,7 @@ num_epochs = 10**8
 BATCHSIZE = 1024
 
 # good starting value: 0.01
-weight_decay = 0.01
+weight_decay = 0.1
 
 lr_factor = 0.1  # Factor by which the learning rate will be reduced
 lr_patience = 10  # Number of epochs with no improvement after which learning rate will be reduced

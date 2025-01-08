@@ -30,12 +30,14 @@ def test():
     # test for all sequences
     results = []
 
-    for seq, real_perm in tqdm(zip(test_seqs, test_perms), desc="Testing", total=len(test_perms)):
+    for seq, real_perm in (pbar:=tqdm(
+        zip(test_seqs, test_perms), desc="Testing", total=len(test_perms)
+    )):
         gen_perm = tuple(model.generate(seq, force_valid=True))
         results.append((real_perm == gen_perm).all())
+        pbar.set_description(f"Cur accuracy: {sum(results) / len(results)}")
 
     print(f"Accuracy: {sum(results) / len(results)}")
-
 
     # write results to a file that r can read
     print("Writing results to file")

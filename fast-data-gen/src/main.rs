@@ -147,7 +147,7 @@ fn convert_order(seq: &[i64], args: &Args) -> Vec<i64> {
 fn shift_sequence(seq: &[i64], shifts: Vec<i64>, args: &Args, rng: &mut ThreadRng) -> Vec<i64> {
     let mut new_seq: Vec<i64> = Vec::new();
 
-    let used_shift= shifts.choose(rng).unwrap();
+    let used_shift: &i64= shifts.choose(rng).unwrap();
 
     let max_group_size = get_max_group_size(args);
 
@@ -346,28 +346,28 @@ fn main() -> Result<(), Box<dyn Error>> {
         // find window shifts if needed
         let mut shifts = Vec::new();
 
-        for i in 0..args.window_count {
-            if (args.use_window) {
-                let max_window_shift = get_max_group_size(&args) - args.group_size + 1;
-    
-                if (max_window_shift > 0) {
+        if args.use_window {
+            let max_window_shift = get_max_group_size(&args) - args.group_size + 1;
+
+            for i in 0..args.window_count {
                     shifts.push(rng.gen_range(0..max_window_shift));
-                }
             }
         }
 
         // convert for scaling if required
         if (args.scaling) {
             // convert order
-            if (args.transposition_type != "elementary") {
+            if args.transposition_type != "elementary" {
                 seq = convert_order(&seq, &args);
             }
 
             // shift if needed
-            seq = shift_sequence(&seq, shifts, &args, &mut rng);
+            if args.use_window {
+                seq = shift_sequence(&seq, shifts, &args, &mut rng);
+            }
 
             // relabel if needed
-            if (args.use_relabelling) {
+            if args.use_relabelling {
                 seq = relabel_sequence(&seq, &args);
             }
         }

@@ -10,6 +10,7 @@ scaling-generator/venv/
 scaling-generator/model/
 scaling-generator/results/
 scaling-generator/visualisation/
+fast-data-gen/target/
 *.pyc
 *.npy
 .out
