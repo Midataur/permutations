@@ -12,7 +12,7 @@ RELABEL = True
 
 PATH = "."
 DATA = "/data/torn_bigger/"
-MODELNAME = "torn-bigger-2"
+MODELNAME = "torn-bigger-3"
 
 # used to enable legacy features that have been deprecated
 # this is for backwards compatability reasons
@@ -88,7 +88,7 @@ num_epochs = 10**8
 BATCHSIZE = 1024
 
 # good starting value: 0.01
-weight_decay = 0.1
+weight_decay = 0.01
 
 lr_factor = 0.1  # Factor by which the learning rate will be reduced
 lr_patience = 10  # Number of epochs with no improvement after which learning rate will be reduced
