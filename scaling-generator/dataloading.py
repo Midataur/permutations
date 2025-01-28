@@ -109,7 +109,7 @@ class ProbeDataset(Dataset):
 
 def load_data(dataset_class=SimpleDataset, question=None, skip_train=False, verbose=False):
   accelerator = Accelerator()
-  should_speak = verbose and accelerator.is_local_main_proces
+  should_speak = verbose and accelerator.is_local_main_process
 
   train_inputs = np.array([[0 for x in range(INPUT_LENGTH)]])
   train_perms = np.array([[0 for x in range(MAX_GROUP_SIZE)]])
