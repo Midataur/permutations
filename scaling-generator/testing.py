@@ -15,7 +15,7 @@ def test():
         val_seqs, val_perms, val_dataloader,
         test_seqs, test_perms, test_dataloader,
         dataset_size
-    ) = load_data(skip_train=True)
+    ) = load_data(skip_train=True, verbose=True)
 
     # setup the model
     model = Transformer()

@@ -107,11 +107,14 @@ class ProbeDataset(Dataset):
         )
         return sample
 
-def load_data(dataset_class=SimpleDataset, question=None, skip_train=False):
+def load_data(dataset_class=SimpleDataset, question=None, skip_train=False, verbose=False):
   train_inputs = np.array([[0 for x in range(INPUT_LENGTH)]])
   train_perms = np.array([[0 for x in range(MAX_GROUP_SIZE)]])
 
   if not skip_train:
+    if verbose:
+     print("Loading training data...")
+    
     curfile = 1
 
     while True:
@@ -137,8 +140,14 @@ def load_data(dataset_class=SimpleDataset, question=None, skip_train=False):
     train_perms = None
     dataset_size = None
 
+  if verbose:
+     print("Loading validation data...")
+
   val_seqs = np.loadtxt(PATH + DATA + "val_data.csv", delimiter=",").astype(int)
   val_perms = np.loadtxt(PATH + DATA + "val_data_perms.csv", delimiter=",").astype(int)
+
+  if verbose:
+     print("Loading test data...")
 
   test_seqs = np.loadtxt(PATH + DATA + "test_data.csv", delimiter=",").astype(int)
   test_perms = np.loadtxt(PATH + DATA + "test_data_perms.csv", delimiter=",").astype(int)
