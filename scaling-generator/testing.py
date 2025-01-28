@@ -3,8 +3,7 @@ from config import *
 from dataloading import *
 from transformer import *
 from tqdm import tqdm
-from accelerate import Accelerator, load_checkpoint_and_dispatch
-import torch
+from accelerate import load_checkpoint_and_dispatch, Accelerator
 
 def test():
     accelerator = Accelerator()
@@ -19,6 +18,8 @@ def test():
 
     # setup the model
     model = Transformer()
+
+    model = accelerator.prepare(model)
 
     # optionally: load the model
     save_directory = f"{PATH}/model/{MODELNAME}"

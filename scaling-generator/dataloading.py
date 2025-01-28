@@ -108,11 +108,14 @@ class ProbeDataset(Dataset):
         return sample
 
 def load_data(dataset_class=SimpleDataset, question=None, skip_train=False, verbose=False):
+  accelerator = Accelerator()
+  should_speak = verbose and accelerator.is_local_main_proces
+
   train_inputs = np.array([[0 for x in range(INPUT_LENGTH)]])
   train_perms = np.array([[0 for x in range(MAX_GROUP_SIZE)]])
 
   if not skip_train:
-    if verbose:
+    if should_speak:
      print("Loading training data...")
     
     curfile = 1
@@ -140,13 +143,13 @@ def load_data(dataset_class=SimpleDataset, question=None, skip_train=False, verb
     train_perms = None
     dataset_size = None
 
-  if verbose:
+  if should_speak:
      print("Loading validation data...")
 
   val_seqs = np.loadtxt(PATH + DATA + "val_data.csv", delimiter=",").astype(int)
   val_perms = np.loadtxt(PATH + DATA + "val_data_perms.csv", delimiter=",").astype(int)
 
-  if verbose:
+  if should_speak:
      print("Loading test data...")
 
   test_seqs = np.loadtxt(PATH + DATA + "test_data.csv", delimiter=",").astype(int)
