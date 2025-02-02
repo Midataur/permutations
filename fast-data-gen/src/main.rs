@@ -161,7 +161,7 @@ fn shift_sequence(seq: &[i64], sized_shifts: Vec<(i64, i64)>, args: &Args, rng: 
 
     for i in seq.iter() {
         let (used_shift, window_size) = sized_shifts.choose(rng).unwrap();
-        
+
         let shifted = if (args.transposition_type == "elementary") {
             used_shift + (i % window_size)
         } else {
@@ -378,12 +378,6 @@ fn main() -> Result<(), Box<dyn Error>> {
 
     let mut rng = rand::rng();
 
-    for x in 0..40 {
-        println!("{:?}", rand_partition(&args));
-    }
-
-    return Ok(());
-
     // generate the general data
     println!("Generating general data...");
     for _ in tqdm!(
@@ -397,9 +391,7 @@ fn main() -> Result<(), Box<dyn Error>> {
         let mut sizes: Vec<i64> = Vec::new();
 
         if args.use_window {
-            let max_window_shift = get_max_group_size(&args) - args.group_size + 1;
-            
-            let partition: Vec<i64>;
+            let mut partition: Vec<i64> = Vec::new();
             if args.partition_windows {
                 partition = rand_partition(&args);
             }
@@ -410,11 +402,7 @@ fn main() -> Result<(), Box<dyn Error>> {
                 args.window_count
             };
 
-            // find shifts
-            for i in 0..window_count {
-                shifts.push(rng.random_range(0..max_window_shift));
-            }
-
+            // get shift sizes
             if args.partition_windows {
                 for (pos, amount) in partition.iter().enumerate() {
                     for i in 0..(*amount) {
@@ -426,9 +414,16 @@ fn main() -> Result<(), Box<dyn Error>> {
                     sizes.push(args.group_size/args.window_count);
                 }
             }
+
+            // find shifts
+            for i in 0..window_count {
+                let max_window_shift = get_max_group_size(&args) - sizes[i as usize];
+
+                shifts.push(rng.random_range(0..=max_window_shift));
+            }
         }
 
-        let sized_shifts: Vec<(i64, i64)> = sizes.into_iter().zip(sizes).collect();
+        let sized_shifts: Vec<(i64, i64)> = shifts.into_iter().zip(sizes).collect();
 
         // convert for scaling if required
         if (args.scaling) {
@@ -468,43 +463,46 @@ fn main() -> Result<(), Box<dyn Error>> {
         }
     }
 
-    // Generate the identity data
-    // Create a progress bar
+
     let identities_needed = ((args.dataset_size as f64)*args.identity_proportion) as i64;
     let mut identity_data: Vec<Vec<i64>> = Vec::new();
+    
+    if args.identity_proportion > 0.0 {
+        // Generate the identity data
+        // Create a progress bar
+        let (sender, receiver) = mpsc::channel();
 
-    let (sender, receiver) = mpsc::channel();
+        println!("Generating identity data...");
 
-    println!("Generating identity data...");
+        for _ in 0..args.threads {
+            let sender_clone = sender.clone();
+            let args_clone: Args = args.clone();
 
-    for _ in 0..args.threads {
-        let sender_clone = sender.clone();
-        let args_clone: Args = args.clone();
+            // Spawn a thread
+            thread::spawn(move || {
+                let mut count = 0;
+                while count < identities_needed / args_clone.threads {
 
-        // Spawn a thread
-        thread::spawn(move || {
-            let mut count = 0;
-            while count < identities_needed / args_clone.threads {
+                    let seq = generate_random_sequence(&args_clone);
+                    let perm = get_permutation(&seq, &args_clone);
 
-                let seq = generate_random_sequence(&args_clone);
-                let perm = get_permutation(&seq, &args_clone);
-
-                if is_identity(&perm, &args_clone) {
-                    sender_clone.send((seq, perm)).unwrap();
-                    count += 1;
+                    if is_identity(&perm, &args_clone) {
+                        sender_clone.send((seq, perm)).unwrap();
+                        count += 1;
+                    }
                 }
+            });
+        }
+
+        // Main thread receives results from worker threads
+        for _ in tqdm!(0..identities_needed) {
+            // get a sequence and add it to the data
+            let (seq, perm) = receiver.recv().unwrap();
+            identity_data.push(seq);
+
+            if (args.scaling) {
+                perms.push(perm);
             }
-        });
-    }
-
-    // Main thread receives results from worker threads
-    for _ in tqdm!(0..identities_needed) {
-        // get a sequence and add it to the data
-        let (seq, perm) = receiver.recv().unwrap();
-        identity_data.push(seq);
-
-        if (args.scaling) {
-            perms.push(perm);
         }
     }
 
