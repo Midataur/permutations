@@ -111,7 +111,8 @@ def train(
                 "deepspeed": "enabled",
                 "dataload_workers": N_WORKERS,
                 "stop_block": stop_block,
-                "window_count": WINDOW_COUNT
+                "window_count": WINDOW_COUNT,
+                "partitioned_windows": PARTITIONED_WINDOWS
             },
             settings=wandb.Settings(start_method="fork"),
             resume="allow",

@@ -6,13 +6,14 @@ set_seed(42)
 
 MAX_GROUP_SIZE = 25
 ACTUAL_GROUP_SIZE = 10
-WINDOW = False
-WINDOW_COUNT = None
+WINDOW = True
+WINDOW_COUNT = 2
+PARTITIONED_WINDOWS = False
 RELABEL = True
 
 PATH = "."
-DATA = "/data/torn_bigger/"
-MODELNAME = "torn-bigger-4"
+DATA = "/data/elem_wacky/"
+MODELNAME = "elem-wacky-2"
 
 # used to enable legacy features that have been deprecated
 # this is for backwards compatability reasons
@@ -22,13 +23,13 @@ LEGACY_OVERRIDE = False
 DIGIT_OVERRIDE = False
 
 # the maximum number of transpositions in the input sequence
-MAX_TRANS_NUMBER = 25
+MAX_TRANS_NUMBER = 20
 
 # can be elementary (one token per transposition, only adjacent transpositions allowed)
 # can be general (one token per transposition, general transpositions allowed)
 # can be hybrid (two tokens per transposition, general transpositions allowed)
 # or binary (each tranposition is written in binary)
-INPUT_TYPE = "general"
+INPUT_TYPE = "elementary"
 
 # maximum length of input sequence (in tokens)
 # don't touch this
