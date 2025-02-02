@@ -20,15 +20,16 @@ def train(
     ):
     accelerator = Accelerator()
 
-    print("Logging in...")
-    wandb.login()
+    if accelerator.is_local_main_process:
+        print("Logging in...")
+        wandb.login()
 
-    # this is the training script, assumes you're using the transformer
-    # if you're using the MLP, you'll need to change the data pipeline and the final dimension
-    # also you can modify the transformer config in the transformer.py file
+        # this is the training script, assumes you're using the transformer
+        # if you're using the MLP, you'll need to change the data pipeline and the final dimension
+        # also you can modify the transformer config in the transformer.py file
 
-    # load the data
-    print("Loading data...")
+        # load the data
+        print("Loading data...")
 
     # i know this code is kinda bad, it's the result of tech debt
     (
@@ -75,7 +76,7 @@ def train(
 
     if accelerator.is_local_main_process:
         print("Training...")
-
+        
         # train the model
         # start a new wandb run to track this script
         wandb.init(

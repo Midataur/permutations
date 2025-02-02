@@ -4,16 +4,16 @@ import torch
 
 set_seed(42)
 
-MAX_GROUP_SIZE = 25
-ACTUAL_GROUP_SIZE = 10
+MAX_GROUP_SIZE = 16
+ACTUAL_GROUP_SIZE = 9
 WINDOW = True
-WINDOW_COUNT = 2
-PARTITIONED_WINDOWS = False
-RELABEL = True
+WINDOW_COUNT = None
+PARTITIONED_WINDOWS = True
+RELABEL = False
 
 PATH = "."
-DATA = "/data/elem_wacky/"
-MODELNAME = "elem-wacky-2"
+DATA = "/data/elem_partitioned/"
+MODELNAME = "elem-partitioned-1"
 
 # used to enable legacy features that have been deprecated
 # this is for backwards compatability reasons
@@ -23,7 +23,7 @@ LEGACY_OVERRIDE = False
 DIGIT_OVERRIDE = False
 
 # the maximum number of transpositions in the input sequence
-MAX_TRANS_NUMBER = 20
+MAX_TRANS_NUMBER = 16
 
 # can be elementary (one token per transposition, only adjacent transpositions allowed)
 # can be general (one token per transposition, general transpositions allowed)

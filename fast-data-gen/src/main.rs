@@ -250,7 +250,6 @@ fn convert_binary(seq: &[i64], args: &Args) -> Vec<i64> {
     return new_seq;
 }
 
-// i have liberated myself from the shackles of good programming
 // based on (Fristedt, 1993)
 // https://stackoverflow.com/questions/2161406/how-do-i-generate-a-uniform-random-integer-partition
 fn rand_partition(args: &Args) -> Vec<i64> {
@@ -393,6 +392,7 @@ fn main() -> Result<(), Box<dyn Error>> {
         if args.use_window {
             let mut partition: Vec<i64> = Vec::new();
             if args.partition_windows {
+                // i have liberated myself from the shackles of good programming
                 partition = rand_partition(&args);
             }
 
@@ -466,7 +466,7 @@ fn main() -> Result<(), Box<dyn Error>> {
 
     let identities_needed = ((args.dataset_size as f64)*args.identity_proportion) as i64;
     let mut identity_data: Vec<Vec<i64>> = Vec::new();
-    
+
     if args.identity_proportion > 0.0 {
         // Generate the identity data
         // Create a progress bar
