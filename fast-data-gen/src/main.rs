@@ -5,8 +5,8 @@
 use clap::Arg;
 use clap::Parser;
 use rand::rngs::ThreadRng;
-use rand::thread_rng;
-use rand::Rng;
+use rand::rng;
+use rand::prelude::*;
 use kdam::tqdm;
 use kdam::BarExt;
 use std::env::args;
@@ -16,6 +16,9 @@ use std::thread::Thread;
 use csv::WriterBuilder;
 use std::error::Error;
 use rand::seq::SliceRandom;
+use rand_distr::{Geometric, Distribution};
+
+const MIN_WINDOW_SIZE: i64 = 3;
 
 /// Program to generate data
 #[derive(Parser, Debug, Clone)]
@@ -81,6 +84,13 @@ struct Args {
     #[arg(short='w', long, default_value_t = 1)]
     window_count: i64,
 
+    /// Enable partition windows.
+    /// Requires use_window to be turned on.
+    /// Incompatible with window_count. Only one of the two can be turned on.
+    /// Only works with elementary tranpositions.
+    #[arg(short='p', long, default_value_t = false)]
+    partition_windows: bool,
+
     /// Use relabelling?
     /// Determines whether index relabelling should be used for the permutations.
     /// Used for scaling generator only.
@@ -110,7 +120,7 @@ fn get_digits_needed(args: &Args) -> i64 {
 
 /// generate a random sequence
 fn generate_random_sequence(args: &Args) -> Vec<i64> {
-    let mut rng = rand::thread_rng();
+    let mut rng = rand::rng();
     let upper_bound = if (
         args.transposition_type == "elementary"
     ) {
@@ -122,7 +132,7 @@ fn generate_random_sequence(args: &Args) -> Vec<i64> {
     return (
         0..args.max_length
     ).map(
-        |_| rng.gen_range(0..upper_bound)
+        |_| rng.random_range(0..upper_bound)
     ).collect();
 }
 
@@ -144,16 +154,16 @@ fn convert_order(seq: &[i64], args: &Args) -> Vec<i64> {
 
 /// Shifts a sequence if required.
 /// Used for the window method.
-fn shift_sequence(seq: &[i64], shifts: Vec<i64>, args: &Args, rng: &mut ThreadRng) -> Vec<i64> {
+fn shift_sequence(seq: &[i64], sized_shifts: Vec<(i64, i64)>, args: &Args, rng: &mut ThreadRng) -> Vec<i64> {
     let mut new_seq: Vec<i64> = Vec::new();
-
-    let used_shift: &i64= shifts.choose(rng).unwrap();
 
     let max_group_size = get_max_group_size(args);
 
     for i in seq.iter() {
+        let (used_shift, window_size) = sized_shifts.choose(rng).unwrap();
+        
         let shifted = if (args.transposition_type == "elementary") {
-            used_shift + (i % args.group_size/args.window_count)
+            used_shift + (i % window_size)
         } else {
             i + used_shift*(max_group_size + 1)
         };
@@ -172,7 +182,7 @@ fn relabel_sequence(seq: &[i64], args: &Args) -> Vec<i64> {
     let max_group_size = get_max_group_size(args);
     
     // generate a random relabelling
-    let mut rng = rand::thread_rng();
+    let mut rng = rand::rng();
     let mut relabelling: Vec<i64> = (0..max_group_size).collect();
     relabelling.shuffle(&mut rng);
 
@@ -238,6 +248,34 @@ fn convert_binary(seq: &[i64], args: &Args) -> Vec<i64> {
     }
 
     return new_seq;
+}
+
+// i have liberated myself from the shackles of good programming
+// based on (Fristedt, 1993)
+// https://stackoverflow.com/questions/2161406/how-do-i-generate-a-uniform-random-integer-partition
+fn rand_partition(args: &Args) -> Vec<i64> {
+    let k = f64::exp(-std::f64::consts::PI/f64::sqrt(args.group_size as f64));
+
+    let mut rng = rand::rng();
+    let dists: Vec<Geometric> = (3..=args.group_size).map(
+        |x| Geometric::new(1.0-k.powf(x as f64)).unwrap()
+    ).collect();
+
+    loop {
+        let sample: Vec<i64> = dists.iter().map(
+            |x| x.sample(&mut rng) as i64
+        ).collect();
+
+        let total: i64 = sample.iter().zip(
+            3..=args.group_size
+        ).map(
+            |x| x.0*x.1
+        ).sum();
+
+        if total == args.group_size {
+            return sample;
+        }
+    }
 }
 
 fn get_permutation(seq: &[i64], args: &Args) -> Vec<i64> {
@@ -321,6 +359,11 @@ fn check_inputs(args: &Args) {
         !(args.window_count > 1 && args.transposition_type != "elementary"),
         "\nOnly elementary tranpositions support window_count > 1.\n"
     );
+
+    assert!(
+        !(args.window_count > 1 && args.partition_windows),
+        "\nCannot have window_count > 1 while partition_windows are enabled.\n"
+    );
 }
 
 fn main() -> Result<(), Box<dyn Error>> {
@@ -333,7 +376,13 @@ fn main() -> Result<(), Box<dyn Error>> {
     let mut general_data: Vec<Vec<i64>> = Vec::new();
     let mut perms: Vec<Vec<i64>> = Vec::new();
 
-    let mut rng = rand::thread_rng();
+    let mut rng = rand::rng();
+
+    for x in 0..40 {
+        println!("{:?}", rand_partition(&args));
+    }
+
+    return Ok(());
 
     // generate the general data
     println!("Generating general data...");
@@ -344,15 +393,42 @@ fn main() -> Result<(), Box<dyn Error>> {
         let mut seq = generate_random_sequence(&args);
 
         // find window shifts if needed
-        let mut shifts = Vec::new();
+        let mut shifts: Vec<i64> = Vec::new();
+        let mut sizes: Vec<i64> = Vec::new();
 
         if args.use_window {
             let max_window_shift = get_max_group_size(&args) - args.group_size + 1;
+            
+            let partition: Vec<i64>;
+            if args.partition_windows {
+                partition = rand_partition(&args);
+            }
 
-            for i in 0..args.window_count {
-                    shifts.push(rng.gen_range(0..max_window_shift));
+            let window_count = if args.partition_windows {
+                partition.iter().sum()
+            } else {
+                args.window_count
+            };
+
+            // find shifts
+            for i in 0..window_count {
+                shifts.push(rng.random_range(0..max_window_shift));
+            }
+
+            if args.partition_windows {
+                for (pos, amount) in partition.iter().enumerate() {
+                    for i in 0..(*amount) {
+                        sizes.push(pos as i64 + MIN_WINDOW_SIZE);
+                    }
+                }
+            } else {
+                for i in 0..args.window_count {
+                    sizes.push(args.group_size/args.window_count);
+                }
             }
         }
+
+        let sized_shifts: Vec<(i64, i64)> = sizes.into_iter().zip(sizes).collect();
 
         // convert for scaling if required
         if (args.scaling) {
@@ -363,7 +439,7 @@ fn main() -> Result<(), Box<dyn Error>> {
 
             // shift if needed
             if args.use_window {
-                seq = shift_sequence(&seq, shifts, &args, &mut rng);
+                seq = shift_sequence(&seq, sized_shifts, &args, &mut rng);
             }
 
             // relabel if needed
