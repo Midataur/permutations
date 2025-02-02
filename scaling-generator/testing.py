@@ -19,7 +19,7 @@ def test():
     # setup the model
     model = Transformer()
 
-    model = accelerator.prepare(model)
+    #model = accelerator.prepare(model)
 
     # optionally: load the model
     save_directory = f"{PATH}/model/{MODELNAME}"
