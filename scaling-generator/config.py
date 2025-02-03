@@ -12,8 +12,8 @@ PARTITIONED_WINDOWS = True
 RELABEL = False
 
 PATH = "."
-DATA = "/data/elem_partitioned_big/"
-MODELNAME = "elem-partitioned-big-1"
+DATA = "/data/elem_partitioned_long/"
+MODELNAME = "elem-partitioned-long-1"
 
 # used to enable legacy features that have been deprecated
 # this is for backwards compatability reasons
@@ -23,7 +23,7 @@ LEGACY_OVERRIDE = False
 DIGIT_OVERRIDE = False
 
 # the maximum number of transpositions in the input sequence
-MAX_TRANS_NUMBER = 25
+MAX_TRANS_NUMBER = 120
 
 # can be elementary (one token per transposition, only adjacent transpositions allowed)
 # can be general (one token per transposition, general transpositions allowed)
