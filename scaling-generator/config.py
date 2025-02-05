@@ -13,7 +13,7 @@ RELABEL = False
 
 PATH = "."
 DATA = "/data/elem_partitioned_long/"
-MODELNAME = "elem-partitioned-long-4"
+MODELNAME = "elem-partitioned-long-5"
 
 # used to enable legacy features that have been deprecated
 # this is for backwards compatability reasons
