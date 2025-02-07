@@ -21,6 +21,7 @@ class Head(nn.Module):
         self.value = nn.Linear(n_embed, head_size, bias=False)
         self.dropout = nn.Dropout(dropout)
 
+        # create a mask that only effects the permutation tokens
         noninputlength = CONTEXT_LENGTH-INPUT_LENGTH
         A = torch.ones(INPUT_LENGTH, CONTEXT_LENGTH)
         B = torch.ones(noninputlength, INPUT_LENGTH)
