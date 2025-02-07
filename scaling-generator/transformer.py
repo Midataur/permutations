@@ -149,7 +149,7 @@ class Transformer(nn.Module):
         # focus only on the last time step
         
         if MASKED_MODEL:
-            logits = logits[:, MAX_GROUP_SIZE:, :]
+            logits = logits[:, -MAX_GROUP_SIZE:, :]
         else:
             # deprecated
             logits = logits[:, -1, :] # becomes (B, C)
