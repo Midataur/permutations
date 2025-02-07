@@ -4,16 +4,16 @@ import torch
 
 set_seed(42)
 
-MAX_GROUP_SIZE = 25
-ACTUAL_GROUP_SIZE = 10
-WINDOW = False
+MAX_GROUP_SIZE = 16
+ACTUAL_GROUP_SIZE = 9
+WINDOW = True
 WINDOW_COUNT = None
-PARTITIONED_WINDOWS = False
-RELABEL = True
+PARTITIONED_WINDOWS = True
+RELABEL = False
 
 PATH = "."
 DATA = "/data/torn_bigger/"
-MODELNAME = "torn-bigger-8"
+MODELNAME = "elem-partitioned-long-5"
 
 # used to enable legacy features that have been deprecated
 # this is for backwards compatability reasons
@@ -28,13 +28,13 @@ DIGIT_OVERRIDE = False
 MASKED_MODEL = True
 
 # the maximum number of transpositions in the input sequence
-MAX_TRANS_NUMBER = 25
+MAX_TRANS_NUMBER = 120
 
 # can be elementary (one token per transposition, only adjacent transpositions allowed)
 # can be general (one token per transposition, general transpositions allowed)
 # can be hybrid (two tokens per transposition, general transpositions allowed)
 # or binary (each tranposition is written in binary)
-INPUT_TYPE = "general"
+INPUT_TYPE = "elementary"
 
 # maximum length of input sequence (in tokens)
 # don't touch this
@@ -90,7 +90,7 @@ dropout = 0
 
 # TRAINING HYPERPARAMETERS
 # good starting value: 3*10^-5
-learning_rate = 3*(10**-6)
+learning_rate = 3*(10**-5)
 num_epochs = 10**8
 # can be "full" or an integer
 # good starting value: 64
