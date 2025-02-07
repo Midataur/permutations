@@ -21,6 +21,8 @@ class Head(nn.Module):
         self.value = nn.Linear(n_embed, head_size, bias=False)
         self.dropout = nn.Dropout(dropout)
 
+        self.register_buffer('tril', torch.tril(torch.ones(block_size, block_size)))
+
         # this is just a place to attach a hook
         self.attention_hook = nn.Identity()
 
@@ -34,6 +36,9 @@ class Head(nn.Module):
 
         # compute attention scores ("affinities")
         wei = q @ k.transpose(-2, -1) * C**-0.5 # (B, T, C) @ (B, C, T) -> (B, T, T)
+
+        if MASKED_MODEL:
+            wei = wei.masked_fill(self.tril[:T, :T] == 0, float('-inf')) # (B, T, T)
 
         wei = self.sanity_hook(wei)
 
@@ -97,7 +102,6 @@ class Block(nn.Module):
 class Transformer(nn.Module):
     def __init__(self, *args):
         super().__init__()
-
         self.token_embedding_table = nn.Embedding(vocab_size, n_embed)
         self.position_embedding = nn.Embedding(block_size, n_embed)
 
@@ -120,9 +124,11 @@ class Transformer(nn.Module):
         self.softmax = nn.Softmax(dim=1)
 
     def forward(self, idx):
+        B, T = idx.shape
+
         # idx and targets are both (B, T) tensor of integers
         tok_emb = self.token_embedding_table(idx) #(B, T, C)
-        pos_emb = self.position_embedding(torch.arange(idx.shape[1], device=idx.device)) #(T, C)
+        pos_emb = self.position_embedding(torch.arange(T, device=idx.device)) #(T, C)
 
         x = tok_emb + pos_emb #(B, T, C)
         x = self.embed_hook(x)
@@ -133,7 +139,12 @@ class Transformer(nn.Module):
         logits = self.lm_head(x) #(B, T, vocab_size)
 
         # focus only on the last time step
-        logits = logits[:, -1, :] # becomes (B, C)
+        
+        if MASKED_MODEL:
+            logits = logits[:, MAX_GROUP_SIZE:, :]
+        else:
+            # deprecated
+            logits = logits[:, -1, :] # becomes (B, C)
 
         return logits
     

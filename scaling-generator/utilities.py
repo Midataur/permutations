@@ -129,3 +129,11 @@ def save_embedding_pictures(model):
 
         with open(filename, "wb") as file:
             np.save(file, pictures)
+
+def reshape_outputs(outputs, targets):
+    B, T, C = outputs.shape
+
+    if MASKED_MODEL:
+        return outputs.reshape(B*T, C), targets.reshape(B*T)
+    
+    return outputs, targets

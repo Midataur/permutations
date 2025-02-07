@@ -55,9 +55,47 @@ class SimpleDataset(Dataset):
             self.targets[index]
         )
         return sample
-    
+
+class MaskedDataset(Dataset):
+    def __init__(self, sequences, permutations, *args, **kwargs):
+        # use gpu for processing
+        if type(sequences) == sparse._csr.csr_matrix:
+          sequences = sequences.todense()
+
+        data = []
+        targets = []
+
+        # generate the input output pairs
+        # we're basically simulating what the autoregression process would look like
+        for sequence, permutation in tqdm(zip(sequences, permutations), desc="Loading data"):
+          # shift the permutation to use the correct tokens
+          # we don't want overlap between the input tokens and the output tokens
+          shifted_perm = convert_perm_to_tokens(permutation)
+
+          model_input = list(sequence) + [START_PREDICTION_TOKEN] + list(shifted_perm)[:-1]
+
+          # create target
+          target = shifted_perm
+
+          data.append(model_input)
+          targets.append(target) 
+
+        self.data = tensor(data, dtype=int)
+        self.targets = tensor(targets, dtype=int)
+
+    def __len__(self):
+        return len(self.data)
+
+    def __getitem__(self, index):
+        sample = (
+            self.data[index],
+            self.targets[index]
+        )
+        return sample
+
 class ProbeDataset(Dataset):
     def __init__(self, sequences, permutations, question):
+        raise("This dataset has not yet been updated to support masked attention training")
         # use gpu for processing
         if type(sequences) == sparse._csr.csr_matrix:
           sequences = sequences.todense()
@@ -107,7 +145,7 @@ class ProbeDataset(Dataset):
         )
         return sample
 
-def load_data(dataset_class=SimpleDataset, question=None, skip_train=False, verbose=False):
+def load_data(dataset_class=MaskedDataset, question=None, skip_train=False, verbose=False):
   accelerator = Accelerator()
   should_speak = verbose and accelerator.is_local_main_process
 

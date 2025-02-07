@@ -13,7 +13,7 @@ import os
 
 def train(
         model_class=Transformer, 
-        dataset_class=SimpleDataset, 
+        dataset_class=MaskedDataset, 
         question=None,
         suffix="",
         stop_block=None
@@ -76,7 +76,7 @@ def train(
 
     if accelerator.is_local_main_process:
         print("Training...")
-        
+
         # train the model
         # start a new wandb run to track this script
         wandb.init(
@@ -141,6 +141,9 @@ def train(
         for inputs, targets in tqdm(train_dataloader, disable=not accelerator.is_local_main_process):
             optimizer.zero_grad()  # Zero the gradients
             outputs = model(inputs)  # Forward pass
+
+            outputs, targets = reshape_outputs(outputs, targets)
+
             loss = criterion(outputs, targets)  # Calculate the loss
             accelerator.backward(loss)  # Backward pass
             optimizer.step()  # Update weights
@@ -171,6 +174,8 @@ def train(
                 outputs = model(inputs)
 
                 all_outputs, all_targets = accelerator.gather_for_metrics((outputs, targets))
+
+                outputs, targets = reshape_outputs(outputs, targets)
 
                 # calculate the val accuracy
                 accuracy = calculate_accuracy(outputs, targets)

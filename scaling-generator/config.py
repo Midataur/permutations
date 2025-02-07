@@ -4,32 +4,37 @@ import torch
 
 set_seed(42)
 
-MAX_GROUP_SIZE = 16
-ACTUAL_GROUP_SIZE = 9
-WINDOW = True
+MAX_GROUP_SIZE = 25
+ACTUAL_GROUP_SIZE = 10
+WINDOW = False
 WINDOW_COUNT = None
-PARTITIONED_WINDOWS = True
-RELABEL = False
+PARTITIONED_WINDOWS = False
+RELABEL = True
 
 PATH = "."
-DATA = "/data/elem_partitioned_long/"
-MODELNAME = "elem-partitioned-long-5"
+DATA = "/data/torn_bigger/"
+MODELNAME = "torn-bigger-5"
 
 # used to enable legacy features that have been deprecated
 # this is for backwards compatability reasons
 LEGACY_OVERRIDE = False
+
 # used for backwards compatability with an older version of datagen
 # adds one to the number of digits used for a binary number
 DIGIT_OVERRIDE = False
 
+# used for backwards compatability with unmasked models
+# should always be true for new models
+MASKED_MODEL = True
+
 # the maximum number of transpositions in the input sequence
-MAX_TRANS_NUMBER = 120
+MAX_TRANS_NUMBER = 25
 
 # can be elementary (one token per transposition, only adjacent transpositions allowed)
 # can be general (one token per transposition, general transpositions allowed)
 # can be hybrid (two tokens per transposition, general transpositions allowed)
 # or binary (each tranposition is written in binary)
-INPUT_TYPE = "elementary"
+INPUT_TYPE = "general"
 
 # maximum length of input sequence (in tokens)
 # don't touch this
@@ -45,10 +50,13 @@ elif INPUT_TYPE == "hybrid":
 else:
     INPUT_LENGTH = MAX_TRANS_NUMBER
 
-CONTEXT_LENGTH = INPUT_LENGTH + 1 + MAX_GROUP_SIZE
+CONTEXT_LENGTH = INPUT_LENGTH + MAX_GROUP_SIZE
 
 if LEGACY_OVERRIDE:
     CONTEXT_LENGTH += 1 # allows for deprecated end_sequence_token
+
+if not MASKED_MODEL:
+    CONTEXT_LENGTH += 1 # allows for deprecated final permutation token
 
 # TOKENS
 # do not change unless you're max
