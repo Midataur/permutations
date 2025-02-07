@@ -12,7 +12,7 @@ PARTITIONED_WINDOWS = True
 RELABEL = False
 
 PATH = "."
-DATA = "/data/torn_bigger/"
+DATA = "/data/elem_partitioned_long/"
 MODELNAME = "elem-partitioned-long-5"
 
 # used to enable legacy features that have been deprecated
