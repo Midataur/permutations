@@ -113,7 +113,8 @@ def train(
                 "dataload_workers": N_WORKERS,
                 "stop_block": stop_block,
                 "window_count": WINDOW_COUNT,
-                "partitioned_windows": PARTITIONED_WINDOWS
+                "partitioned_windows": PARTITIONED_WINDOWS,
+                "masked": MASKED_MODEL,
             },
             settings=wandb.Settings(start_method="fork"),
             resume="allow",
