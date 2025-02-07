@@ -173,7 +173,7 @@ def train(
             for inputs, targets in tqdm(val_dataloader, disable=not accelerator.is_local_main_process):
                 outputs = model(inputs)
 
-                all_outputs, all_targets = accelerator.gather_for_metrics((outputs, targets))
+                all_outputs, all_targets = reshape_outputs(*accelerator.gather_for_metrics((outputs, targets)))
 
                 outputs, targets = reshape_outputs(outputs, targets)
 
