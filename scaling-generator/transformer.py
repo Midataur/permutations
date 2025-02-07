@@ -23,11 +23,12 @@ class Head(nn.Module):
 
         # create a mask that only effects the permutation tokens
         noninputlength = CONTEXT_LENGTH-INPUT_LENGTH
-        A = torch.ones(INPUT_LENGTH, CONTEXT_LENGTH)
-        B = torch.ones(noninputlength, INPUT_LENGTH)
-        C = torch.tril(torch.ones(noninputlength, noninputlength))
+        A = torch.ones(INPUT_LENGTH, INPUT_LENGTH)
+        B = torch.zeros(INPUT_LENGTH, noninputlength)
+        C = torch.ones(noninputlength, INPUT_LENGTH)
+        D = torch.tril(torch.ones(noninputlength, noninputlength))
 
-        D = torch.cat((A, torch.cat((B, C), dim=1)), dim=0)
+        E = torch.cat((torch.cat((A, B), dim=1), torch.cat((C, D), dim=1)), dim=0)
 
         self.register_buffer('tril', D)
 
