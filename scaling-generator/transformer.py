@@ -21,7 +21,14 @@ class Head(nn.Module):
         self.value = nn.Linear(n_embed, head_size, bias=False)
         self.dropout = nn.Dropout(dropout)
 
-        self.register_buffer('tril', torch.tril(torch.ones(block_size, block_size)))
+        noninputlength = CONTEXT_LENGTH-INPUT_LENGTH
+        A = torch.ones(INPUT_LENGTH, CONTEXT_LENGTH)
+        B = torch.ones(noninputlength, INPUT_LENGTH)
+        C = torch.tril(torch.ones(noninputlength, noninputlength))
+
+        D = torch.cat((A, torch.cat((B, C), dim=1)), dim=0)
+
+        self.register_buffer('tril', D)
 
         # this is just a place to attach a hook
         self.attention_hook = nn.Identity()
