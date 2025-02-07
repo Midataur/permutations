@@ -30,7 +30,7 @@ class Head(nn.Module):
 
         E = torch.cat((torch.cat((A, B), dim=1), torch.cat((C, D), dim=1)), dim=0)
 
-        self.register_buffer('tril', D)
+        self.register_buffer('tril', E)
 
         # this is just a place to attach a hook
         self.attention_hook = nn.Identity()
