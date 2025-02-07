@@ -13,7 +13,7 @@ RELABEL = True
 
 PATH = "."
 DATA = "/data/torn_bigger/"
-MODELNAME = "torn-bigger-7"
+MODELNAME = "torn-bigger-8"
 
 # used to enable legacy features that have been deprecated
 # this is for backwards compatability reasons
@@ -90,7 +90,7 @@ dropout = 0
 
 # TRAINING HYPERPARAMETERS
 # good starting value: 3*10^-5
-learning_rate = 3*(10**-5)
+learning_rate = 3*(10**-6)
 num_epochs = 10**8
 # can be "full" or an integer
 # good starting value: 64
