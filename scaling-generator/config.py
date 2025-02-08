@@ -17,7 +17,7 @@ RELABEL = False
 
 PATH = "."
 DATA = "/data/torn/"
-MODELNAME = "torn-masked-7"
+MODELNAME = "torn-masked-8"
 
 # DATA = "/data/torn_bigger/"
 # MODELNAME = "torn-bigger-12"
