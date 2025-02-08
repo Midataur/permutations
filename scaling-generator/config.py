@@ -5,7 +5,7 @@ import torch
 set_seed(42)
 
 MAX_GROUP_SIZE = 16
-ACTUAL_GROUP_SIZE = 9
+ACTUAL_GROUP_SIZE = 10
 
 # MAX_GROUP_SIZE = 25
 # ACTUAL_GROUP_SIZE = 10
@@ -16,8 +16,8 @@ PARTITIONED_WINDOWS = True
 RELABEL = False
 
 PATH = "."
-DATA = "/data/elem_partitioned_long/"
-MODELNAME = "elem-partitioned-long-9"
+DATA = "/data/torn/"
+MODELNAME = "torn-masked-1"
 
 # DATA = "/data/torn_bigger/"
 # MODELNAME = "torn-bigger-12"
@@ -35,14 +35,14 @@ DIGIT_OVERRIDE = False
 MASKED_MODEL = True
 
 # the maximum number of transpositions in the input sequence
-MAX_TRANS_NUMBER = 120
+MAX_TRANS_NUMBER = 10
 # MAX_TRANS_NUMBER = 25
 
 # can be elementary (one token per transposition, only adjacent transpositions allowed)
 # can be general (one token per transposition, general transpositions allowed)
 # can be hybrid (two tokens per transposition, general transpositions allowed)
 # or binary (each tranposition is written in binary)
-INPUT_TYPE = "elementary"
+INPUT_TYPE = "general"
 
 # maximum length of input sequence (in tokens)
 # don't touch this
@@ -93,19 +93,19 @@ vocab_size = num_normal + num_special
 n_embed = 402
 block_size = CONTEXT_LENGTH
 n_head = 6
-n_blocks = 8
+n_blocks = 4
 dropout = 0
 
 # TRAINING HYPERPARAMETERS
 # good starting value: 3*10^-5
-learning_rate = 3*(10**-5)
+learning_rate = 3*(10**-4)
 num_epochs = 10**8
 # can be "full" or an integer
 # good starting value: 64
 BATCHSIZE = 1024
 
 # good starting value: 0.01
-weight_decay = 0.001
+weight_decay = 0.01
 
 lr_factor = 0.1  # Factor by which the learning rate will be reduced
 lr_patience = 10  # Number of epochs with no improvement after which learning rate will be reduced
