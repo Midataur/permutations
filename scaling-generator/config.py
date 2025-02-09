@@ -17,7 +17,7 @@ RELABEL = False
 
 PATH = "."
 DATA = "/data/torn/"
-MODELNAME = "torn-masked-10"
+MODELNAME = "torn-masked-11"
 
 # DATA = "/data/torn_bigger/"
 # MODELNAME = "torn-bigger-12"
@@ -98,7 +98,7 @@ dropout = 0
 
 # TRAINING HYPERPARAMETERS
 # good starting value: 3*10^-5
-learning_rate = 3*(10**-4)
+learning_rate = 3*(10**-5)
 num_epochs = 10**8
 # can be "full" or an integer
 # good starting value: 64

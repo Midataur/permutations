@@ -98,6 +98,16 @@ struct Args {
     /// Can't be used with elementary transpositions.
     #[arg(short='R', long, default_value_t = false)]
     use_relabelling: bool,
+
+    /// Amount of files to generate.
+    /// If this is greater than -1, it will generate this number of files.
+    #[arg(short='A', long, default_value_t = -1)]
+    amount_to_gen: i64,
+
+    /// Starting number.
+    /// If this is greater than -1, files will be numbered starting from this number.
+    #[arg(short='s', long, default_value_t = -1)]
+    start_index: i64,
 }
 
 fn get_max_group_size(args: &Args) -> i64 {
@@ -371,168 +381,188 @@ fn main() -> Result<(), Box<dyn Error>> {
     // throw error if inputs are bad
     check_inputs(&args);
 
-    // do the general data
-    let mut general_data: Vec<Vec<i64>> = Vec::new();
-    let mut perms: Vec<Vec<i64>> = Vec::new();
+    let gen_amount = std::cmp::max(1, args.amount_to_gen);
 
-    let mut rng = rand::rng();
+    for file_index in tqdm!(0..gen_amount, desc="Files generated") {
+        // do the general data
+        let mut general_data: Vec<Vec<i64>> = Vec::new();
+        let mut perms: Vec<Vec<i64>> = Vec::new();
 
-    // generate the general data
-    println!("Generating general data...");
-    for _ in tqdm!(
-        0..((args.dataset_size as f64)*(1.0-args.identity_proportion)) as i64
-    ) {
-        // create sequence
-        let mut seq = generate_random_sequence(&args);
+        let mut rng = rand::rng();
 
-        // find window shifts if needed
-        let mut shifts: Vec<i64> = Vec::new();
-        let mut sizes: Vec<i64> = Vec::new();
-
-        if args.use_window {
-            let mut partition: Vec<i64> = Vec::new();
-            if args.partition_windows {
-                // i have liberated myself from the shackles of good programming
-                partition = rand_partition(&args);
-            }
-
-            let window_count = if args.partition_windows {
-                partition.iter().sum()
-            } else {
-                args.window_count
-            };
-
-            // get shift sizes
-            if args.partition_windows {
-                for (pos, amount) in partition.iter().enumerate() {
-                    for i in 0..(*amount) {
-                        sizes.push(pos as i64 + MIN_WINDOW_SIZE);
-                    }
-                }
-            } else {
-                for i in 0..args.window_count {
-                    sizes.push(args.group_size/args.window_count);
-                }
-            }
-
-            // find shifts
-            for i in 0..window_count {
-                let max_window_shift = get_max_group_size(&args) - sizes[i as usize];
-
-                shifts.push(rng.random_range(0..=max_window_shift));
-            }
+        // generate the general data
+        if args.amount_to_gen == -1 {
+            println!("Generating general data...");
         }
 
-        let sized_shifts: Vec<(i64, i64)> = shifts.into_iter().zip(sizes).collect();
+        for _ in tqdm!(
+            0..((args.dataset_size as f64)*(1.0-args.identity_proportion)) as i64,
+            leave=false,
+            position=1
+        ) {
+            // create sequence
+            let mut seq = generate_random_sequence(&args);
 
-        // convert for scaling if required
-        if (args.scaling) {
-            // convert order
-            if args.transposition_type != "elementary" {
-                seq = convert_order(&seq, &args);
-            }
+            // find window shifts if needed
+            let mut shifts: Vec<i64> = Vec::new();
+            let mut sizes: Vec<i64> = Vec::new();
 
-            // shift if needed
             if args.use_window {
-                seq = shift_sequence(&seq, sized_shifts, &args, &mut rng);
-            }
+                let mut partition: Vec<i64> = Vec::new();
+                if args.partition_windows {
+                    // i have liberated myself from the shackles of good programming
+                    partition = rand_partition(&args);
+                }
 
-            // relabel if needed
-            if args.use_relabelling {
-                seq = relabel_sequence(&seq, &args);
-            }
-        }
+                let window_count = if args.partition_windows {
+                    partition.iter().sum()
+                } else {
+                    args.window_count
+                };
 
-        let mut new_seq = seq.clone();
-
-        // check which version to push
-        if (args.transposition_type == "binary" || args.transposition_type == "hybrid") {
-            // convert the sequence to individual swaps
-            new_seq = convert_to_seperate_indices(&new_seq, &args);
-
-            if (args.transposition_type == "binary") {
-                // convert the sequence to binary
-                new_seq = convert_binary(&new_seq, &args)
-            }
-        }
-        
-        general_data.push(new_seq.clone());
-
-        if (args.scaling) {
-            perms.push(get_permutation(&seq, &args))
-        }
-    }
-
-
-    let identities_needed = ((args.dataset_size as f64)*args.identity_proportion) as i64;
-    let mut identity_data: Vec<Vec<i64>> = Vec::new();
-
-    if args.identity_proportion > 0.0 {
-        // Generate the identity data
-        // Create a progress bar
-        let (sender, receiver) = mpsc::channel();
-
-        println!("Generating identity data...");
-
-        for _ in 0..args.threads {
-            let sender_clone = sender.clone();
-            let args_clone: Args = args.clone();
-
-            // Spawn a thread
-            thread::spawn(move || {
-                let mut count = 0;
-                while count < identities_needed / args_clone.threads {
-
-                    let seq = generate_random_sequence(&args_clone);
-                    let perm = get_permutation(&seq, &args_clone);
-
-                    if is_identity(&perm, &args_clone) {
-                        sender_clone.send((seq, perm)).unwrap();
-                        count += 1;
+                // get shift sizes
+                if args.partition_windows {
+                    for (pos, amount) in partition.iter().enumerate() {
+                        for i in 0..(*amount) {
+                            sizes.push(pos as i64 + MIN_WINDOW_SIZE);
+                        }
+                    }
+                } else {
+                    for i in 0..args.window_count {
+                        sizes.push(args.group_size/args.window_count);
                     }
                 }
-            });
-        }
 
-        // Main thread receives results from worker threads
-        for _ in tqdm!(0..identities_needed) {
-            // get a sequence and add it to the data
-            let (seq, perm) = receiver.recv().unwrap();
-            identity_data.push(seq);
+                // find shifts
+                for i in 0..window_count {
+                    let max_window_shift = get_max_group_size(&args) - sizes[i as usize];
+
+                    shifts.push(rng.random_range(0..=max_window_shift));
+                }
+            }
+
+            let sized_shifts: Vec<(i64, i64)> = shifts.into_iter().zip(sizes).collect();
+
+            // convert for scaling if required
+            if (args.scaling) {
+                // convert order
+                if args.transposition_type != "elementary" {
+                    seq = convert_order(&seq, &args);
+                }
+
+                // shift if needed
+                if args.use_window {
+                    seq = shift_sequence(&seq, sized_shifts, &args, &mut rng);
+                }
+
+                // relabel if needed
+                if args.use_relabelling {
+                    seq = relabel_sequence(&seq, &args);
+                }
+            }
+
+            let mut new_seq = seq.clone();
+
+            // check which version to push
+            if (args.transposition_type == "binary" || args.transposition_type == "hybrid") {
+                // convert the sequence to individual swaps
+                new_seq = convert_to_seperate_indices(&new_seq, &args);
+
+                if (args.transposition_type == "binary") {
+                    // convert the sequence to binary
+                    new_seq = convert_binary(&new_seq, &args)
+                }
+            }
+            
+            general_data.push(new_seq.clone());
 
             if (args.scaling) {
-                perms.push(perm);
+                perms.push(get_permutation(&seq, &args))
             }
         }
-    }
 
-    // Write the data to the file
-    println!("Writing data to file...");
-    let mut seq_writer = WriterBuilder::new().from_path(
-        (args.filename.to_string() + ".csv")
-    )?;
 
-    for row in tqdm!(general_data.iter().chain(identity_data.iter())) {
-        let string_row: Vec<String> = row.into_iter().map(|value| value.to_string()).collect();
-        seq_writer.write_record(string_row);
-    }
+        let identities_needed = ((args.dataset_size as f64)*args.identity_proportion) as i64;
+        let mut identity_data: Vec<Vec<i64>> = Vec::new();
 
-    // Flush the writer to ensure all data is written to the file
-    seq_writer.flush()?;
+        if args.identity_proportion > 0.0 {
+            // Generate the identity data
+            // Create a progress bar
+            let (sender, receiver) = mpsc::channel();
 
-    // write perm data if required
-    if (args.scaling) {
-        let mut perm_writer = WriterBuilder::new().from_path(
-            (args.filename.to_string() + "_perms.csv")
+            if args.amount_to_gen == -1 {
+                println!("Generating identity data...");
+            }
+
+            for _ in 0..args.threads {
+                let sender_clone = sender.clone();
+                let args_clone: Args = args.clone();
+
+                // Spawn a thread
+                thread::spawn(move || {
+                    let mut count = 0;
+                    while count < identities_needed / args_clone.threads {
+
+                        let seq = generate_random_sequence(&args_clone);
+                        let perm = get_permutation(&seq, &args_clone);
+
+                        if is_identity(&perm, &args_clone) {
+                            sender_clone.send((seq, perm)).unwrap();
+                            count += 1;
+                        }
+                    }
+                });
+            }
+
+            // Main thread receives results from worker threads
+            for _ in tqdm!(0..identities_needed, leave=false) {
+                // get a sequence and add it to the data
+                let (seq, perm) = receiver.recv().unwrap();
+                identity_data.push(seq);
+
+                if (args.scaling) {
+                    perms.push(perm);
+                }
+            }
+        }
+
+        let mut filename = args.filename.to_string();
+
+        if args.start_index > -1 {
+            filename += &((args.start_index + file_index).to_string())
+        }
+
+        // Write the data to the file
+        if args.amount_to_gen == -1 {
+            println!("Writing data to file...");
+        }
+
+        let mut seq_writer = WriterBuilder::new().from_path(
+            (filename.clone() + ".csv")
         )?;
 
-        for row in tqdm!(perms.iter()) {
+        for row in tqdm!(general_data.iter().chain(identity_data.iter())) {
             let string_row: Vec<String> = row.into_iter().map(|value| value.to_string()).collect();
-            perm_writer.write_record(string_row);
+            seq_writer.write_record(string_row);
         }
-    
+
         // Flush the writer to ensure all data is written to the file
-        perm_writer.flush()?;
+        seq_writer.flush()?;
+
+        // write perm data if required
+        if (args.scaling) {
+            let mut perm_writer = WriterBuilder::new().from_path(
+                (filename.clone() + "_perms.csv")
+            )?;
+
+            for row in tqdm!(perms.iter()) {
+                let string_row: Vec<String> = row.into_iter().map(|value| value.to_string()).collect();
+                perm_writer.write_record(string_row);
+            }
+        
+            // Flush the writer to ensure all data is written to the file
+            perm_writer.flush()?;
+        }
     }
 
     Ok(())
