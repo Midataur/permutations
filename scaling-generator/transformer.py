@@ -164,6 +164,65 @@ class Transformer(nn.Module):
             guaranteed to be a valid permutation, if not a correct one.
         """
 
+        # handle old models
+        if not MASKED_MODEL:
+            return self.old_generate(sequence, force_valid, debug, stop_at)
+
+        self.eval()
+
+        # use gpu for processing
+        if cuda.is_available():
+          dev = "cuda:0"
+        else:
+          dev = "cpu"
+        
+        # create an initial input to the network
+        input_tensor = torch.ones(INPUT_LENGTH + 1, dtype=int).to(dev)
+        input_tensor[:len(sequence)] = torch.tensor(sequence, dtype=int).to(dev)
+        input_tensor[-1] = START_PREDICTION_TOKEN
+
+        # tells us where the input ends and the autoregression starts
+        AR_index = len(sequence) + 1
+        
+        # actually generate the permutation
+        permutation = []
+
+        # do the autoregression
+        for x in range(MAX_GROUP_SIZE):
+            # get the logits
+            logits = self(input_tensor.unsqueeze(0))[:, -1, :]
+
+            if debug:
+                print(f"Step {x} logits: {logits}")
+            
+            # get the most likely token
+            chosen = None
+
+            if not force_valid:
+                chosen = logits.argmax().item()
+            else:
+                for token in logits.argsort(descending=True)[0]:
+                    if token not in permutation and token_type(token) == "permutation":
+                        chosen = token
+                        break
+            
+            if chosen == None:
+                raise Exception("No possible token found - this shouldn't be possible")
+            
+            # append it to the permutation
+            permutation.append(chosen)
+            
+            # add it to the input tensor
+            input_tensor = torch.cat((input_tensor, torch.tensor([chosen])))
+
+            # allows for early stopping
+            if x >= stop_at:
+                break
+        
+        return np.array(convert_tokens_to_perm(permutation))
+
+    def old_generate(self, sequence, force_valid=False, debug=False, stop_at=float("inf")):
+
         self.eval()
 
         # use gpu for processing

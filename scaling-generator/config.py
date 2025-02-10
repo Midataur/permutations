@@ -17,7 +17,7 @@ RELABEL = False
 
 PATH = "."
 DATA = "/data/elem_partitioned_long/"
-MODELNAME = "elem-partitioned-long-12"
+MODELNAME = "elem-partitioned-long-13"
 
 # DATA = "/data/torn_bigger/"
 # MODELNAME = "torn-bigger-12"
