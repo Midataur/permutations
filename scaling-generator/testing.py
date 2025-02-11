@@ -28,6 +28,19 @@ def test():
     if os.path.isfile(file_path):
         model = load_checkpoint_and_dispatch(model, file_path)
 
+    # check probability of getting it correct by default
+    
+    free_wins = 0
+    for perm in test_perms:
+        stable = 0
+
+        for pos, x in enumerate(perm):
+            stable += pos == x
+
+        free_wins += stable >= ACTUAL_GROUP_SIZE
+
+    print("Free probability:", free_wins/len(test_perms))
+
     # test for all sequences
     results = []
 

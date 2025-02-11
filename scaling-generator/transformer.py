@@ -117,7 +117,9 @@ class Transformer(nn.Module):
         # this is just a place to attach a hook
         self.embed_hook = nn.Identity()
 
-        self.sa_heads = MultiHeadAttention(n_head, n_embed//n_head)
+        if LEGACY_ARCHITECTURE:
+            self.sa_heads = MultiHeadAttention(n_head, n_embed//n_head)
+        
         self.blocks = [Block(n_embed, n_head) for _ in range(n_blocks)]
         self.blocks.append(nn.LayerNorm(n_embed))
 
@@ -142,7 +144,9 @@ class Transformer(nn.Module):
         x = tok_emb + pos_emb #(B, T, C)
         x = self.embed_hook(x)
 
-        x = self.sa_heads(x) # apply one head of self attention (B, T, C)
+        if LEGACY_ARCHITECTURE:
+            x = self.sa_heads(x) # apply one head of self attention (B, T, C)
+        
         x = self.blocks(x) # apply a bunch of blocks (sa + feedforward) (B, T, C)
 
         logits = self.lm_head(x) #(B, T, vocab_size)

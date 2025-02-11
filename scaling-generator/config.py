@@ -5,7 +5,7 @@ import torch
 set_seed(42)
 
 MAX_GROUP_SIZE = 16
-ACTUAL_GROUP_SIZE = 9
+ACTUAL_GROUP_SIZE = 10
 
 # MAX_GROUP_SIZE = 25
 # ACTUAL_GROUP_SIZE = 10
@@ -16,8 +16,8 @@ PARTITIONED_WINDOWS = True
 RELABEL = False
 
 PATH = "."
-DATA = "/data/elem_partitioned_long/"
-MODELNAME = "elem-partitioned-long-14"
+DATA = "/data/elem_partitioned_long_boosted/"
+MODELNAME = "elem-partitioned-long-boosted-1"
 
 # DATA = "/data/torn_bigger/"
 # MODELNAME = "torn-bigger-12"
@@ -33,6 +33,10 @@ DIGIT_OVERRIDE = False
 # used for backwards compatability with unmasked models
 # should always be true for new models
 MASKED_MODEL = True
+
+# used for backwards compatability with older models
+# we used to use a slightly weird non-standard architecture
+LEGACY_ARCHITECTURE = False
 
 # the maximum number of transpositions in the input sequence
 MAX_TRANS_NUMBER = 120

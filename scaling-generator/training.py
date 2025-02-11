@@ -115,6 +115,7 @@ def train(
                 "window_count": WINDOW_COUNT,
                 "partitioned_windows": PARTITIONED_WINDOWS,
                 "masked": MASKED_MODEL,
+                "legacy_architecture": LEGACY_ARCHITECTURE
             },
             settings=wandb.Settings(start_method="fork"),
             resume="allow",
