@@ -96,7 +96,7 @@ vocab_size = num_normal + num_special
 n_embed = 402
 block_size = CONTEXT_LENGTH
 n_head = 6
-n_blocks = 4
+n_blocks = 5
 dropout = 0
 
 # TRAINING HYPERPARAMETERS
