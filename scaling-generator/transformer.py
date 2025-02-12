@@ -171,26 +171,18 @@ class Transformer(nn.Module):
 
         accelerator = Accelerator()
 
-        device = accelerator.device
+        dev = accelerator.device
 
         # handle old models
         if not MASKED_MODEL:
             return self.old_generate(sequence, force_valid, debug, stop_at)
 
         self.eval()
-
-        # use gpu for processing
-        if cuda.is_available():
-          dev = "cuda:0"
-        else:
-          dev = "cpu"
         
         # create an initial input to the network
         input_tensor = torch.ones(INPUT_LENGTH + 1, dtype=int).to(dev)
         input_tensor[:len(sequence)] = torch.tensor(sequence, dtype=int).to(dev)
         input_tensor[-1] = START_PREDICTION_TOKEN
-
-        input_tensor.to(device)
         
         # actually generate the permutation
         permutation = []
@@ -221,7 +213,7 @@ class Transformer(nn.Module):
             permutation.append(chosen)
             
             # add it to the input tensor
-            input_tensor = torch.cat((input_tensor, torch.tensor([chosen]).to(device)))
+            input_tensor = torch.cat((input_tensor, torch.tensor([chosen]).to(dev)))
 
             # allows for early stopping
             if x >= stop_at:
