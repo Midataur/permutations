@@ -26,7 +26,10 @@ def test():
     file_path = f"{save_directory}/model.safetensors"
     
     if os.path.isfile(file_path):
+        print("Loaded the model!")
         model = load_checkpoint_and_dispatch(model, file_path)
+    else:
+        print("Failed to load the model, defaulting to untrained model")
 
     # check probability of getting it correct by default
     

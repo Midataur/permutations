@@ -4,6 +4,7 @@ import torch.nn as nn
 from torch.nn import functional as F
 from config import *
 from utilities import convert_tokens_to_perm, token_type
+from accelerate import Accelerator
 import numpy as np
 
 # model based off of this video: https://www.youtube.com/watch?v=kCc8FmEb1nY
@@ -168,6 +169,10 @@ class Transformer(nn.Module):
             guaranteed to be a valid permutation, if not a correct one.
         """
 
+        accelerator = Accelerator()
+
+        device = accelerator.device
+
         # handle old models
         if not MASKED_MODEL:
             return self.old_generate(sequence, force_valid, debug, stop_at)
@@ -185,8 +190,7 @@ class Transformer(nn.Module):
         input_tensor[:len(sequence)] = torch.tensor(sequence, dtype=int).to(dev)
         input_tensor[-1] = START_PREDICTION_TOKEN
 
-        # tells us where the input ends and the autoregression starts
-        AR_index = len(sequence) + 1
+        input_tensor.to(device)
         
         # actually generate the permutation
         permutation = []
@@ -217,7 +221,7 @@ class Transformer(nn.Module):
             permutation.append(chosen)
             
             # add it to the input tensor
-            input_tensor = torch.cat((input_tensor, torch.tensor([chosen])))
+            input_tensor = torch.cat((input_tensor, torch.tensor([chosen]).to(device)))
 
             # allows for early stopping
             if x >= stop_at:
