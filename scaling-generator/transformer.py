@@ -187,6 +187,9 @@ class Transformer(nn.Module):
         # actually generate the permutation
         permutation = []
 
+        print("Model device:", self.token_embedding_table.weight.get_device())
+        print("Input tensor device:", input_tensor.get_device())
+
         # do the autoregression
         for x in range(MAX_GROUP_SIZE):
             # get the logits

@@ -8,6 +8,8 @@ from accelerate import load_checkpoint_and_dispatch, Accelerator
 def test():
     accelerator = Accelerator()
 
+    should_talk = accelerator.is_main_process
+
     # i know this code is kinda bad, it's the result of tech debt
     (
         train_inputs, train_perms, train_dataloader, 
@@ -26,9 +28,10 @@ def test():
     file_path = f"{save_directory}/model.safetensors"
     
     if os.path.isfile(file_path):
-        print("Loaded the model!")
+        if should_talk:
+            print("Loaded the model!")
         model = load_checkpoint_and_dispatch(model, file_path)
-    else:
+    elif should_talk:
         print("Failed to load the model, defaulting to untrained model")
 
     # check probability of getting it correct by default
@@ -42,7 +45,8 @@ def test():
 
         free_wins += unstable <= ACTUAL_GROUP_SIZE
 
-    print("Free probability:", free_wins/len(test_perms))
+    if should_talk:
+        print("Free probability:", free_wins/len(test_perms))
 
     # test for all sequences
     results = []
@@ -54,10 +58,13 @@ def test():
         results.append((real_perm == gen_perm).all())
         pbar.set_description(f"Cur accuracy: {sum(results) / len(results)}")
 
-    print(f"Accuracy: {sum(results) / len(results)}")
+    if should_talk:
+        print(f"Accuracy: {sum(results) / len(results)}")
 
     # write results to a file that r can read
-    print("Writing results to file")
+    if should_talk:
+        print("Writing results to file")
+    
     with open(PATH + "/results/" + MODELNAME + ".csv", "w") as f:
         f.write("results\n")
         for r in results:
