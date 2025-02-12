@@ -32,12 +32,12 @@ def test():
     
     free_wins = 0
     for perm in test_perms:
-        stable = 0
+        unstable = 0
 
         for pos, x in enumerate(perm):
-            stable += pos == x
+            unstable += pos != x
 
-        free_wins += stable >= ACTUAL_GROUP_SIZE
+        free_wins += unstable <= ACTUAL_GROUP_SIZE
 
     print("Free probability:", free_wins/len(test_perms))
 
