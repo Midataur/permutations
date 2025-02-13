@@ -46,6 +46,7 @@ def test():
         free_wins += unstable <= ACTUAL_GROUP_SIZE
 
     if should_talk:
+        print("Model name:", MODELNAME)
         print("Free probability:", free_wins/len(test_perms))
 
     # test for all sequences
