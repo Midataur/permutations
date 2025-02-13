@@ -59,6 +59,7 @@ def test():
         zip(test_seqs, test_perms), desc="Testing", total=len(test_perms)
     )):
         gen_perm = tuple(generate_function(seq, accelerator, force_valid=True))
+
         results.append((real_perm == gen_perm).all())
         pbar.set_description(f"Cur accuracy: {sum(results) / len(results)}")
 
