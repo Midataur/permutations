@@ -21,8 +21,6 @@ def test():
     # setup the model
     model = Transformer()
 
-    model = accelerator.prepare(model)
-
     # optionally: load the model
     save_directory = f"{PATH}/model/{MODELNAME}"
     file_path = f"{save_directory}/model.safetensors"
@@ -33,6 +31,8 @@ def test():
         model = load_checkpoint_and_dispatch(model, file_path)
     elif should_talk:
         print("Failed to load the model, defaulting to untrained model")
+
+    model = accelerator.prepare(model)
 
     # check probability of getting it correct by default
     
