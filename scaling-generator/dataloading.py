@@ -57,7 +57,7 @@ class SimpleDataset(Dataset):
         return sample
 
 class MaskedDataset(Dataset):
-    def __init__(self, sequences, permutations, *args, **kwargs):
+    def __init__(self, sequences, permutations, mainthread, *args, **kwargs):
         # use gpu for processing
         if type(sequences) == sparse._csr.csr_matrix:
           sequences = sequences.todense()
@@ -67,7 +67,11 @@ class MaskedDataset(Dataset):
 
         # generate the input output pairs
         # we're basically simulating what the autoregression process would look like
-        for sequence, permutation in tqdm(zip(sequences, permutations), desc="Loading data"):
+        for sequence, permutation in tqdm(
+           zip(sequences, permutations), 
+           desc="Loading data", 
+           disable=not mainthread
+        ):
           # shift the permutation to use the correct tokens
           # we don't want overlap between the input tokens and the output tokens
           shifted_perm = convert_perm_to_tokens(permutation)
@@ -195,16 +199,16 @@ def load_data(dataset_class=MaskedDataset, question=None, skip_train=False, verb
 
   # create the dataloaders
   if not skip_train:
-    train_dataset = dataset_class(train_inputs, train_perms, question=question)
+    train_dataset = dataset_class(train_inputs, train_perms, question=question, mainthread=should_speak)
     train_dataloader = DataLoader(train_dataset, batch_size=BATCHSIZE, num_workers=N_WORKERS)
   else:
     train_dataset = None
     train_dataloader = None
 
-  val_dataset = dataset_class(val_seqs, val_perms, question=question)
+  val_dataset = dataset_class(val_seqs, val_perms, question=question, mainthread=should_speak)
   val_dataloader = DataLoader(val_dataset, batch_size=BATCHSIZE, num_workers=N_WORKERS)
 
-  test_dataset = dataset_class(test_seqs, test_perms, question=question)
+  test_dataset = dataset_class(test_seqs, test_perms, question=question, mainthread=should_speak)
   test_dataloader = DataLoader(test_dataset, batch_size=BATCHSIZE, num_workers=N_WORKERS)
 
   return (

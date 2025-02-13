@@ -51,12 +51,10 @@ def test():
     # test for all sequences
     results = []
 
-    print(f"Model type: {type(model)}")
-
     generate_function = model.generate if hasattr(model, "generate") else model.module.generate
 
     for seq, real_perm in (pbar:=tqdm(
-        zip(test_seqs, test_perms), desc="Testing", total=len(test_perms)
+        zip(test_seqs, test_perms), desc="Testing", total=len(test_perms), disable=not should_talk
     )):
         gen_perm = tuple(generate_function(seq, accelerator, force_valid=True))
 
