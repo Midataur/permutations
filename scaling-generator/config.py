@@ -15,7 +15,7 @@ RELABEL = True
 PATH = "."
 
 DATA = "/data/torn_bigger/"
-MODELNAME = "torn_bigger-13"
+MODELNAME = "torn-bigger-13"
 
 # used to enable legacy features that have been deprecated
 # this is for backwards compatability reasons
