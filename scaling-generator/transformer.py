@@ -162,14 +162,12 @@ class Transformer(nn.Module):
 
         return logits
     
-    def generate(self, sequence, force_valid=False, debug=False, stop_at=float("inf")):
+    def generate(self, sequence, accelerator, force_valid=False, debug=False, stop_at=float("inf")):
         """
             Generates a permutation for a sequence.
             If force_valid is set to True then the sequence is
             guaranteed to be a valid permutation, if not a correct one.
         """
-
-        accelerator = Accelerator()
 
         dev = accelerator.device
 
@@ -187,8 +185,8 @@ class Transformer(nn.Module):
         # actually generate the permutation
         permutation = []
 
-        print("Model device:", self.token_embedding_table.weight.get_device())
-        print("Input tensor device:", input_tensor.get_device())
+        # print("Model device:", self.token_embedding_table.weight.get_device())
+        # print("Input tensor device:", input_tensor.get_device())
 
         # do the autoregression
         for x in range(MAX_GROUP_SIZE):
