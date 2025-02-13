@@ -53,10 +53,12 @@ def test():
 
     print(f"Model type: {type(model)}")
 
+    generate_function = model.generate if hasattr(model, "generate") else model.module.generate
+
     for seq, real_perm in (pbar:=tqdm(
         zip(test_seqs, test_perms), desc="Testing", total=len(test_perms)
     )):
-        gen_perm = tuple(model.generate(seq, accelerator, force_valid=True))
+        gen_perm = tuple(generate_function(seq, accelerator, force_valid=True))
         results.append((real_perm == gen_perm).all())
         pbar.set_description(f"Cur accuracy: {sum(results) / len(results)}")
 
