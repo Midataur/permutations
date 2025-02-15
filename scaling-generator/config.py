@@ -2,7 +2,7 @@ from math import log2, floor
 from accelerate.utils import set_seed
 import torch
 
-set_seed(42)
+set_seed(97)
 
 MAX_GROUP_SIZE = 16
 ACTUAL_GROUP_SIZE = 10
@@ -14,8 +14,8 @@ RELABEL = False
 
 PATH = "."
 
-DATA = "/data/reverse/"
-MODELNAME = "reverse-2"
+DATA = "/data/elem-partitioned-long-boosted/"
+MODELNAME = "elem-partitioned-long-boosted-4"
 
 # used to enable legacy features that have been deprecated
 # this is for backwards compatability reasons
@@ -31,7 +31,7 @@ MASKED_MODEL = True
 
 # are we doing the reverse problem?
 # ie. predict the reduced word from the permutation
-REVERSE_PROBLEM = True
+REVERSE_PROBLEM = False
 
 # used for backwards compatability with older models
 # we used to use a slightly weird non-standard architecture
