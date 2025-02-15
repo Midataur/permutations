@@ -14,7 +14,7 @@ RELABEL = False
 
 PATH = "."
 
-DATA = "/data/elem-partitioned-long-boosted/"
+DATA = "/data/elem_partitioned_long_boosted/"
 MODELNAME = "elem-partitioned-long-boosted-4"
 
 # used to enable legacy features that have been deprecated
