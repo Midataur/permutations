@@ -24,12 +24,20 @@ class Head(nn.Module):
 
         # create a mask that only effects the permutation tokens
         noninputlength = CONTEXT_LENGTH-INPUT_LENGTH
-        A = torch.ones(INPUT_LENGTH, INPUT_LENGTH)
-        B = torch.zeros(INPUT_LENGTH, noninputlength)
-        C = torch.ones(noninputlength, INPUT_LENGTH)
-        D = torch.tril(torch.ones(noninputlength, noninputlength))
 
-        E = torch.cat((torch.cat((A, B), dim=1), torch.cat((C, D), dim=1)), dim=0)
+        if not REVERSE_PROBLEM:
+            
+            A = torch.ones(INPUT_LENGTH, INPUT_LENGTH)
+            B = torch.zeros(INPUT_LENGTH, noninputlength)
+            C = torch.ones(noninputlength, INPUT_LENGTH)
+            D = torch.tril(torch.ones(noninputlength, noninputlength))
+        else:
+            A = torch.ones(noninputlength, noninputlength)
+            B = torch.zeros(noninputlength, INPUT_LENGTH)
+            C = torch.ones(INPUT_LENGTH, noninputlength)
+            D = torch.tril(torch.ones(INPUT_LENGTH, INPUT_LENGTH))
+            
+        E = torch.cat((torch.cat((A, B), dim=1), torch.cat((C, D), dim=1)), dim=0)  
 
         self.register_buffer('tril', E)
 
