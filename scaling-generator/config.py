@@ -31,7 +31,7 @@ MASKED_MODEL = True
 
 # are we doing the reverse problem?
 # ie. predict the reduced word from the permutation
-REVERSE_PROBLEM = False
+REVERSE_PROBLEM = True
 
 # used for backwards compatability with older models
 # we used to use a slightly weird non-standard architecture

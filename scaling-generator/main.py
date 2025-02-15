@@ -10,6 +10,6 @@ if __name__ == "__main__":
     elif REVERSE_PROBLEM:
         dataset_class = ReversedDataset
     else:
-        dataset_class = MASKED_MODEL
+        dataset_class = MaskedDataset
 
     train(dataset_class=dataset_class)
