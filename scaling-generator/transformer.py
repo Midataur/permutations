@@ -23,19 +23,17 @@ class Head(nn.Module):
         self.dropout = nn.Dropout(dropout)
 
         # create a mask that only effects the permutation tokens
-        noninputlength = CONTEXT_LENGTH-INPUT_LENGTH
-
         if not REVERSE_PROBLEM:
-            
-            A = torch.ones(INPUT_LENGTH, INPUT_LENGTH)
-            B = torch.zeros(INPUT_LENGTH, noninputlength)
-            C = torch.ones(noninputlength, INPUT_LENGTH)
-            D = torch.tril(torch.ones(noninputlength, noninputlength))
+            allowed_length = INPUT_LENGTH
         else:
-            A = torch.ones(noninputlength, noninputlength)
-            B = torch.zeros(noninputlength, INPUT_LENGTH)
-            C = torch.ones(INPUT_LENGTH, noninputlength)
-            D = torch.tril(torch.ones(INPUT_LENGTH, INPUT_LENGTH))
+            allowed_length = MAX_GROUP_SIZE
+        
+        blocked_length = CONTEXT_LENGTH-allowed_length
+        
+        A = torch.ones(allowed_length, allowed_length)
+        B = torch.zeros(allowed_length, blocked_length)
+        C = torch.ones(blocked_length, allowed_length)
+        D = torch.tril(torch.ones(blocked_length, blocked_length))
             
         E = torch.cat((torch.cat((A, B), dim=1), torch.cat((C, D), dim=1)), dim=0)  
 
