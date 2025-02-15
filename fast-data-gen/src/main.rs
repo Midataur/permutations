@@ -10,6 +10,8 @@ use rand::prelude::*;
 use kdam::tqdm;
 use kdam::BarExt;
 use std::env::args;
+use std::iter;
+use std::ops::Index;
 use std::thread;
 use std::sync::mpsc;
 use std::thread::Thread;
@@ -108,6 +110,12 @@ struct Args {
     /// If this is greater than -1, files will be numbered starting from this number.
     #[arg(short='s', long, default_value_t = -1)]
     start_index: i64,
+
+    /// Reverse problem.
+    /// If this is true, does the reverse problem instead.
+    /// ie. generate the reduced word from the permutation
+    #[arg(short='r', long, default_value_t = false)]
+    reverse_problem: bool,
 }
 
 fn get_max_group_size(args: &Args) -> i64 {
@@ -316,6 +324,32 @@ fn get_permutation(seq: &[i64], args: &Args) -> Vec<i64> {
     return perm;
 }
 
+
+// implements page 3 of https://mathweb.ucsd.edu/~garsia/somepapers/saga.pdf
+fn get_reduced_word(perm: &[i64], args: &Args) -> Vec<i64> {
+    let mut word: Vec<i64> = Vec::new();
+
+    let mut current_state: Vec<i64> = (0..(perm.len() as i64)).collect();
+
+    for (goal, item) in perm.iter().enumerate() {
+        let cur_loc = current_state.iter().position(|r| r == item).unwrap();
+
+        if cur_loc == goal {
+            continue;
+        } else if cur_loc < goal {
+            word.extend(((cur_loc as i64+1)..=(goal as i64)));
+        } else {
+            word.extend(((goal as i64+1)..=(cur_loc as i64)).rev());
+        }
+
+        // push and pop
+        current_state.remove(cur_loc);
+        current_state.insert(goal, *item);
+    }
+
+    return word;
+}
+
 /// Tells you if a sequence is the identity
 fn is_identity(perm: &[i64], args: &Args) -> bool {
     // check if the permutation is the identity 
@@ -373,6 +407,11 @@ fn check_inputs(args: &Args) {
         !(args.window_count > 1 && args.partition_windows),
         "\nCannot have window_count > 1 while partition_windows are enabled.\n"
     );
+
+    assert!(
+        !(args.reverse_problem && !(args.transposition_type == "elementary")),
+        "\nReverse problem is only allowed for elementary transpositions.\n"
+    );
 }
 
 fn main() -> Result<(), Box<dyn Error>> {
@@ -388,99 +427,123 @@ fn main() -> Result<(), Box<dyn Error>> {
         let mut general_data: Vec<Vec<i64>> = Vec::new();
         let mut perms: Vec<Vec<i64>> = Vec::new();
 
-        let mut rng = rand::rng();
-
         // generate the general data
         if args.amount_to_gen == -1 {
             println!("Generating general data...");
         }
 
+        let (sender, receiver) = mpsc::channel();
+
+        for _ in 0..args.threads {
+            let sender_clone = sender.clone();
+            let args_clone: Args = args.clone();
+
+            // Spawn a thread
+            thread::spawn(move || {
+                for __ in 0..((((args.dataset_size as f64)*(1.0-args.identity_proportion)).round() as i64)/args.threads) {
+                    // create sequence
+                    let mut seq = generate_random_sequence(&args_clone);
+
+                    let mut rng = rand::rng();
+        
+                    // find window shifts if needed
+                    let mut shifts: Vec<i64> = Vec::new();
+                    let mut sizes: Vec<i64> = Vec::new();
+        
+                    if args_clone.use_window {
+                        let mut partition: Vec<i64> = Vec::new();
+                        if args_clone.partition_windows {
+                            // i have liberated myself from the shackles of good programming
+                            partition = rand_partition(&args_clone);
+                        }
+        
+                        let window_count = if args_clone.partition_windows {
+                            partition.iter().sum()
+                        } else {
+                            args_clone.window_count
+                        };
+        
+                        // get shift sizes
+                        if args_clone.partition_windows {
+                            for (pos, amount) in partition.iter().enumerate() {
+                                for i in 0..(*amount) {
+                                    sizes.push(pos as i64 + MIN_WINDOW_SIZE);
+                                }
+                            }
+                        } else {
+                            for i in 0..args_clone.window_count {
+                                sizes.push(args_clone.group_size/args_clone.window_count);
+                            }
+                        }
+        
+                        // find shifts
+                        for i in 0..window_count {
+                            let max_window_shift = get_max_group_size(&args_clone) - sizes[i as usize];
+        
+                            shifts.push(rng.random_range(0..=max_window_shift));
+                        }
+                    }
+        
+                    let sized_shifts: Vec<(i64, i64)> = shifts.into_iter().zip(sizes).collect();
+        
+                    // convert for scaling if required
+                    if (args_clone.scaling) {
+                        // convert order
+                        if args_clone.transposition_type != "elementary" {
+                            seq = convert_order(&seq, &args_clone);
+                        }
+        
+                        // shift if needed
+                        if args_clone.use_window {
+                            seq = shift_sequence(&seq, sized_shifts, &args_clone, &mut rng);
+                        }
+        
+                        // relabel if needed
+                        if args_clone.use_relabelling {
+                            seq = relabel_sequence(&seq, &args_clone);
+                        }
+                    }
+        
+                    let mut new_seq = seq.clone();
+                    let perm = get_permutation(&seq, &args_clone);
+        
+                    // if it's the reverse problem, find the reduced word
+                    // this is a dumb way to do things, but i am so tired right now.
+                    if args_clone.reverse_problem {
+                        new_seq = get_reduced_word(&perm, &args_clone);
+                        new_seq.resize(args_clone.max_length as usize, 0);
+                    }
+        
+                    // check which version to push
+                    if (args_clone.transposition_type == "binary" || args_clone.transposition_type == "hybrid") {
+                        // convert the sequence to individual swaps
+                        new_seq = convert_to_seperate_indices(&new_seq, &args_clone);
+        
+                        if (args_clone.transposition_type == "binary") {
+                            // convert the sequence to binary
+                            new_seq = convert_binary(&new_seq, &args_clone)
+                        }
+                    }
+                    
+                    sender_clone.send((seq, perm)).unwrap();
+                }
+            });
+        }
+
+        // Main thread receives results from worker threads
         for _ in tqdm!(
             0..((args.dataset_size as f64)*(1.0-args.identity_proportion)) as i64,
             leave=false,
             position=1
         ) {
-            // create sequence
-            let mut seq = generate_random_sequence(&args);
-
-            // find window shifts if needed
-            let mut shifts: Vec<i64> = Vec::new();
-            let mut sizes: Vec<i64> = Vec::new();
-
-            if args.use_window {
-                let mut partition: Vec<i64> = Vec::new();
-                if args.partition_windows {
-                    // i have liberated myself from the shackles of good programming
-                    partition = rand_partition(&args);
-                }
-
-                let window_count = if args.partition_windows {
-                    partition.iter().sum()
-                } else {
-                    args.window_count
-                };
-
-                // get shift sizes
-                if args.partition_windows {
-                    for (pos, amount) in partition.iter().enumerate() {
-                        for i in 0..(*amount) {
-                            sizes.push(pos as i64 + MIN_WINDOW_SIZE);
-                        }
-                    }
-                } else {
-                    for i in 0..args.window_count {
-                        sizes.push(args.group_size/args.window_count);
-                    }
-                }
-
-                // find shifts
-                for i in 0..window_count {
-                    let max_window_shift = get_max_group_size(&args) - sizes[i as usize];
-
-                    shifts.push(rng.random_range(0..=max_window_shift));
-                }
-            }
-
-            let sized_shifts: Vec<(i64, i64)> = shifts.into_iter().zip(sizes).collect();
-
-            // convert for scaling if required
-            if (args.scaling) {
-                // convert order
-                if args.transposition_type != "elementary" {
-                    seq = convert_order(&seq, &args);
-                }
-
-                // shift if needed
-                if args.use_window {
-                    seq = shift_sequence(&seq, sized_shifts, &args, &mut rng);
-                }
-
-                // relabel if needed
-                if args.use_relabelling {
-                    seq = relabel_sequence(&seq, &args);
-                }
-            }
-
-            let mut new_seq = seq.clone();
-
-            // check which version to push
-            if (args.transposition_type == "binary" || args.transposition_type == "hybrid") {
-                // convert the sequence to individual swaps
-                new_seq = convert_to_seperate_indices(&new_seq, &args);
-
-                if (args.transposition_type == "binary") {
-                    // convert the sequence to binary
-                    new_seq = convert_binary(&new_seq, &args)
-                }
-            }
-            
-            general_data.push(new_seq.clone());
+            // get a sequence and add it to the data
+            let (seq, perm) = receiver.recv().unwrap();
+            general_data.push(seq);
 
             if (args.scaling) {
-                perms.push(get_permutation(&seq, &args))
+                perms.push(perm);
             }
         }
-
 
         let identities_needed = ((args.dataset_size as f64)*args.identity_proportion) as i64;
         let mut identity_data: Vec<Vec<i64>> = Vec::new();

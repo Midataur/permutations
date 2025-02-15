@@ -97,6 +97,48 @@ class MaskedDataset(Dataset):
         )
         return sample
 
+class ReversedDataset(Dataset):
+    def __init__(self, sequences, permutations, mainthread, *args, **kwargs):
+        # use gpu for processing
+        if type(sequences) == sparse._csr.csr_matrix:
+          sequences = sequences.todense()
+
+        data = []
+        targets = []
+
+        # generate the input output pairs
+        # we're basically simulating what the autoregression process would look like
+        for sequence, permutation in tqdm(
+           zip(sequences, permutations), 
+           desc="Loading data", 
+           disable=not mainthread
+        ):
+          # shift the permutation to use the correct tokens
+          # we don't want overlap between the input tokens and the output tokens
+          # we keep the tokens the same as in the normal problem to make things easier
+          shifted_perm = convert_perm_to_tokens(permutation)
+
+          model_input = list(shifted_perm) + [START_PREDICTION_TOKEN] + list(sequence)[:-1]
+
+          # create target
+          target = sequence
+
+          data.append(model_input)
+          targets.append(target) 
+
+        self.data = tensor(np.array(data), dtype=int)
+        self.targets = tensor(np.array(targets), dtype=int)
+
+    def __len__(self):
+        return len(self.data)
+
+    def __getitem__(self, index):
+        sample = (
+            self.data[index],
+            self.targets[index]
+        )
+        return sample
+
 class ProbeDataset(Dataset):
     def __init__(self, sequences, permutations, question):
         raise("This dataset has not yet been updated to support masked attention training")

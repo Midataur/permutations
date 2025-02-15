@@ -154,7 +154,9 @@ class Transformer(nn.Module):
 
         # focus only on the last time step
         
-        if MASKED_MODEL:
+        if REVERSE_PROBLEM:
+            logits = logits[:, -INPUT_LENGTH:, :]
+        elif MASKED_MODEL:
             logits = logits[:, -MAX_GROUP_SIZE:, :]
         else:
             # deprecated

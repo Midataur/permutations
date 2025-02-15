@@ -1,9 +1,15 @@
 print("Loading libraries...")
 
 from training import train
-from config import MASKED_MODEL
-from dataloading import MaskedDataset, SimpleDataset
+from config import MASKED_MODEL, REVERSE_PROBLEM
+from dataloading import MaskedDataset, SimpleDataset, ReversedDataset
 
 if __name__ == "__main__":
-    datasetClass = MaskedDataset if MASKED_MODEL else SimpleDataset
-    train(dataset_class=datasetClass)
+    if not MASKED_MODEL:
+        dataset_class = SimpleDataset
+    elif REVERSE_PROBLEM:
+        dataset_class = ReversedDataset
+    else:
+        dataset_class = MASKED_MODEL
+
+    train(dataset_class=dataset_class)
