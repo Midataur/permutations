@@ -15,7 +15,7 @@ RELABEL = False
 PATH = "."
 
 DATA = "/data/reverse/"
-MODELNAME = "reverse-3"
+MODELNAME = "reverse-4"
 
 # used to enable legacy features that have been deprecated
 # this is for backwards compatability reasons
@@ -95,7 +95,7 @@ vocab_size = num_normal + num_special
 n_embed = 402
 block_size = CONTEXT_LENGTH
 n_head = 6
-n_blocks = 5
+n_blocks = 10
 dropout = 0
 
 # TRAINING HYPERPARAMETERS
