@@ -1,7 +1,5 @@
 // this code is bad
 
-#![allow(unused)]
-
 use clap::Arg;
 use clap::Parser;
 use rand::rngs::ThreadRng;
