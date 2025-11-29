@@ -227,8 +227,8 @@ def train(
         # save embedding pictures so we can make gifs later
         # this is broken since we added accelerate
         # TODO: FIX this later
-        # if accelerator.is_local_main_process:
-        #     save_embedding_pictures(model)
+        if accelerator.is_local_main_process:
+            save_embedding_pictures(model)
 
         # if cur_patience == patience:
         #     print("Early stopping activated")

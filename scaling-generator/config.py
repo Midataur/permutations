@@ -4,18 +4,18 @@ import torch
 
 set_seed(42)
 
-MAX_GROUP_SIZE = 25
-ACTUAL_GROUP_SIZE = 16
+MAX_GROUP_SIZE = 16
+ACTUAL_GROUP_SIZE = 10
 
-WINDOW = False
+WINDOW = True
 WINDOW_COUNT = None
-PARTITIONED_WINDOWS = False
-RELABEL = True
+PARTITIONED_WINDOWS = True
+RELABEL = False
 
 PATH = "."
 
-DATA = "/data/torn_bigger/"
-MODELNAME = "torn-bigger-13"
+DATA = "/data/elem_partitioned_long-boosted/"
+MODELNAME = "rerun-1"
 
 # used to enable legacy features that have been deprecated
 # this is for backwards compatability reasons
@@ -38,13 +38,13 @@ REVERSE_PROBLEM = False
 LEGACY_ARCHITECTURE = False
 
 # the maximum number of transpositions in the input sequence
-MAX_TRANS_NUMBER = 25
+MAX_TRANS_NUMBER = 120
 
 # can be elementary (one token per transposition, only adjacent transpositions allowed)
 # can be general (one token per transposition, general transpositions allowed)
 # can be hybrid (two tokens per transposition, general transpositions allowed)
 # or binary (each tranposition is written in binary)
-INPUT_TYPE = "general"
+INPUT_TYPE = "elementary"
 
 # maximum length of input sequence (in tokens)
 # don't touch this
