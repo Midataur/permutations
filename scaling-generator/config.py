@@ -14,7 +14,7 @@ RELABEL = False
 
 PATH = "."
 
-DATA = "/data/elem_partitioned_long-boosted/"
+DATA = "/data/elem_partitioned_long_boosted/"
 MODELNAME = "rerun-1"
 
 # used to enable legacy features that have been deprecated
