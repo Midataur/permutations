@@ -94,11 +94,9 @@ def token_type(token):
 
 # saves the embedding similarity matrices so we can make a gif later
 def save_embedding_pictures(model):
-    accelerator = Accelerator()
-
-    posindices, tokindices = accelerator.prepare(
-        torch.arange(block_size),
-        torch.arange(vocab_size)
+    posindices, tokindices = (
+        torch.arange(block_size).cpu(),
+        torch.arange(vocab_size).cpu()
     )
 
     if "module" in dir(model):
