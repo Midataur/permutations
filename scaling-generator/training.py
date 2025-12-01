@@ -31,16 +31,18 @@ def train(
         # load the data
         print("Loading data...")
 
-    # i know this code is kinda bad, it's the result of tech debt
-    (
-        train_inputs, train_perms, train_dataloader, 
-        val_seqs, val_perms, val_dataloader,
-        test_seqs, test_perms, test_dataloader,
-        dataset_size
-    ) = load_data(dataset_class, question)
-
     # setup the model
     model = model_class(stop_block)
+
+    # debugging
+    # set up accelerator
+    model = accelerator.prepare(model)
+
+    if accelerator.is_local_main_process:
+        print("\n"*5)
+        print(dir(model))
+        print("\n"*5)
+    # debug ends
 
     # optionally: load the model
     save_directory = f"{PATH}/model/{MODELNAME}"
@@ -67,17 +69,20 @@ def train(
         threshold=threshold
     )
 
+    # i know this code is kinda bad, it's the result of tech debt
+    (
+        train_inputs, train_perms, train_dataloader, 
+        val_seqs, val_perms, val_dataloader,
+        test_seqs, test_perms, test_dataloader,
+        dataset_size
+    ) = load_data(dataset_class, question)
+
     # set up accelerator
     model, optimizer, train_dataloader, scheduler = accelerator.prepare(
         model, optimizer, train_dataloader, scheduler
     )
 
     val_dataloader = accelerator.prepare(val_dataloader)
-
-
-    # debugging
-    if accelerator.is_local_main_process:
-        save_embedding_pictures(model)
 
     if accelerator.is_local_main_process:
         print("Training...")
