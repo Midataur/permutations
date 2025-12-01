@@ -40,7 +40,7 @@ def train(
 
     if accelerator.is_local_main_process:
         print("\n"*5)
-        print(dir(model.named_modules))
+        print(dir(model.module))
         print("\n"*5)
     # debug ends
 
