@@ -74,6 +74,11 @@ def train(
 
     val_dataloader = accelerator.prepare(val_dataloader)
 
+
+    # debugging
+    if accelerator.is_local_main_process:
+        save_embedding_pictures(model)
+
     if accelerator.is_local_main_process:
         print("Training...")
 

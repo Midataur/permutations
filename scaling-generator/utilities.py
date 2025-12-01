@@ -101,6 +101,8 @@ def save_embedding_pictures(model):
         torch.arange(vocab_size)
     )
 
+    dir(model)
+
     types = [
         ("position", model.position_embedding.cpu()(posindices)),
         ("token", model.token_embedding_table.cpu()(tokindices))
