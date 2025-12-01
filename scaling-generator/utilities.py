@@ -103,8 +103,8 @@ def save_embedding_pictures(model):
         model = model.module
 
     types = [
-        ("position", model.position_embedding.cpu()(posindices)),
-        ("token", model.token_embedding_table.cpu()(tokindices))
+        ("position", model.position_embedding.clone().cpu()(posindices)),
+        ("token", model.token_embedding_table.clone().cpu()(tokindices))
     ]
 
     for embedding_type, embedding in types:
