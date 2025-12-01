@@ -101,7 +101,8 @@ def save_embedding_pictures(model):
         torch.arange(vocab_size)
     )
 
-    dir(model)
+    if "module" in dir(model):
+        model = model.module
 
     types = [
         ("position", model.position_embedding.cpu()(posindices)),

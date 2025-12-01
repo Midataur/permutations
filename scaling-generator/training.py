@@ -34,16 +34,6 @@ def train(
     # setup the model
     model = model_class(stop_block)
 
-    # debugging
-    # set up accelerator
-    model = accelerator.prepare(model)
-
-    if accelerator.is_local_main_process:
-        print("\n"*5)
-        print(dir(model.module))
-        print("\n"*5)
-    # debug ends
-
     # optionally: load the model
     save_directory = f"{PATH}/model/{MODELNAME}"
     file_path = f"{save_directory}/model.safetensors"
