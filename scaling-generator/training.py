@@ -230,6 +230,9 @@ def train(
         if accelerator.is_local_main_process:
             save_embedding_pictures(model)
 
+        # fix any tensors that we accidentally moved
+        model = accelerator.prepare(model)
+
         # if cur_patience == patience:
         #     print("Early stopping activated")
         #     break
