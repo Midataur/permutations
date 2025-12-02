@@ -93,18 +93,18 @@ def token_type(token):
     return "special"
 
 # saves the embedding similarity matrices so we can make a gif later
-def save_embedding_pictures(model):
+def save_embedding_pictures(model, accelerator):
     posindices, tokindices = (
-        torch.arange(block_size).cpu(),
-        torch.arange(vocab_size).cpu()
+        torch.arange(block_size).to(accelerator.device),
+        torch.arange(vocab_size).to(accelerator.device)
     )
 
     if "module" in dir(model):
         model = model.module
 
     types = [
-        ("position", model.position_embedding.detach().cpu()(posindices)),
-        ("token", model.token_embedding_table.detach().cpu()(tokindices))
+        ("position", model.position_embedding(posindices)),
+        ("token", model.token_embedding_table(tokindices))
     ]
 
     for embedding_type, embedding in types:
