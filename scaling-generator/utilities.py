@@ -103,8 +103,8 @@ def save_embedding_pictures(model):
         model = model.module
 
     types = [
-        ("position", torch.clone(model.position_embedding).cpu()(posindices)),
-        ("token", torch.clone(model.token_embedding_table).cpu()(tokindices))
+        ("position", model.position_embedding.detach().cpu()(posindices)),
+        ("token", model.token_embedding_table.detach().cpu()(tokindices))
     ]
 
     for embedding_type, embedding in types:
