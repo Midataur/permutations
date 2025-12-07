@@ -2,7 +2,7 @@ from math import log2, floor
 from accelerate.utils import set_seed
 import torch
 
-set_seed(44)
+set_seed(45)
 
 MAX_GROUP_SIZE = 16
 ACTUAL_GROUP_SIZE = 10
@@ -15,7 +15,7 @@ RELABEL = False
 PATH = "."
 
 DATA = "/data/elem_partitioned_long_boosted/"
-MODELNAME = "rerun-4"
+MODELNAME = "rerun-5"
 
 # used to enable legacy features that have been deprecated
 # this is for backwards compatability reasons
